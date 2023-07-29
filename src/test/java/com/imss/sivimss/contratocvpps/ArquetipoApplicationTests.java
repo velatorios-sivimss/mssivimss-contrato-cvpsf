@@ -11,7 +11,7 @@ class ArquetipoApplicationTests {
 	@Test
 	void contextLoads() {
 		String result = "test";
-		ArquetipoApplication.main(new String[] {});
+		ContratoCVPPSFApplication.main(new String[] {});
 		assertNotNull(result);
 	}
 

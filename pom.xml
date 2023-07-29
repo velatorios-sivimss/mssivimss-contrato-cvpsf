@@ -8,11 +8,11 @@
 		<version>2.6.7</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.imss.sivimss</groupId>
-	<artifactId>contratocvpsf</artifactId>
+	<groupId>com.imss.sivimss.contratocvpps</groupId>
+	<artifactId>mssivimss-contrato-cvpps</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ms arquetipo</name>
-	<description>Ms contratocvpsf</description>
+	<name>mssivimss-contrato-cvpps</name>
+	<description>Ms mssivimss-contrato-cvpps</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
@@ -63,7 +63,22 @@
 			</exclusions>
 		</dependency>
 
-
+       <dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.springframework</groupId>
+    		<artifactId>spring-jdbc</artifactId>
+    	</dependency>
+    	
+    	<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
@@ -112,8 +127,7 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.9</version>
 		</dependency>
-		<!--
-		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
@@ -134,6 +148,7 @@
 			<artifactId>json</artifactId>
 			<version>20230227</version>
 		</dependency>
+		
 		<!--  Librerias para pruebas unitarias -->
 		<dependency>
 			<groupId>org.mock-server</groupId>

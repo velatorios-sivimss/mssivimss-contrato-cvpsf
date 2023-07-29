@@ -107,4 +107,6 @@ public class QueryHelper implements Serializable {
 		return querySelectFinal.toString();
 	}
 
+	
+
 }
