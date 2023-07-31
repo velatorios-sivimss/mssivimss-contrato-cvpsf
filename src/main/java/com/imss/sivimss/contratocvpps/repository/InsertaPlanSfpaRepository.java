@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.contratocvpps.model.request.InsertPlanSfpaRequest;
 import com.imss.sivimss.contratocvpps.model.request.ReporteRequest;
+import com.imss.sivimss.contratocvpps.model.response.NumeroPagoPlanSfpaResponse;
 import com.imss.sivimss.contratocvpps.model.response.PlanSFPAResponse;
 import com.imss.sivimss.contratocvpps.util.AppConstantes;
 import com.imss.sivimss.contratocvpps.util.ConsultaConstantes;
@@ -159,6 +160,37 @@ public class InsertaPlanSfpaRepository {
     			response= new Response<>(false, 200, "18");
     		} else {
     			response= new Response<>(false, 200, "45");
+    		}
+		} catch (Exception e) {
+			logUtil.crearArchivoLog(Level.INFO.toString(),this.getClass().getSimpleName(),this.getClass().getPackage().toString(), e.getMessage(), ConsultaConstantes.FALLO_QUERY);
+			throw new Exception(ConsultaConstantes.FALLO_QUERY + e.getMessage());
+		} finally {
+			logUtil.crearArchivoLog(Level.INFO.toString(),this.getClass().getSimpleName(),this.getClass().getPackage().toString(), "", ConsultaConstantes.CIERRA_CONEXION_A_LA_BASE_DE_DATOS);
+			try {
+				if(statement!=null) statement.close();
+				if(rs!=null) rs.close();
+				if(connection!=null) connection.close();
+			} catch (SQLException ex) {
+				logUtil.crearArchivoLog(Level.INFO.toString(),this.getClass().getSimpleName(),this.getClass().getPackage().toString(), ex.getMessage(), ConsultaConstantes.FALLO_QUERY);
+			}
+		}
+		return response;
+	}
+	
+	public Response<Object> consultarNumeroPagoPlanSfpa(String request) throws Exception {
+		Connection connection = database.getConnection();
+		try {
+			statement = connection.createStatement();
+			connection.setAutoCommit(false);
+			rs=statement.executeQuery(request);
+    		logUtil.crearArchivoLog(Level.INFO.toString(),this.getClass().getSimpleName(),this.getClass().getPackage().toString(),"",AppConstantes.MODIFICACION+" "+ request);
+    		connection.commit();
+    		if (rs.next()) {
+    			NumeroPagoPlanSfpaResponse numeroPagoPlanSfpaResponse = new NumeroPagoPlanSfpaResponse();
+    			numeroPagoPlanSfpaResponse.setNumeroPagoPlanSfpa(rs.getInt(1));
+				response= new Response<>(false, 200, "EXITO", ConvertirGenerico.convertInstanceOfObject(numeroPagoPlanSfpaResponse));
+    		} else {
+    			response= new Response<>(false, 200, "45", "[]");
     		}
 		} catch (Exception e) {
 			logUtil.crearArchivoLog(Level.INFO.toString(),this.getClass().getSimpleName(),this.getClass().getPackage().toString(), e.getMessage(), ConsultaConstantes.FALLO_QUERY);

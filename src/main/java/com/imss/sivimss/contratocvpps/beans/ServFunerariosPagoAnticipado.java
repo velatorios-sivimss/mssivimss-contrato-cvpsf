@@ -170,4 +170,19 @@ public class ServFunerariosPagoAnticipado implements Serializable {
 		log.info(" TERMINO - consultaValidaAfiliado");
 		return request;
 	}
+	
+	public String consultaNumeroPago(Integer idPlanSfpa) {
+		log.info(" INICIO - consultaNumeroPago");
+		SelectQueryUtil queryUtil = new SelectQueryUtil();
+		queryUtil.select("COUNT(*) AS PAGO")
+		.from("SVC_PAGO_SFPA PSFPA")
+		.leftJoin("SVT_PLAN_SFPA PLSFPA", "PSFPA.ID_PLAN_SFPA = PLSFPA.ID_PLAN_SFPA")
+		.and("PLSFPA.ID_ESTATUS_PLAN_SFPA NOT IN (6)").and("PLSFPA.IND_ACTIVO = 1")
+		.where("PSFPA.ID_PLAN_SFPA = :idPlanSfpa").setParameter("idPlanSfpa", idPlanSfpa)
+		.and("PSFPA.IND_ACTIVO = 1");
+		final String query = queryUtil.build();
+		log.info(" consultaNumeroPago: " + query);
+		log.info(" TERMINO - consultaNumeroPago");
+		return query;
+	}
 }
