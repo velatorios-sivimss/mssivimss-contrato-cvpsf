@@ -82,19 +82,14 @@ public class ServFunerariosPagoAnticipado implements Serializable {
 		return request;
 	}
 	
-	public DatosRequest consultaPaquetes(DatosRequest request, UsuarioDto usuarioDto) {
+	public DatosRequest consultaPaquetes(DatosRequest request, String nombrePaquetes) {
 		log.info(" INICIO - consultaPaquetes");
-		SelectQueryUtil selectQueryUtilUnionPaqueteRegion= new SelectQueryUtil();
-		SelectQueryUtil selectQueryUtilUnionPaqueteVelatorio= new SelectQueryUtil();
-		selectQueryUtilUnionPaqueteVelatorio.select("SP.ID_PAQUETE","SP.DES_NOM_PAQUETE")
+		SelectQueryUtil selectQueryVelatorio= new SelectQueryUtil();
+		selectQueryVelatorio.select("SP.ID_PAQUETE AS idPaquete","SP.DES_NOM_PAQUETE AS nomPaquete","SP.DES_PAQUETE AS descPaquete")
 		.from("SVT_PAQUETE SP")
-		.innerJoin("SVT_PAQUETE_VELATORIO SPV", "SP.ID_PAQUETE=SPV.ID_PAQUETE")
-		.where(SP_IND_ACTIVO_1).and("SPV.ID_VELATORIO = :idVelatorio").setParameter("idVelatorio", usuarioDto.getIdVelatorio());
-
-		selectQueryUtilUnionPaqueteRegion.select("SP.ID_PAQUETE","SP.DES_NOM_PAQUETE")
-		.from("SVT_PAQUETE SP").where(SP_IND_ACTIVO_1).and("SP.IND_REGION = 1");
+		.where("SP.DES_NOM_PAQUETE IN ".concat(nombrePaquetes));
 		
-		final String query =  selectQueryUtilUnionPaqueteVelatorio.union(selectQueryUtilUnionPaqueteRegion);
+		final String query =  selectQueryVelatorio.build();
 
 		log.info(" consultaPaquetes: " + query);
 
