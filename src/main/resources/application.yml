@@ -99,3 +99,4 @@ resilience4j.timelimiter:
         
 formato_fecha: '%d/%m/%Y'
 ruta-log: 'C:\logs\'
+nom_paquete: "('Paquete Básico PA','Paquete con Cremación PA')"
