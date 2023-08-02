@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.imss.sivimss.contratocvpps.service.ReportePagoAnticipadoService;
 import com.imss.sivimss.contratocvpps.service.ServFunerariosPagoAnticipadoService;
 import com.imss.sivimss.contratocvpps.util.DatosRequest;
 import com.imss.sivimss.contratocvpps.util.LogUtil;
@@ -30,9 +31,12 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("/serv-funerario-pago-anticipado")
 public class ServFunerariosPagoAnticipadoController {
-	
+
 	@Autowired
 	private ServFunerariosPagoAnticipadoService servFunerariosPagoAnticipadoService;
+	
+	@Autowired
+	private ReportePagoAnticipadoService reportePagoAnticipadoService;
 	
 	@Autowired
 	private ProviderServiceRestTemplate providerRestTemplate;
@@ -132,16 +136,13 @@ public class ServFunerariosPagoAnticipadoController {
 		Response<Object> response =  servFunerariosPagoAnticipadoService.numeroPagoPlanSfpa(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
-	
-	@PostMapping("/consulta-detalle-plan-sfpa")
-	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
-	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
-	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<Object> consultaDetallePlanSfpa(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
-		Response<Object> response =  servFunerariosPagoAnticipadoService.consultaDetallePlanSfpa(request,authentication);
+	// ********
+
+	@PostMapping("/generar/reporte-convenio-pago-anticipado")
+	public CompletableFuture<Object> generaReporteDonacion(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
+		Response<Object> response =  reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(request, authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
-	
 	/**
 	 * fallbacks generico
 	 * 
