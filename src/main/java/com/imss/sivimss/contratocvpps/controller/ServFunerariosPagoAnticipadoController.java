@@ -133,6 +133,15 @@ public class ServFunerariosPagoAnticipadoController {
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
+	@PostMapping("/consulta-detalle-plan-sfpa")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> consultaDetallePlanSfpa(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
+		Response<Object> response =  servFunerariosPagoAnticipadoService.consultaDetallePlanSfpa(request,authentication);
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+	
 	/**
 	 * fallbacks generico
 	 * 
