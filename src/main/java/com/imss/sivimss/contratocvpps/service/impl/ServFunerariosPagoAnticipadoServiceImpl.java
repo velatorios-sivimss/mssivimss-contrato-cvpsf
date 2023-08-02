@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
+import com.imss.sivimss.contratocvpps.beans.DetallePlanSfpa;
 import com.imss.sivimss.contratocvpps.beans.InsertaActualizaPlanSfpa;
 import com.imss.sivimss.contratocvpps.beans.ServFunerariosPagoAnticipado;
 import com.imss.sivimss.contratocvpps.exception.BadRequestException;
@@ -353,6 +354,23 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 			PlanSFPARequest planSFPARequest = new Gson().fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), PlanSFPARequest.class);
 			String numPago = new ServFunerariosPagoAnticipado().consultaNumeroPago(planSFPARequest.getIdPlanSfpa());
 			response =  insertaPlanSfpaRepository.consultarNumeroPagoPlanSfpa(numPago);
+		   } catch (Exception e) {
+	        	e.printStackTrace();
+				log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_GUARDAR));
+				log.error(e.getMessage());
+			    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_GUARDAR, AppConstantes.ALTA, authentication);
+			    throw new IOException(AppConstantes.ERROR_GUARDAR, e.getCause());
+			}
+		return response;
+	}
+
+	@Override
+	public Response<Object> consultaDetallePlanSfpa(DatosRequest request, Authentication authentication)
+			throws IOException, SQLException {
+		try {
+			PlanSFPARequest planSFPARequest = new Gson().fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), PlanSFPARequest.class);
+			String detalllePlanSfpa = new DetallePlanSfpa().consultaDetallePlanSfpa(planSFPARequest.getIdPlanSfpa());
+			response =  insertaPlanSfpaRepository.consultarDetallePlanSfpa(detalllePlanSfpa);
 		   } catch (Exception e) {
 	        	e.printStackTrace();
 				log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_GUARDAR));

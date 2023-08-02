@@ -29,5 +29,7 @@ public interface ServFunerariosPagoAnticipadoService {
 	Response<Object>  cancelaPlanSFPA(DatosRequest request, Authentication authentication) throws IOException, SQLException;
 	
 	Response<Object>  numeroPagoPlanSfpa(DatosRequest request, Authentication authentication) throws IOException, SQLException;
+	
+	Response<Object>  consultaDetallePlanSfpa(DatosRequest request, Authentication authentication) throws IOException, SQLException;
 
 }

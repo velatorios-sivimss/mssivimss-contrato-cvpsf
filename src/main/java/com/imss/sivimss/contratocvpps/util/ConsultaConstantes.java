@@ -1,5 +1,14 @@
 package com.imss.sivimss.contratocvpps.util;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.imss.sivimss.contratocvpps.model.request.ContratanteRequest;
+import com.imss.sivimss.contratocvpps.model.request.DomicilioRequest;
+import com.imss.sivimss.contratocvpps.model.response.PlanSFPAResponse;
+
 public class ConsultaConstantes {
 	
 	public static final String CIERRA_CONEXION_A_LA_BASE_DE_DATOS = "cierra conexion a la base de datos";
@@ -39,10 +48,6 @@ public class ConsultaConstantes {
 	public static final String REPLACE = "replace";
 	public static final String EXITO = "Exito"; 
 	
-	
-	
-	
-	
 	private ConsultaConstantes() {
 		super();
 	}
@@ -64,5 +69,79 @@ public class ConsultaConstantes {
 			return 0;
 		}
 		return idVelatorio;
+	}
+	
+	public static  PlanSFPAResponse generarDetallePlan(ResultSet rs) throws SQLException {
+		PlanSFPAResponse planSFPAResponse = new PlanSFPAResponse();
+		List<ContratanteRequest> titularesBeneficiarios = new ArrayList<>(); 
+		ContratanteRequest contratanteRequest = new ContratanteRequest();
+		DomicilioRequest cp = new DomicilioRequest ();
+		planSFPAResponse.setIdPlanSfpa(rs.getInt(1));
+		planSFPAResponse.setNumFolioPlanSFPA(rs.getString(2));
+		planSFPAResponse.setIdTipoContratacion(rs.getInt(3));
+		planSFPAResponse.setIdPaquete(rs.getInt(4));
+		planSFPAResponse.setIdTipoPagoMensual(rs.getInt(5));
+		planSFPAResponse.setIndTitularSubstituto(rs.getInt(6));
+		planSFPAResponse.setIndModificarTitularSubstituto(rs.getInt(7));
+		contratanteRequest.setPersona(AFILIADO);
+		contratanteRequest.setRfc(rs.getString(8));
+		contratanteRequest.setCurp(rs.getString(9));
+		contratanteRequest.setMatricula(rs.getString(10));
+		contratanteRequest.setNss(rs.getString(11));
+		contratanteRequest.setNomPersona(rs.getString(12));
+		contratanteRequest.setPrimerApellido(rs.getString(13));
+		contratanteRequest.setSegundoApellido(rs.getString(14));
+		contratanteRequest.setSexo(rs.getString(15));
+		contratanteRequest.setOtroSexo(rs.getString(16));
+		contratanteRequest.setFecNacimiento(rs.getString(17));
+		contratanteRequest.setIdPais(rs.getInt(18));
+		contratanteRequest.setIdEstado(rs.getInt(19));
+		contratanteRequest.setTelefono(rs.getString(20));
+		contratanteRequest.setTelefonoFijo(rs.getString(21));
+		contratanteRequest.setCorreo(rs.getString(22));
+		contratanteRequest.setTipoPersona(rs.getString(23));
+		contratanteRequest.setIne(rs.getString(24));
+		cp.setDesCalle(rs.getString(25));
+		cp.setNumExterior(rs.getString(26));
+		cp.setNumInterior(rs.getString(27));
+		cp.setCodigoPostal(rs.getInt(28));
+		cp.setDesColonia(rs.getString(29));
+		cp.setDesMunicipio(rs.getString(30));
+		cp.setDesEstado(rs.getString(31));
+		contratanteRequest.setCp(cp);
+		titularesBeneficiarios.add(contratanteRequest);
+		if(rs.getInt(6) == 0){
+			ContratanteRequest contratanteRequest2 = new ContratanteRequest();
+			DomicilioRequest cp2 = new DomicilioRequest ();
+			contratanteRequest2.setPersona("contratante");
+			contratanteRequest2.setRfc(rs.getString(32));
+			contratanteRequest2.setCurp(rs.getString(33));
+			contratanteRequest2.setMatricula(rs.getString(34));
+			contratanteRequest2.setNss(rs.getString(35));
+			contratanteRequest2.setNomPersona(rs.getString(36));
+			contratanteRequest2.setPrimerApellido(rs.getString(37));
+			contratanteRequest2.setSegundoApellido(rs.getString(38));
+			contratanteRequest2.setSexo(rs.getString(39));
+			contratanteRequest2.setOtroSexo(rs.getString(40));
+			contratanteRequest2.setFecNacimiento(rs.getString(41));
+			contratanteRequest2.setIdPais(rs.getInt(42));
+			contratanteRequest2.setIdEstado(rs.getInt(43));
+			contratanteRequest2.setTelefono(rs.getString(44));
+			contratanteRequest2.setTelefonoFijo(rs.getString(45));
+			contratanteRequest2.setCorreo(rs.getString(46));
+			contratanteRequest2.setTipoPersona(rs.getString(47));
+			contratanteRequest2.setIne(rs.getString(48));
+			cp2.setDesCalle(rs.getString(49));
+			cp2.setNumExterior(rs.getString(50));
+			cp2.setNumInterior(rs.getString(51));
+			cp2.setCodigoPostal(rs.getInt(52));
+			cp2.setDesColonia(rs.getString(53));
+			cp2.setDesMunicipio(rs.getString(54));
+			cp2.setDesEstado(rs.getString(55));
+			contratanteRequest2.setCp(cp2);
+			titularesBeneficiarios.add(contratanteRequest2);
+		}
+		planSFPAResponse.setTitularesBeneficiarios(titularesBeneficiarios);
+		return planSFPAResponse;
 	}
 }
