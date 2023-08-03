@@ -23,9 +23,11 @@ public class PlanSFPAResponse {
 	private Integer indPromotor;
 	private Integer idPromotor;
 	private Integer idVelatorio;
+	private String desIdVelatorio;
 	private Integer idEstatusPlanSfpa;
 	private Integer indActivo;
 	private Boolean indTipoPagoMensual;
+	private String fecIngreso;
 	private List<ContratanteRequest> titularesBeneficiarios;
 
 }
