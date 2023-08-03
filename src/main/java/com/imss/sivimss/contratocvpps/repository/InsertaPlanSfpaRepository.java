@@ -30,9 +30,6 @@ public class InsertaPlanSfpaRepository {
 	
 	@Value("${endpoints.ms-reportes}")
 	private String urlReportes;
-	
-	@Value("${reporte.convenio-pago-anticipado}")
-	private String reporteConvenioPagoAnticipado;
 
 	@Autowired
 	private LogUtil logUtil;
