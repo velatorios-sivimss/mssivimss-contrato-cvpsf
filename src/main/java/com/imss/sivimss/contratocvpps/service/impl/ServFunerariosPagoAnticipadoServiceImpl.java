@@ -3,7 +3,9 @@ package com.imss.sivimss.contratocvpps.service.impl;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -24,12 +26,12 @@ import com.imss.sivimss.contratocvpps.exception.BadRequestException;
 import com.imss.sivimss.contratocvpps.model.request.ContratanteRequest;
 import com.imss.sivimss.contratocvpps.model.request.InsertPlanSfpaRequest;
 import com.imss.sivimss.contratocvpps.model.request.PlanSFPARequest;
-import com.imss.sivimss.contratocvpps.model.request.ReporteRequest;
 import com.imss.sivimss.contratocvpps.model.request.TitularRequest;
 import com.imss.sivimss.contratocvpps.model.request.UsuarioDto;
 import com.imss.sivimss.contratocvpps.model.response.PersonaResponse;
 import com.imss.sivimss.contratocvpps.model.response.PlanSFPAResponse;
 import com.imss.sivimss.contratocvpps.repository.InsertaPlanSfpaRepository;
+import com.imss.sivimss.contratocvpps.service.ReportePagoAnticipadoService;
 import com.imss.sivimss.contratocvpps.service.ServFunerariosPagoAnticipadoService;
 import com.imss.sivimss.contratocvpps.util.AppConstantes;
 import com.imss.sivimss.contratocvpps.util.DatosRequest;
@@ -87,7 +89,8 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 	
 	private Response<Object>response;
 	
-	private ReporteRequest reporteRequest;
+	@Autowired
+	private ReportePagoAnticipadoService reportePagoAnticipadoService;
 
 	@Override
 	public Response<Object> detalleContratanteRfc(DatosRequest request, Authentication authentication)
@@ -289,7 +292,11 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 				response = insertaPlanSfpaRepository.actualizarPlanSfpa(insertPlanSfpaRequest);
 				if(Boolean.TRUE.equals(planSFPARequest.getIndTipoPagoMensual())) {
 					log.info(" Entro true");
-					response = insertaPlanSfpaRepository.generarReporteDonacion(reporteRequest, authentication);
+					Map<String, Object> map = new HashMap<>();
+					map.put("idPlanSFPA", planSFPARequest.getIdPlanSfpa());
+					DatosRequest datos = new DatosRequest();
+					datos.setDatos(map);
+					response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datos, authentication);
 				}
 			} else {
 				log.info(" Entro Insertar");
@@ -303,7 +310,11 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 					InsertPlanSfpaRequest insertPlanSfpaRequest = new InsertaActualizaPlanSfpa().insertaPlanSfpa(planSFPARequest, usuarioDto);
 					PlanSFPAResponse planResponse =  insertaPlanSfpaRepository.insertarPlanSfpa(insertPlanSfpaRequest);
 					if (planResponse.getIdPlanSfpa() != null) {
-						response = insertaPlanSfpaRepository.generarReporteDonacion(reporteRequest, authentication);
+						Map<String, Object> map = new HashMap<>();
+						map.put("idPlanSFPA", planResponse.getIdPlanSfpa());
+						DatosRequest datos = new DatosRequest();
+						datos.setDatos(map);
+						response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datos, authentication);
 					}
 				}
 			}

@@ -6,17 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.contratocvpps.model.request.InsertPlanSfpaRequest;
-import com.imss.sivimss.contratocvpps.model.request.ReporteRequest;
 import com.imss.sivimss.contratocvpps.model.response.NumeroPagoPlanSfpaResponse;
 import com.imss.sivimss.contratocvpps.model.response.PlanSFPAResponse;
 import com.imss.sivimss.contratocvpps.util.AppConstantes;
@@ -24,7 +20,6 @@ import com.imss.sivimss.contratocvpps.util.ConsultaConstantes;
 import com.imss.sivimss.contratocvpps.util.ConvertirGenerico;
 import com.imss.sivimss.contratocvpps.util.Database;
 import com.imss.sivimss.contratocvpps.util.LogUtil;
-import com.imss.sivimss.contratocvpps.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.contratocvpps.util.Response;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class InsertaPlanSfpaRepository {
-	
-	@Autowired
-	private ProviderServiceRestTemplate providerRestTemplate;
 	
 	@Value("${endpoints.ms-reportes}")
 	private String urlReportes;
@@ -206,33 +198,6 @@ public class InsertaPlanSfpaRepository {
 			}
 		}
 		return response;
-	}
-	
-	public Response<Object> generarReporteDonacion(ReporteRequest reporteRequest, Authentication authentication)
-			throws IOException, SQLException {
-		Connection connection = database.getConnection();
-		statement = connection.createStatement();
-		connection.setAutoCommit(false);
-		Map<String, Object> envioDatos = new HashMap<>();
-		envioDatos.put("condition", "AND R.ID_ROL = 17 AND R.DES_ROL = 'APOYO ADMINISTRATIVO' ORDER BY R.ID_ROL");
-		envioDatos.put(ConsultaConstantes.TIPO_REPORTE, "pdf");
-		envioDatos.put(ConsultaConstantes.RUTA_NOMBRE_REPORTE, reporteConvenioPagoAnticipado);
-		try {
-			log.info(ConsultaConstantes.CU067_NOMBRE + ConsultaConstantes.GENERAR_DOCUMENTO + " Reporte Convenio Pago Anticipado " );
-			logUtil.crearArchivoLog(Level.INFO.toString(), ConsultaConstantes.CU067_NOMBRE + ConsultaConstantes.GENERAR_DOCUMENTO + " Reporte Convenio Pago Anticipado " + this.getClass().getSimpleName(),
-					this.getClass().getPackage().toString(), "generarReporteConvenioPagoAnticipado", ConsultaConstantes.GENERA_DOCUMENTO, authentication);
-			response = providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
-			return   response;
-		} catch (Exception e) {
-			log.error(ConsultaConstantes.CU067_NOMBRE + ConsultaConstantes.GENERAR_DOCUMENTO);
-			logUtil.crearArchivoLog(Level.WARNING.toString(), ConsultaConstantes.CU067_NOMBRE + ConsultaConstantes.GENERAR_DOCUMENTO + this.getClass().getSimpleName(),
-					this.getClass().getPackage().toString(),"", ConsultaConstantes.GENERA_DOCUMENTO,
-					authentication);
-			throw new IOException("52", e.getCause());
-		} finally {
-				statement.close();
-				connection.close();
-		}
 	}
 	
 	private PlanSFPAResponse accionInserta(ArrayList<String> inserciones, ArrayList<String> updates, Integer id, Connection connection,
