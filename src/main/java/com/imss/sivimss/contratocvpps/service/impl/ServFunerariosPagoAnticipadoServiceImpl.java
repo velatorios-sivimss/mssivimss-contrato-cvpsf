@@ -293,10 +293,12 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 				if(Boolean.TRUE.equals(planSFPARequest.getIndTipoPagoMensual())) {
 					log.info(" Entro true");
 					Map<String, Object> map = new HashMap<>();
+					Map<String, Object> datos = new HashMap<>();
 					map.put("idPlanSFPA", planSFPARequest.getIdPlanSfpa());
-					DatosRequest datos = new DatosRequest();
-					datos.setDatos(map);
-					response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datos, authentication);
+					DatosRequest datosRequest = new DatosRequest();
+					datos.put(AppConstantes.DATOS, map);
+					datosRequest.setDatos(datos);
+					response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication);
 				}
 			} else {
 				log.info(" Entro Insertar");
@@ -311,10 +313,12 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 					PlanSFPAResponse planResponse =  insertaPlanSfpaRepository.insertarPlanSfpa(insertPlanSfpaRequest);
 					if (planResponse.getIdPlanSfpa() != null) {
 						Map<String, Object> map = new HashMap<>();
+						Map<String, Object> datos = new HashMap<>();
 						map.put("idPlanSFPA", planResponse.getIdPlanSfpa());
-						DatosRequest datos = new DatosRequest();
-						datos.setDatos(map);
-						response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datos, authentication);
+						DatosRequest datosRequest = new DatosRequest();
+						datos.put(AppConstantes.DATOS, map);
+						datosRequest.setDatos(datos);
+						response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication);
 					}
 				}
 			}
