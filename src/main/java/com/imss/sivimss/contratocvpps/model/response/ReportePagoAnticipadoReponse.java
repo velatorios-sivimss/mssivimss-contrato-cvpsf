@@ -21,4 +21,6 @@ private String fechaFirma;
 private String cuotaAfiliacion;
 private String numeroAfiliacion;
 private String servInclPaquete;
+private String firmDir;
+private String imgCheck;
 }
