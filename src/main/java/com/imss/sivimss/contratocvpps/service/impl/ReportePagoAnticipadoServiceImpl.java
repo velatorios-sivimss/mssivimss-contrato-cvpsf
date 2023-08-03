@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoService {
 	
-	private static final String ERROR_AL_DESCARGAR_DOCUMENTO= "64"; // Error en la descarga del documento.Intenta nuevamente.
 	private static final String AGREGADO_CORRECTAMENTE= "30"; // Agregado correctamente.
 	private static final String TIPO_REPORTE = "tipoReporte";
 	private static final String RUTA_NOMBRE_REPORTE = "rutaNombreReporte";
