@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoService {
 	
 	private static final String ERROR_AL_DESCARGAR_DOCUMENTO= "64"; // Error en la descarga del documento.Intenta nuevamente.
+	private static final String AGREGADO_CORRECTAMENTE= "30"; // Agregado correctamente.
 	private static final String TIPO_REPORTE = "tipoReporte";
 	private static final String RUTA_NOMBRE_REPORTE = "rutaNombreReporte";
 
@@ -90,7 +91,7 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 		envioDatos.put(TIPO_REPORTE, "pdf");
 		envioDatos.put(RUTA_NOMBRE_REPORTE, convenioPagoAnticipado);
     	
-		return MensajeResponseUtil.mensajeConsultaResponseObject(providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication), ERROR_AL_DESCARGAR_DOCUMENTO);
+		return MensajeResponseUtil.mensajeConsultaResponseObject(providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication), AGREGADO_CORRECTAMENTE);
 		
 	}
 	private Map<String, Object> generarMap( List<ReportePagoAnticipadoReponse> contratoServicioInmediatoResponse
