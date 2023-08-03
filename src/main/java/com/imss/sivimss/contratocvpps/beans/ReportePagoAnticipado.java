@@ -30,8 +30,6 @@ public class ReportePagoAnticipado {
 				+ "JOIN SVC_TIPO_PAGO_MENSUAL stpm  on stpm.ID_TIPO_PAGO_MENSUAL = sps.ID_TIPO_PAGO_MENSUAL  "
 				+ "JOIN SVC_VELATORIO sv on sv.ID_VELATORIO = sps.ID_VELATORIO  "
 				+ "JOIN SVC_ESTADO se on se.ID_ESTADO = sp2.ID_ESTADO  "
-				+ "JOIN SVC_CARACTERISTICAS_PAQUETE scp on scp.ID_PAQUETE = sp.ID_PAQUETE  "
-				+ "JOIN SVC_ORDEN_SERVICIO sos on sos.ID_ORDEN_SERVICIO = scp.ID_ORDEN_SERVICIO  "
 				+ "WHERE sps.ID_PLAN_SFPA = " + reporteDto.getIdPlanSFPA();
 	}
 	
