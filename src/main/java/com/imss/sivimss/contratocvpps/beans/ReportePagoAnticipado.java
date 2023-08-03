@@ -32,7 +32,7 @@ public class ReportePagoAnticipado {
 				+ "JOIN SVC_ESTADO se on se.ID_ESTADO = sp2.ID_ESTADO  "
 				+ "JOIN SVC_CARACTERISTICAS_PAQUETE scp on scp.ID_PAQUETE = sp.ID_PAQUETE  "
 				+ "JOIN SVC_ORDEN_SERVICIO sos on sos.ID_ORDEN_SERVICIO = scp.ID_ORDEN_SERVICIO  "
-				+ "WHERE sps.ID_PLAN_SFPA = '" + reporteDto.getIdPlanSFPA() +"'";
+				+ "WHERE sps.ID_PLAN_SFPA = " + reporteDto.getIdPlanSFPA();
 	}
 	
 	public String getImagenCheck() {
