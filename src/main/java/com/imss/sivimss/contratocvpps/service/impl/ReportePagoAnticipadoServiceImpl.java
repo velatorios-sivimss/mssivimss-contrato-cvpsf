@@ -107,7 +107,7 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 		envioDatos.put("cuotaAfiliacion", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getCuotaAfiliacion()));
 		envioDatos.put("numeroAfiliacion",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNumeroAfiliacion()));
 		envioDatos.put("canPagoPalabras",NumeroAPalabra.convertirAPalabras(contratoServicioInmediatoResponse.get(0).getCanPagoNum(), true));
-		envioDatos.put("firmDir",validarSiEsNull(reportePagoAnticipadoReponseFirma.get(0).getFirmDir()));
+		envioDatos.put("firmaDir",validarSiEsNull(reportePagoAnticipadoReponseFirma.get(0).getFirmDir()));
 		envioDatos.put("imgCheck",validarSiEsNull(reportePagoAnticipadoReponseCheck.get(0).getImgCheck()));
 		
 	return envioDatos;
