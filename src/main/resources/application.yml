@@ -45,8 +45,7 @@ endpoints:
   ms-rfc: ${msit_SAT}
   ms-curp: ${msit_RENAPO}
   
-reporte:   
-    convenio-pago-anticipado: reportes/generales/ReporteCatRoles.jrxml
+reporte:
     anexo-convenio-pago-anticipado: "reportes/generales/ANEXO25-CONVENIO-PAGO-ANTICIPADO.jrxml"
 
 jwt:
