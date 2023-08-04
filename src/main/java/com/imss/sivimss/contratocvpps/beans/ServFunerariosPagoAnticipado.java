@@ -85,7 +85,7 @@ public class ServFunerariosPagoAnticipado implements Serializable {
 	public DatosRequest consultaPaquetes(DatosRequest request, String nombrePaquetes) {
 		log.info(" INICIO - consultaPaquetes");
 		SelectQueryUtil selectQueryVelatorio= new SelectQueryUtil();
-		selectQueryVelatorio.select("SP.ID_PAQUETE AS idPaquete","SP.DES_NOM_PAQUETE AS nomPaquete","SP.DES_PAQUETE AS descPaquete")
+		selectQueryVelatorio.select("SP.ID_PAQUETE AS idPaquete","SP.DES_NOM_PAQUETE AS nomPaquete","SP.DES_PAQUETE AS descPaquete","SP.MON_PRECIO as monPrecio")
 		.from("SVT_PAQUETE SP")
 		.where("SP.DES_NOM_PAQUETE IN ".concat(nombrePaquetes));
 		
