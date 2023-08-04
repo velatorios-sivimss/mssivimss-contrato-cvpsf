@@ -16,6 +16,7 @@ public class PlanSFPARequest {
 	private String numFolioPlanSfpa;
 	private Integer idTipoContratacion;
 	private Integer idPaquete;
+	private Double monPrecio;
 	private Integer idTipoPagoMensual;
 	private Integer indTitularSubstituto;
 	private Integer indModificarTitularSubstituto;
