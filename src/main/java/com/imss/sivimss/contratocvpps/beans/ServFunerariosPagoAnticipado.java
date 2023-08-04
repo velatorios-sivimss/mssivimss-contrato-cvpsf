@@ -152,7 +152,7 @@ public class ServFunerariosPagoAnticipado implements Serializable {
 	public DatosRequest consultaValidaAfiliado(DatosRequest request, ContratanteRequest contratanteRequest) {
 		log.info(" INICIO - consultaValidaAfiliado");
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
-		queryUtil.select("SPSFPA.NUM_FOLIO_PLAN_SFPA as NUM_FOLIO_PLAN_SFPA")
+		queryUtil.select("SPSFPA.ID_PLAN_SFPA AS ID_PLAN_SFPA","SPSFPA.NUM_FOLIO_PLAN_SFPA AS NUM_FOLIO_PLAN_SFPA")
 		.from(ConsultaConstantes.SVT_PLAN_SFPA_SPSFPA)
 		.where("SPSFPA.ID_TITULAR = (SELECT SC.ID_CONTRATANTE AS IDCONTRATANTE".concat(" FROM SVC_CONTRATANTE SC ")
 		.concat(" INNER JOIN SVC_PERSONA SP ON SP.ID_PERSONA = SC.ID_PERSONA").concat(" INNER JOIN SVT_DOMICILIO SD ON SD.ID_DOMICILIO = SC.ID_DOMICILIO ")
