@@ -46,8 +46,8 @@ endpoints:
   ms-curp: ${msit_RENAPO}
   
 reporte:
-    anexo-convenio-pago-anticipado: "reportes/generales/ANEXO25-CONVENIO-PAGO-ANTICIPADO.jrxml"
-
+    anexo-convenio-pago-anticipado: ${msit_ANEXO_CONVENIO_PA}
+    
 jwt:
   secretkey-flujo: ${msit_SECRET_KEY}
   secretkey-dominios: ${msit_SECRET_KEY_DOMINIO}
