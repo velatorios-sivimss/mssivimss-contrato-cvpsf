@@ -118,6 +118,8 @@ public class InsertaPlanSfpaRepository {
 				response = actualizaAccion3(inserciones, updates, id, connection, idTabla1, idTabla2, idTabla3, idTabla4, i);
 			} else if(inserciones.size() == 4) {
 				response = actualizaAccion3(inserciones, updates, id, connection, idTabla1, idTabla2, idTabla3, idTabla4, i);
+			} else if(inserciones.size() == 3) {
+				response = actualizaAccion3(inserciones, updates, id, connection, idTabla1, idTabla2, idTabla3, idTabla4, i);
 			}
 			
 			connection.commit();
