@@ -1,7 +1,6 @@
 package com.imss.sivimss.contratocvpps.service;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import org.springframework.security.core.Authentication;
 

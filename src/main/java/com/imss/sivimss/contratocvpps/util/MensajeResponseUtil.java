@@ -31,6 +31,15 @@ public class MensajeResponseUtil {
 		return respuestaGenerado;
 	}
 	
+	public  static Response<Object>mensajeResponseObject(Response<Object> respuestaGenerado,  String numeroMensaje) {
+		Integer codigo = respuestaGenerado.getCodigo();
+		if (codigo != 200) {
+			log.error("Error.. {}", respuestaGenerado.getMensaje());
+			respuestaGenerado.setMensaje(numeroMensaje);
+		}
+		return respuestaGenerado;
+	}
+	
 	public  static Response<Object>mensajeConsultaResponseObject(Response<Object> respuestaGenerado, String numeroMensaje) {
 		Integer codigo = respuestaGenerado.getCodigo();
 		if (codigo == 200 && !respuestaGenerado.getDatos().toString().contains("[]")){

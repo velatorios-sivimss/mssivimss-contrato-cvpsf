@@ -1,9 +1,12 @@
 package com.imss.sivimss.contratocvpps.util;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.bind.DatatypeConverter;
 
 import com.imss.sivimss.contratocvpps.model.request.ContratanteRequest;
 import com.imss.sivimss.contratocvpps.model.request.DomicilioRequest;
@@ -47,6 +50,7 @@ public class ConsultaConstantes {
 	public static final String AFILIADO = "afiliado";
 	public static final String REPLACE = "replace";
 	public static final String EXITO = "Exito"; 
+	public static final String COMILLA_SIMPLE = "'";
 	
 	private ConsultaConstantes() {
 		super();
@@ -145,5 +149,9 @@ public class ConsultaConstantes {
 		}
 		planSFPAResponse.setTitularesBeneficiarios(titularesBeneficiarios);
 		return planSFPAResponse;
+	}
+	
+	public static String queryEncoded (String query) {
+		return DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
 	}
 }
