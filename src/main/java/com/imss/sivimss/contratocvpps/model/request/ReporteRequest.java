@@ -10,8 +10,14 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReporteRequest {
 	
-	private Integer idOds;
+	private String idVelatorio;
+	private String numFolioPlanSfpa;
+	private String rfc;
+	private String curp;
+	private String nombreAfiliado;
+	private Integer idEstatusPlanSfpa;
+	private String fechaInicio;
+	private String fechaFin;
 	private String tipoReporte;
-	private String rutaNombreReporte;
 	
 }

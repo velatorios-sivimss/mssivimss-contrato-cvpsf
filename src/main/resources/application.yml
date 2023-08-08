@@ -47,7 +47,8 @@ endpoints:
   
 reporte:
     anexo-convenio-pago-anticipado: ${msit_ANEXO_CONVENIO_PA}
-    
+    consulta-plan-sfpa: "reportes/generales/ANEXO25-CONVENIO-PAGO-ANTICIPADO.jrxml"
+
 jwt:
   secretkey-flujo: ${msit_SECRET_KEY}
   secretkey-dominios: ${msit_SECRET_KEY_DOMINIO}
