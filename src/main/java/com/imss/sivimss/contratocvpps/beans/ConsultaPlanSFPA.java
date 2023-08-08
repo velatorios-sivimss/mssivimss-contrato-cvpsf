@@ -91,13 +91,10 @@ public class ConsultaPlanSFPA   implements Serializable {
 	public Map<String, Object> generarReportePlanSFPA(ReporteRequest reporteRequest, String rutaNombreReporte) {
 		Map<String, Object> envioDatos = new HashMap<>();
 		String condicion = consultaPlanSFPA(reporteRequest);
-		String idVelatorio = reporteRequest.getIdVelatorio() != null ? reporteRequest.getIdVelatorio():"";
 		
-		log.info("idVelatorio::  " + idVelatorio);
 		log.info("condicion::  " + condicion);
 		log.info("tipoRepirte::  " + reporteRequest.getTipoReporte());
 		
-		envioDatos.put("idVelatorio", idVelatorio);
 		envioDatos.put("condicion", condicion);
 		envioDatos.put("tipoReporte", reporteRequest.getTipoReporte());
 		envioDatos.put("rutaNombreReporte", rutaNombreReporte);

@@ -89,7 +89,8 @@ public class ConsultaPlanSFPAServiceImpl  implements ConsultaPlanSFPAService {
 					this.getClass().getPackage().toString(), "generarReportePlanSFPA", GENERA_DOCUMENTO, authentication);
 			Map<String, Object> envioDatos = new ConsultaPlanSFPA().generarReportePlanSFPA(reporteRequest,reporteConsultaPlanSFPA);
 			consulta = envioDatos.get("condicion").toString();
-			MensajeResponseUtil.mensajeResponseObject(providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication),ERROR_AL_DESCARGAR_DOCUMENTO);
+			response = providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
+			MensajeResponseUtil.mensajeResponseObject(response, ERROR_AL_DESCARGAR_DOCUMENTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error( CU68_NAME + ERROR_AL_EJECUTAR_EL_QUERY + consulta);
