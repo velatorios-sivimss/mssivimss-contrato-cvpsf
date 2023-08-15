@@ -319,6 +319,9 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 						datos.put(AppConstantes.DATOS, map);
 						datosRequest.setDatos(datos);
 						response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication);
+						if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")){
+							response.setMensaje(planSFPAResponse.get(0).getNumFolioPlanSFPA());
+						}
 					}
 				}
 			}
