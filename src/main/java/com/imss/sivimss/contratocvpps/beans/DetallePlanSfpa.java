@@ -17,7 +17,7 @@ public class DetallePlanSfpa  implements Serializable {/**
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
 		queryUtil.select("SPSFPA.ID_PLAN_SFPA as idPlanSfpa","SPSFPA.NUM_FOLIO_PLAN_SFPA as numFolioPlanSfpa","SPSFPA.ID_TIPO_CONTRATACION as idTipoContratacion",
 		"SPSFPA.ID_PAQUETE as idPaquete","SPSFPA.ID_TIPO_PAGO_MENSUAL as idTipoPagoMensual","SPSFPA.IND_TITULAR_SUBSTITUTO as indTitularSubstituto",
-		"SPSFPA.IND_MODIFICAR_TITULAR_SUBSTITUTO as indModificarTitularSubstituto","SP.CVE_RFC as rfc","SP.CVE_CURP as curp","SC.CVE_MATRICULA as matricula",
+		"SPSFPA.IND_MODIF_TITULAR_SUB as indModificarTitularSubstituto","SP.CVE_RFC as rfc","SP.CVE_CURP as curp","SC.CVE_MATRICULA as matricula",
 		"SP.CVE_NSS as nss","SP.NOM_PERSONA as nomPersona","SP.NOM_PRIMER_APELLIDO as primerApellido","SP.NOM_SEGUNDO_APELLIDO as segundoApellido",
 		"SP.NUM_SEXO as sexo","SP.DES_OTRO_SEXO as otroSexo","SP.FEC_NAC as fecNacimiento","SP.ID_PAIS as idPais","SP.ID_ESTADO as idEstado",
 		"SP.DES_TELEFONO as telefono","SP.DES_TELEFONO_FIJO as telefonoFijo","SP.DES_CORREO as correo","SP.TIP_PERSONA as tipoPersona","SP.NUM_INE as ine",

@@ -115,6 +115,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues("ID_PERSONA", "idTabla1");
 		q.agregarParametroValues("CVE_MATRICULA", SelectQueryUtil.setValor(contratanteRequest.getMatricula() ));
 		q.agregarParametroValues("ID_DOMICILIO", "idTabla2");
+		q.agregarParametroValues("IND_ACTIVO", String.valueOf(1));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_ALTA, String.valueOf(usuarioDto.getIdUsuario()));
 		q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.CURRENT_TIMESTAMP);
 		log.info(" TERMINO - insertContratante");
