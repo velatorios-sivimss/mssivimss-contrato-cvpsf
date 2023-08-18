@@ -62,9 +62,6 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 
 	@Value("${formato_fecha}")
 	private String formatoFecha;
-	
-	@Value("${nom_paquete}")
-	private String nombrePaquetes;
 
 	@Value("${endpoints.ms-reportes}")
 	private String urlReportes;
@@ -232,12 +229,12 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), " consulta paquetes ", CONSULTA, authentication);
 
-			return MensajeResponseUtil.mensajeConsultaResponse(providerRestTemplate.consumirServicioObject(new ServFunerariosPagoAnticipado().consultaPaquetes(request, nombrePaquetes).getDatos(),
+			return MensajeResponseUtil.mensajeConsultaResponse(providerRestTemplate.consumirServicioObject(new ServFunerariosPagoAnticipado().consultaPaquetes(request).getDatos(),
 					urlModCatalogos.concat(CONSULTA_GENERICA), authentication),NO_SE_ENCONTRO_INFORMACION);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			String consulta = new ServFunerariosPagoAnticipado().consultaPaquetes(request, nombrePaquetes).getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = new ServFunerariosPagoAnticipado().consultaPaquetes(request).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error(ERROR_AL_EJECUTAR_EL_QUERY + decoded);
 			logUtil.crearArchivoLog(Level.SEVERE.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), FALLO_AL_EJECUTAR_EL_QUERY + decoded, CONSULTA,

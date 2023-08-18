@@ -86,4 +86,3 @@ resilience4j.timelimiter:
 
 formato_fecha: ${msit_FORMATO_FECHA}
 ruta-log: ${msit_RUTA_LOG}
-nom_paquete: "('Paquete Básico PA','Paquete con Cremación PA')"
