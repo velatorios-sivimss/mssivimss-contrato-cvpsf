@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class InsertaActualizaPlanSfpa  implements Serializable {
 	
-	
 	private static final long serialVersionUID = 1L;
 	
 	public InsertPlanSfpaRequest insertaPlanSfpa(PlanSFPARequest planSFPARequest, UsuarioDto usuarioDto) {
@@ -86,7 +85,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues("DES_TELEFONO", SelectQueryUtil.setValor(contratanteRequest.getTelefono() ));
 		q.agregarParametroValues("DES_TELEFONO_FIJO", SelectQueryUtil.setValor(contratanteRequest.getTelefonoFijo() ));
 		q.agregarParametroValues("DES_CORREO", SelectQueryUtil.setValor(contratanteRequest.getCorreo() ));
-		q.agregarParametroValues("TIPO_PERSONA", SelectQueryUtil.setValor(contratanteRequest.getTipoPersona() ));
+		q.agregarParametroValues("TIP_PERSONA", SelectQueryUtil.setValor(contratanteRequest.getTipoPersona() ));
 		q.agregarParametroValues("NUM_INE", SelectQueryUtil.setValor(contratanteRequest.getIne() ));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_ALTA, String.valueOf(usuarioDto.getIdUsuario()));
 		q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.CURRENT_TIMESTAMP);
@@ -139,7 +138,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues("DES_TELEFONO", SelectQueryUtil.setValor(contratanteRequest.getTelefono() ));
 		q.agregarParametroValues("DES_TELEFONO_FIJO", SelectQueryUtil.setValor(contratanteRequest.getTelefonoFijo() ));
 		q.agregarParametroValues("DES_CORREO", SelectQueryUtil.setValor(contratanteRequest.getCorreo() ));
-		q.agregarParametroValues("TIPO_PERSONA", SelectQueryUtil.setValor(contratanteRequest.getTipoPersona() ));
+		q.agregarParametroValues("TIP_PERSONA", SelectQueryUtil.setValor(contratanteRequest.getTipoPersona() ));
 		q.agregarParametroValues("NUM_INE", SelectQueryUtil.setValor(contratanteRequest.getIne() ));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_MODIFICA, String.valueOf(usuarioDto.getIdUsuario()));
 		q.agregarParametroValues(ConsultaConstantes.FEC_ACTUALIZACION, ConsultaConstantes.CURRENT_TIMESTAMP);
@@ -177,10 +176,10 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues("IND_PROMOTOR",String.valueOf(planSFPARequest.getIndPromotor()));
 		q.agregarParametroValues("ID_PROMOTOR",String.valueOf(planSFPARequest.getIdPromotor()));
 		q.agregarParametroValues("ID_VELATORIO",String.valueOf(usuarioDto.getIdVelatorio()));
-		q.agregarParametroValues("ID_ESTATUS_PLAN_SFPA",String.valueOf(1));
+		q.agregarParametroValues(ConsultaConstantes.ID_ESTATUS_PLAN_SFPA,String.valueOf(1));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_ALTA, String.valueOf(usuarioDto.getIdUsuario()));
 		q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.CURRENT_TIMESTAMP);
-		log.info(" query : " + q.obtenerQueryInsertar());
+		log.info(ConsultaConstantes.QUERY + q.obtenerQueryInsertar());
 		log.info(" TERMINO - insertPlanSfpa");
 		return q.obtenerQueryInsertar();
 	}
@@ -199,11 +198,11 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues("IND_PROMOTOR",String.valueOf(planSFPARequest.getIndPromotor()));
 		q.agregarParametroValues("ID_PROMOTOR",String.valueOf(planSFPARequest.getIdPromotor()));
 		q.agregarParametroValues("ID_VELATORIO",String.valueOf(usuarioDto.getIdVelatorio()));
-		q.agregarParametroValues("ID_ESTATUS_PLAN_SFPA",String.valueOf(planSFPARequest.getIdEstatusPlanSfpa()));
+		q.agregarParametroValues(ConsultaConstantes.ID_ESTATUS_PLAN_SFPA,String.valueOf(planSFPARequest.getIdEstatusPlanSfpa()));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_MODIFICA, String.valueOf(usuarioDto.getIdUsuario()));
 		q.agregarParametroValues(ConsultaConstantes.FEC_ACTUALIZACION, ConsultaConstantes.CURRENT_TIMESTAMP);
 		q.addWhere("ID_PLAN_SFPA = " + planSFPARequest.getIdPlanSfpa());
-		log.info(" query : " + q.obtenerQueryInsertar());
+		log.info(ConsultaConstantes.QUERY + q.obtenerQueryInsertar());
 		log.info(" TERMINO - updatePlanSfpa");
 		return q.obtenerQueryActualizar();
 	}
@@ -211,13 +210,13 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 	public String updatePlanSfpa(PlanSFPARequest planSFPARequest, UsuarioDto usuarioDto) {
 		log.info(" INICIO - updatePlanSfpa");
 		final QueryHelper q = new QueryHelper("UPDATE SVT_PLAN_SFPA");
-		q.agregarParametroValues("ID_ESTATUS_PLAN_SFPA",String.valueOf(planSFPARequest.getIdEstatusPlanSfpa()));
+		q.agregarParametroValues(ConsultaConstantes.ID_ESTATUS_PLAN_SFPA,String.valueOf(planSFPARequest.getIdEstatusPlanSfpa()));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_MODIFICA, String.valueOf(usuarioDto.getIdUsuario()));
 		q.agregarParametroValues(ConsultaConstantes.FEC_ACTUALIZACION, ConsultaConstantes.CURRENT_TIMESTAMP);
 		q.agregarParametroValues("ID_USUARIO_BAJA", String.valueOf(usuarioDto.getIdUsuario()));
 		q.agregarParametroValues("FEC_BAJA", ConsultaConstantes.CURRENT_TIMESTAMP);
 		q.addWhere("ID_PLAN_SFPA = " + planSFPARequest.getIdPlanSfpa());
-		log.info(" query : " + q.obtenerQueryInsertar());
+		log.info(ConsultaConstantes.QUERY + q.obtenerQueryInsertar());
 		log.info(" TERMINO - updatePlanSfpa");
 		return q.obtenerQueryActualizar();
 	}

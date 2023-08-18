@@ -20,12 +20,12 @@ public class DetallePlanSfpa  implements Serializable {/**
 		"SPSFPA.IND_MODIFICAR_TITULAR_SUBSTITUTO as indModificarTitularSubstituto","SP.CVE_RFC as rfc","SP.CVE_CURP as curp","SC.CVE_MATRICULA as matricula",
 		"SP.CVE_NSS as nss","SP.NOM_PERSONA as nomPersona","SP.NOM_PRIMER_APELLIDO as primerApellido","SP.NOM_SEGUNDO_APELLIDO as segundoApellido",
 		"SP.NUM_SEXO as sexo","SP.DES_OTRO_SEXO as otroSexo","SP.FEC_NAC as fecNacimiento","SP.ID_PAIS as idPais","SP.ID_ESTADO as idEstado",
-		"SP.DES_TELEFONO as telefono","SP.DES_TELEFONO_FIJO as telefonoFijo","SP.DES_CORREO as correo","SP.TIPO_PERSONA as tipoPersona","SP.NUM_INE as ine",
+		"SP.DES_TELEFONO as telefono","SP.DES_TELEFONO_FIJO as telefonoFijo","SP.DES_CORREO as correo","SP.TIP_PERSONA as tipoPersona","SP.NUM_INE as ine",
 		"SD.DES_CALLE as desCalle","SD.NUM_EXTERIOR as numExterior","SD.NUM_INTERIOR as numInterior","SD.DES_CP as codigoPostal","SD.DES_COLONIA as desColonia",
 		"SD.DES_MUNICIPIO as desMunicipio","SD.DES_ESTADO as desEstado","SP2.CVE_RFC as rfc","SP2.CVE_CURP as curp","SC2.CVE_MATRICULA as matricula",
 		"SP2.CVE_NSS as nss","SP2.NOM_PERSONA as nomPersona","SP2.NOM_PRIMER_APELLIDO as primerApellido","SP2.NOM_SEGUNDO_APELLIDO as segundoApellido",
 		"SP2.NUM_SEXO as sexo","SP2.DES_OTRO_SEXO as otroSexo","SP2.FEC_NAC as fecNacimiento","SP2.ID_PAIS as idPais","SP2.ID_ESTADO as idEstado",
-		"SP2.DES_TELEFONO as telefono","SP2.DES_TELEFONO_FIJO as telefonoFijo","SP2.DES_CORREO as correo","SP2.TIPO_PERSONA as tipoPersona","SP2.NUM_INE as ine",
+		"SP2.DES_TELEFONO as telefono","SP2.DES_TELEFONO_FIJO as telefonoFijo","SP2.DES_CORREO as correo","SP2.TIP_PERSONA as tipoPersona","SP2.NUM_INE as ine",
 		"SD2.DES_CALLE as desCalle","SD2.NUM_EXTERIOR as numExterior","SD2.NUM_INTERIOR as numInterior","SD2.DES_CP as codigoPostal","SD2.DES_COLONIA as desColonia",
 		"SD2.DES_MUNICIPIO as desMunicipio","SD2.DES_ESTADO as desEstado","SV.DES_VELATORIO","DATE_FORMAT(SPSFPA.FEC_INGRESO,'%d/%m/%Y')")
 		.from("SVT_PLAN_SFPA SPSFPA").innerJoin("SVC_CONTRATANTE SC", "SC.ID_CONTRATANTE  = SPSFPA.ID_TITULAR")

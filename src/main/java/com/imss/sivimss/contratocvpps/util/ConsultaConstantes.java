@@ -19,8 +19,9 @@ public class ConsultaConstantes {
 	public static final String ESTATUS_ORDEN_SERVICIO = "estatusOrdenServicio";
 	public static final String OS_CVE_FOLIO_CVE_FOLIO = "OS.CVE_FOLIO = :cveFolio";
 	public static final String NOM_SEGUNDO_APELLIDO = "NOM_SEGUNDO_APELLIDO";
-	public static final String RUTA_NOMBRE_REPORTE = "rutaNombreReporte";
 	public static final String SVC_ORDEN_SERVICIO_OS = "SVC_ORDEN_SERVICIO OS";
+	public static final String RUTA_NOMBRE_REPORTE = "rutaNombreReporte";
+	public static final String ID_ESTATUS_PLAN_SFPA = "ID_ESTATUS_PLAN_SFPA";
 	public static final String ID_TITULAR_SUBSTITUTO = "ID_TITULAR_SUBSTITUTO";
 	public static final String SVT_PLAN_SFPA_SPSFPA = "SVT_PLAN_SFPA SPSFPA";
 	public static final String NOM_PRIMER_APELLIDO = "NOM_PRIMER_APELLIDO";
@@ -49,6 +50,7 @@ public class ConsultaConstantes {
 	public static final String ID_TABLA = "idTabla";
 	public static final String AFILIADO = "afiliado";
 	public static final String REPLACE = "replace";
+	public static final String QUERY = " query : ";
 	public static final String EXITO = "Exito"; 
 	public static final String COMILLA_SIMPLE = "'";
 	
