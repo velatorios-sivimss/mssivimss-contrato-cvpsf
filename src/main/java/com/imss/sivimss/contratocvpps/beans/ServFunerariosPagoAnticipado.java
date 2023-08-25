@@ -139,8 +139,12 @@ public class ServFunerariosPagoAnticipado implements Serializable {
 		.from("SVC_CONTRATANTE SC")
 		.innerJoin("SVC_PERSONA SP", "SP.ID_PERSONA = SC.ID_PERSONA")
 		.innerJoin("SVT_DOMICILIO SD", "SD.ID_DOMICILIO = SC.ID_DOMICILIO")
-		.where("SP.CVE_CURP = :curp").setParameter("curp", contratanteRequest.getCurp()).or("SP.CVE_RFC = :rfc").setParameter("rfc", contratanteRequest.getRfc())
-		.or("SP.NUM_INE = :ine").setParameter("ine", contratanteRequest.getIne());
+		.where("SP.CVE_CURP = :curp").setParameter("curp", contratanteRequest.getCurp())
+		.or("SP.CVE_RFC = :rfc").setParameter("rfc", contratanteRequest.getRfc());
+		if (contratanteRequest.getIne() != null ) {
+			queryUtil.or("SP.NUM_INE = :ine").setParameter("ine", contratanteRequest.getIne());
+		}
+		
 		final String query = queryUtil.build();
 		log.info(" consultaExistePersona: " + query);
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));

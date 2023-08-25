@@ -302,7 +302,7 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 				logUtil.crearArchivoLog(Level.INFO.toString(),this.getClass().getSimpleName(),this.getClass().getPackage().toString()," insertar plan sfpa", AppConstantes.ALTA,authentication);
 				if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
 					planSFPAResponse = Arrays.asList(modelMapper.map(response.getDatos(), PlanSFPAResponse[].class));
-					log.info("numFolio" + planSFPAResponse.get(0).getNumFolioPlanSFPA());
+					log.info("numFolio: " + planSFPAResponse.get(0).getNumFolioPlanSFPA());
 					planSFPARequest.setNumFolioPlanSfpa(planSFPAResponse.get(0).getNumFolioPlanSFPA());
 					List<ContratanteRequest> contratante = planSFPARequest.getTitularesBeneficiarios().stream().map(contratanteRequest ->  consultaExistePersona(request, authentication, contratanteRequest)) .collect(Collectors.toList());
 					planSFPARequest.setTitularesBeneficiarios(contratante);
