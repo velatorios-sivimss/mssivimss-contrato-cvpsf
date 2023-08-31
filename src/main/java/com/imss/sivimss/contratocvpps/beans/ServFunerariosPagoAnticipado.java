@@ -156,11 +156,21 @@ public class ServFunerariosPagoAnticipado implements Serializable {
 	public DatosRequest consultaValidaAfiliado(DatosRequest request, ContratanteRequest contratanteRequest) {
 		log.info(" INICIO - consultaValidaAfiliado");
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
+		StringBuilder subQuery = new StringBuilder();
+		if(contratanteRequest.getCurp() != null) {
+			subQuery.append(" AND SP.CVE_CURP = '").append(contratanteRequest.getCurp()).append(ConsultaConstantes.COMILLA_SIMPLE);
+		}
+		if(contratanteRequest.getRfc() != null) {
+			subQuery.append(" AND SP.CVE_RFC = '").append(contratanteRequest.getRfc()).append(ConsultaConstantes.COMILLA_SIMPLE);
+		}
+		if(contratanteRequest.getIne() != null) {
+			subQuery.append(" AND SP.NUM_INE = '").append(contratanteRequest.getIne()).append(ConsultaConstantes.COMILLA_SIMPLE);
+		}
 		queryUtil.select("SPSFPA.ID_PLAN_SFPA AS ID_PLAN_SFPA","SPSFPA.NUM_FOLIO_PLAN_SFPA AS NUM_FOLIO_PLAN_SFPA")
 		.from(ConsultaConstantes.SVT_PLAN_SFPA_SPSFPA)
 		.where("SPSFPA.ID_TITULAR = (SELECT SC.ID_CONTRATANTE AS IDCONTRATANTE".concat(" FROM SVC_CONTRATANTE SC ")
 		.concat(" INNER JOIN SVC_PERSONA SP ON SP.ID_PERSONA = SC.ID_PERSONA").concat(" INNER JOIN SVT_DOMICILIO SD ON SD.ID_DOMICILIO = SC.ID_DOMICILIO ")
-		.concat("WHERE SP.CVE_CURP = '")+contratanteRequest.getCurp()+"' OR SP.CVE_RFC = '"+ contratanteRequest.getRfc()+"' OR SP.NUM_INE = '" +contratanteRequest.getIne()+"')")
+		.concat(" WHERE IFNULL(SC.ID_CONTRATANTE ,0) > 0 ").concat(subQuery.toString()).concat(")"))
 		.and("SPSFPA.ID_ESTATUS_PLAN_SFPA NOT IN (6)");
 		final String query = queryUtil.build();
 		log.info(" consultaValidaAfiliado: " + query);
