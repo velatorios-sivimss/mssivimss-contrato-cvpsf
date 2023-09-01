@@ -91,6 +91,7 @@ public class ConsultaConstantes {
 		planSFPAResponse.setIndModificarTitularSubstituto(rs.getInt(7));
 		planSFPAResponse.setDesIdVelatorio(rs.getString(56));
 		planSFPAResponse.setFecIngreso(rs.getString(57));
+		planSFPAResponse.setNumPago(rs.getInt(58));
 		contratanteRequest.setPersona(AFILIADO);
 		contratanteRequest.setRfc(rs.getString(8));
 		contratanteRequest.setCurp(rs.getString(9));

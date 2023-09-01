@@ -361,23 +361,6 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 			}
 		return response;
 	}
-	
-	@Override
-	public Response<Object> numeroPagoPlanSfpa(DatosRequest request, Authentication authentication)
-			throws IOException, SQLException {
-		try {
-			PlanSFPARequest planSFPARequest = new Gson().fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), PlanSFPARequest.class);
-			String numPago = new ServFunerariosPagoAnticipado().consultaNumeroPago(planSFPARequest.getIdPlanSfpa());
-			response =  insertaPlanSfpaRepository.consultarNumeroPagoPlanSfpa(numPago);
-		   } catch (Exception e) {
-	        	e.printStackTrace();
-				log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_GUARDAR));
-				log.error(e.getMessage());
-			    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_GUARDAR, AppConstantes.ALTA, authentication);
-			    throw new IOException(AppConstantes.ERROR_GUARDAR, e.getCause());
-			}
-		return response;
-	}
 
 	@Override
 	public Response<Object> consultaDetallePlanSfpa(DatosRequest request, Authentication authentication)

@@ -28,6 +28,7 @@ public class PlanSFPAResponse {
 	private Integer indActivo;
 	private Boolean indTipoPagoMensual;
 	private String fecIngreso;
+	private Integer numPago;
 	private List<ContratanteRequest> titularesBeneficiarios;
 
 }
