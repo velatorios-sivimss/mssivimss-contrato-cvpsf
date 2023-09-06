@@ -53,7 +53,7 @@ public class NumeroAPalabra {
 	        result.append( (decenas == 1 && unidades == 5) ?"quince ":"");
 
 	        result.append( (decenas == 2 && unidades == 0)?"veinte " : "");        
-	        result.append( (decenas >= 2 && unidades > 0) ? DECENAS[decenas]  : "");
+	        result.append( (decenas >= 2 && unidades >= 0) ? DECENAS[decenas]  : "");
 
 	        result.append( (decenas > 2 && unidades > 0) ? "y " :"");
 	        result.append((decenas == 1 && unidades > 5) ? DECENAS[decenas] : "");
