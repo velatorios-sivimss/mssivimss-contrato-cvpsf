@@ -1,7 +1,10 @@
 package com.imss.sivimss.contratocvpps.service.impl;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.logging.Level;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -18,10 +21,12 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.imss.sivimss.contratocvpps.beans.ReportePagoAnticipado;
 import com.imss.sivimss.contratocvpps.model.request.ReporteDto;
+import com.imss.sivimss.contratocvpps.model.request.ReporteSiniestrosPFRequest;
 import com.imss.sivimss.contratocvpps.model.response.ReportePagoAnticipadoReponse;
 import com.imss.sivimss.contratocvpps.service.ReportePagoAnticipadoService;
 import com.imss.sivimss.contratocvpps.util.AppConstantes;
 import com.imss.sivimss.contratocvpps.util.DatosRequest;
+import com.imss.sivimss.contratocvpps.util.LogUtil;
 import com.imss.sivimss.contratocvpps.util.MensajeResponseUtil;
 import com.imss.sivimss.contratocvpps.util.NumeroAPalabra;
 import com.imss.sivimss.contratocvpps.util.ProviderServiceRestTemplate;
@@ -36,6 +41,8 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 	private static final String AGREGADO_CORRECTAMENTE= "30"; // Agregado correctamente.
 	private static final String TIPO_REPORTE = "tipoReporte";
 	private static final String RUTA_NOMBRE_REPORTE = "rutaNombreReporte";
+	private static final String ERROR_AL_DESCARGAR_DOCUMENTO= "64"; // Error en la descarga del documento.Intenta nuevamente.
+	private static final String CONSULTA = "consulta";
 
 	@Autowired
 	private ReportePagoAnticipado reportePagoAnticipado;
@@ -54,6 +61,12 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 
 	@Autowired 
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private LogUtil logUtil;
+	
+	@Value("${reporte.siniestros-prevision-funeraria}")
+	private String generarReporteSiniestrosPF;
 	
 	
 	@Override
@@ -118,6 +131,65 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 	public static String validarSiEsNull(String valor) {
 		if (valor != null) {
 			return valor;
+		}
+		return "";
+	}
+	
+	@Override
+	public Response<Object> generarReporteSiniestros(DatosRequest request, Authentication authentication)
+			throws IOException {
+		try {
+			ReporteSiniestrosPFRequest reporteSiniestrosRequest = new Gson().fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), ReporteSiniestrosPFRequest.class);
+			Map<String, Object> envioDatos = generaReporteSiniestrosPF(reporteSiniestrosRequest, condicionconsultaSiniestrosPF(reporteSiniestrosRequest));
+		   return MensajeResponseUtil.mensajeResponseObject(providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication), ERROR_AL_DESCARGAR_DOCUMENTO);
+		} catch (Exception e) {
+			log.error("Error.. {}", e.getMessage());
+            logUtil.crearArchivoLog(Level.SEVERE.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el reporte : " + e.getMessage(), CONSULTA, authentication);
+            throw new IOException("64", e.getCause());
+		}
+	}
+	
+	public String condicionconsultaSiniestrosPF(ReporteSiniestrosPFRequest reporteSiniestrosRequest) {
+		StringBuilder condiciones =new StringBuilder();
+		
+		if(reporteSiniestrosRequest.getId_delegacion() != null) {
+			condiciones.append(" AND SD.ID_DELEGACION = ").append(reporteSiniestrosRequest.getId_delegacion());
+		}
+		
+		if(reporteSiniestrosRequest.getId_velatorio()!= null) {
+			condiciones.append(" AND SV.ID_VELATORIO  = ").append(reporteSiniestrosRequest.getId_velatorio());
+		}
+		
+		if (reporteSiniestrosRequest.getOds() != null) {
+			condiciones.append(" AND SOE.CVE_FOLIO = '").append(reporteSiniestrosRequest.getOds()).append("'");
+		 }
+		 
+		if(reporteSiniestrosRequest.getFecha_inicial() != null && reporteSiniestrosRequest.getFecha_final() != null) {
+			condiciones.append(" AND SOE.FEC_ALTA  BETWEEN '").append(reporteSiniestrosRequest.getFecha_inicial()).append("' AND '").append(reporteSiniestrosRequest.getFecha_final()).append("'");
+		}
+		return condiciones.toString();
+	}
+	
+	private Map<String, Object> generaReporteSiniestrosPF(ReporteSiniestrosPFRequest reporteSiniestrosRequest, String condiciones) {
+		log.info(" INICIO - generaReporteSiniestrosPF : ");
+		 
+		Map<String, Object> envioDatos = new HashMap<>();
+		envioDatos.put("condicion", condiciones);
+		envioDatos.put("periodo", validarSiNulPeriodol(reporteSiniestrosRequest.getFecha_inicial(), reporteSiniestrosRequest.getFecha_final()));
+		envioDatos.put("velatorio", validarSiEsNull(reporteSiniestrosRequest.getDes_velatorio()));
+		envioDatos.put(TIPO_REPORTE, reporteSiniestrosRequest.getId_tipo_reporte());
+		envioDatos.put(RUTA_NOMBRE_REPORTE, generarReporteSiniestrosPF);
+		if(reporteSiniestrosRequest.getId_tipo_reporte().equals("xls")) {
+			envioDatos.put("IS_IGNORE_PAGINATION", true);
+		}
+		
+		log.info(" TERMINO - generaReporteSiniestrosPF");
+		return envioDatos;
+	}
+	
+	public static String validarSiNulPeriodol(String fechaInicial,  String fechaFinal) {
+		if (fechaInicial != null && fechaFinal != null  ) {
+			return LocalDate.parse( fechaInicial).format(DateTimeFormatter.ofPattern( "dd-MM-uuuu" )).toString().concat(" - ").concat(LocalDate.parse( fechaFinal).format(DateTimeFormatter.ofPattern( "dd-MM-uuuu" )).toString());
 		}
 		return "";
 	}

@@ -48,6 +48,7 @@ endpoints:
 reporte:
     anexo-convenio-pago-anticipado: ${msit_ANEXO_CONVENIO_PA}
     consulta-plan-sfpa: "reportes/generales/ReporteConsultaPagosAnticipadosSpfa68.jrxml"
+    siniestros-prevision-funeraria: "reportes/modulo/ResumenPrevisionFuneraria.jrxml"
 
 jwt:
   secretkey-flujo: ${msit_SECRET_KEY}
