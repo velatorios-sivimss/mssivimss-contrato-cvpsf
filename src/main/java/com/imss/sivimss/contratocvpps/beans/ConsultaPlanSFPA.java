@@ -96,6 +96,11 @@ public class ConsultaPlanSFPA   implements Serializable {
 		log.info("tipoRepirte::  " + reporteRequest.getTipoReporte());
 		
 		envioDatos.put("condicion", condicion);
+		if(reporteRequest.getTipoReporte().equals("xls")) { 
+			log.info(" entro xls");
+			envioDatos.put("IS_IGNORE_PAGINATION", true); 
+		}
+		
 		envioDatos.put("tipoReporte", reporteRequest.getTipoReporte());
 		envioDatos.put("rutaNombreReporte", rutaNombreReporte);
 
