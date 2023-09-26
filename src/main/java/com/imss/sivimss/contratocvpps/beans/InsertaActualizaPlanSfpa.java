@@ -88,7 +88,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues("TIP_PERSONA", SelectQueryUtil.setValor(contratanteRequest.getTipoPersona() ));
 		q.agregarParametroValues("NUM_INE", SelectQueryUtil.setValor(contratanteRequest.getIne() ));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_ALTA, String.valueOf(usuarioDto.getIdUsuario()));
-		q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.CURRENT_TIMESTAMP);
+		q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.CURRENT_DATE);
 		log.info(" TERMINO - insertPersona");
 		return q.obtenerQueryInsertar();
 	}
@@ -104,7 +104,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues("DES_MUNICIPIO", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesMunicipio()));
 		q.agregarParametroValues("DES_ESTADO", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesEstado() ));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_ALTA, String.valueOf(usuarioDto.getIdUsuario()));
-		q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.CURRENT_TIMESTAMP);
+		q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.CURRENT_DATE);
 		log.info(" TERMINO - insertDomicilio");
 		return q.obtenerQueryInsertar();
 	}
@@ -117,7 +117,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues("ID_DOMICILIO", "idTabla2");
 		q.agregarParametroValues("IND_ACTIVO", String.valueOf(1));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_ALTA, String.valueOf(usuarioDto.getIdUsuario()));
-		q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.CURRENT_TIMESTAMP);
+		q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.CURRENT_DATE);
 		log.info(" TERMINO - insertContratante");
 		return q.obtenerQueryInsertar();
 	}
@@ -142,7 +142,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues("TIP_PERSONA", SelectQueryUtil.setValor(contratanteRequest.getTipoPersona() ));
 		q.agregarParametroValues("NUM_INE", SelectQueryUtil.setValor(contratanteRequest.getIne() ));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_MODIFICA, String.valueOf(usuarioDto.getIdUsuario()));
-		q.agregarParametroValues(ConsultaConstantes.FEC_ACTUALIZACION, ConsultaConstantes.CURRENT_TIMESTAMP);
+		q.agregarParametroValues(ConsultaConstantes.FEC_ACTUALIZACION, ConsultaConstantes.CURRENT_DATE);
 		q.addWhere("ID_PERSONA = " + contratanteRequest.getIdPersona());
 		log.info(" TERMINO - updatePersona");
 		return q.obtenerQueryActualizar();
@@ -158,7 +158,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues("DES_MUNICIPIO", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesMunicipio()));
 		q.agregarParametroValues("DES_ESTADO", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesEstado()));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_ALTA, String.valueOf(usuarioDto.getIdUsuario()));
-		q.agregarParametroValues(ConsultaConstantes.FEC_ACTUALIZACION, ConsultaConstantes.CURRENT_TIMESTAMP);
+		q.agregarParametroValues(ConsultaConstantes.FEC_ACTUALIZACION, ConsultaConstantes.CURRENT_DATE);
 		q.addWhere("ID_DOMICILIO = " + contratanteRequest.getCp().getIdDomicilio());
 		return q.obtenerQueryActualizar();
 	}
@@ -179,7 +179,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues("ID_VELATORIO",String.valueOf(usuarioDto.getIdVelatorio()));
 		q.agregarParametroValues(ConsultaConstantes.ID_ESTATUS_PLAN_SFPA,String.valueOf(1));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_ALTA, String.valueOf(usuarioDto.getIdUsuario()));
-		q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.CURRENT_TIMESTAMP);
+		q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.CURRENT_DATE);
 		log.info(ConsultaConstantes.QUERY + q.obtenerQueryInsertar());
 		log.info(" TERMINO - insertPlanSfpa");
 		return q.obtenerQueryInsertar();
@@ -201,7 +201,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues("ID_VELATORIO",String.valueOf(usuarioDto.getIdVelatorio()));
 		q.agregarParametroValues(ConsultaConstantes.ID_ESTATUS_PLAN_SFPA,String.valueOf(planSFPARequest.getIdEstatusPlanSfpa()));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_MODIFICA, String.valueOf(usuarioDto.getIdUsuario()));
-		q.agregarParametroValues(ConsultaConstantes.FEC_ACTUALIZACION, ConsultaConstantes.CURRENT_TIMESTAMP);
+		q.agregarParametroValues(ConsultaConstantes.FEC_ACTUALIZACION, ConsultaConstantes.CURRENT_DATE);
 		q.addWhere("ID_PLAN_SFPA = " + planSFPARequest.getIdPlanSfpa());
 		log.info(ConsultaConstantes.QUERY + q.obtenerQueryInsertar());
 		log.info(" TERMINO - updatePlanSfpa");
@@ -213,9 +213,9 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		final QueryHelper q = new QueryHelper("UPDATE SVT_PLAN_SFPA");
 		q.agregarParametroValues(ConsultaConstantes.ID_ESTATUS_PLAN_SFPA,String.valueOf(planSFPARequest.getIdEstatusPlanSfpa()));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_MODIFICA, String.valueOf(usuarioDto.getIdUsuario()));
-		q.agregarParametroValues(ConsultaConstantes.FEC_ACTUALIZACION, ConsultaConstantes.CURRENT_TIMESTAMP);
+		q.agregarParametroValues(ConsultaConstantes.FEC_ACTUALIZACION, ConsultaConstantes.CURRENT_DATE);
 		q.agregarParametroValues("ID_USUARIO_BAJA", String.valueOf(usuarioDto.getIdUsuario()));
-		q.agregarParametroValues("FEC_BAJA", ConsultaConstantes.CURRENT_TIMESTAMP);
+		q.agregarParametroValues("FEC_BAJA", ConsultaConstantes.CURRENT_DATE);
 		q.addWhere("ID_PLAN_SFPA = " + planSFPARequest.getIdPlanSfpa());
 		log.info(ConsultaConstantes.QUERY + q.obtenerQueryInsertar());
 		log.info(" TERMINO - updatePlanSfpa");
