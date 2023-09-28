@@ -16,6 +16,6 @@ public class ReporteSiniestrosPFRequest {
 	private String ods;
 	private String fecha_inicial;
 	private String fecha_final;
-	private String id_tipo_reporte;
+	private String tipoReporte;
 
 }

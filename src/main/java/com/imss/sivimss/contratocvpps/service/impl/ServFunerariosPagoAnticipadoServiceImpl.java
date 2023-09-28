@@ -20,14 +20,17 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.contratocvpps.beans.DetallePlanSfpa;
+import com.imss.sivimss.contratocvpps.beans.FolioOrdenServicio;
 import com.imss.sivimss.contratocvpps.beans.InsertaActualizaPlanSfpa;
 import com.imss.sivimss.contratocvpps.beans.ServFunerariosPagoAnticipado;
 import com.imss.sivimss.contratocvpps.exception.BadRequestException;
 import com.imss.sivimss.contratocvpps.model.request.ContratanteRequest;
+import com.imss.sivimss.contratocvpps.model.request.FolioRequest;
 import com.imss.sivimss.contratocvpps.model.request.InsertPlanSfpaRequest;
 import com.imss.sivimss.contratocvpps.model.request.PlanSFPARequest;
 import com.imss.sivimss.contratocvpps.model.request.TitularRequest;
 import com.imss.sivimss.contratocvpps.model.request.UsuarioDto;
+import com.imss.sivimss.contratocvpps.model.response.FolioResponse;
 import com.imss.sivimss.contratocvpps.model.response.PersonaResponse;
 import com.imss.sivimss.contratocvpps.model.response.PlanSFPAResponse;
 import com.imss.sivimss.contratocvpps.repository.InsertaPlanSfpaRepository;
@@ -378,5 +381,29 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 			}
 		return response;
 	}
-
+	
+	@Override
+	public Response<Object> consultarFolioOrden(DatosRequest request, Authentication authentication) throws IOException {
+		String consulta = "";
+		try {
+            logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarFolioOrden", AppConstantes.CONSULTA, authentication);
+            List<FolioResponse>folioResponses;
+            FolioRequest folioRequest  = new Gson().fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), FolioRequest.class);
+			Response<Object>response;
+			response = providerRestTemplate.consumirServicio(new FolioOrdenServicio().obtenerFolios(request, folioRequest).getDatos(), 
+					urlModCatalogos.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+			consulta =new FolioOrdenServicio().obtenerFolios(request, folioRequest).getDatos().get(AppConstantes.QUERY).toString();
+			if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
+				folioResponses= Arrays.asList(modelMapper.map(response.getDatos(), FolioResponse[].class));
+				response.setDatos(folioResponses);
+			}
+			return MensajeResponseUtil.mensajeConsultaResponseObject(response, AppConstantes.ERROR_CONSULTAR);
+		} catch (Exception e) {
+	        String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
+	        log.error(AppConstantes.ERROR_QUERY.concat(decoded));
+	        log.error(e.getMessage());
+	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded, AppConstantes.CONSULTA, authentication);
+	        throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
+		}
+	}
 }

@@ -153,19 +153,19 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 		StringBuilder condiciones =new StringBuilder();
 		
 		if(reporteSiniestrosRequest.getId_delegacion() != null) {
-			condiciones.append(" AND SD.ID_DELEGACION = ").append(reporteSiniestrosRequest.getId_delegacion());
+			condiciones.append(" AND sd.ID_DELEGACION = ").append(reporteSiniestrosRequest.getId_delegacion());
 		}
 		
 		if(reporteSiniestrosRequest.getId_velatorio()!= null) {
-			condiciones.append(" AND SV.ID_VELATORIO  = ").append(reporteSiniestrosRequest.getId_velatorio());
+			condiciones.append(" AND sv.ID_VELATORIO  = ").append(reporteSiniestrosRequest.getId_velatorio());
 		}
 		
 		if (reporteSiniestrosRequest.getOds() != null) {
-			condiciones.append(" AND SOE.CVE_FOLIO = '").append(reporteSiniestrosRequest.getOds()).append("'");
+			condiciones.append(" AND sos.CVE_FOLIO = '").append(reporteSiniestrosRequest.getOds()).append("'");
 		 }
 		 
 		if(reporteSiniestrosRequest.getFecha_inicial() != null && reporteSiniestrosRequest.getFecha_final() != null) {
-			condiciones.append(" AND SOE.FEC_ALTA  BETWEEN '").append(reporteSiniestrosRequest.getFecha_inicial()).append("' AND '").append(reporteSiniestrosRequest.getFecha_final()).append("'");
+			condiciones.append(" AND sos.FEC_ALTA  BETWEEN '").append(reporteSiniestrosRequest.getFecha_inicial()).append("' AND '").append(reporteSiniestrosRequest.getFecha_final()).append("'");
 		}
 		return condiciones.toString();
 	}
@@ -177,9 +177,9 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 		envioDatos.put("condicion", condiciones);
 		envioDatos.put("periodo", validarSiNulPeriodol(reporteSiniestrosRequest.getFecha_inicial(), reporteSiniestrosRequest.getFecha_final()));
 		envioDatos.put("velatorio", validarSiEsNull(reporteSiniestrosRequest.getDes_velatorio()));
-		envioDatos.put(TIPO_REPORTE, reporteSiniestrosRequest.getId_tipo_reporte());
+		envioDatos.put(TIPO_REPORTE, reporteSiniestrosRequest.getTipoReporte());
 		envioDatos.put(RUTA_NOMBRE_REPORTE, generarReporteSiniestrosPF);
-		if(reporteSiniestrosRequest.getId_tipo_reporte().equals("xls")) {
+		if(reporteSiniestrosRequest.getTipoReporte().equals("xls")) {
 			envioDatos.put("IS_IGNORE_PAGINATION", true);
 		}
 		
