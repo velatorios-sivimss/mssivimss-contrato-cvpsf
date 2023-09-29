@@ -53,6 +53,8 @@ public class ConsultaPlanSFPA   implements Serializable {
 		if(reporteRequest.getFechaInicio() != null && reporteRequest.getFechaFin() != null) {
 			queryUtil.and("SPLSFPA.FEC_INGRESO  BETWEEN '"+reporteRequest.getFechaInicio()+"' AND '"+reporteRequest.getFechaFin()+"'");
 		}
+
+		queryUtil.groupBy(" SPLSFPA.ID_PLAN_SFPA");
 		queryUtil.orderBy("SPLSFPA.ID_PLAN_SFPA ASC");
 		final String query = queryUtil.build();
 		log.info(" consultaPlanSFPA: " + query);
