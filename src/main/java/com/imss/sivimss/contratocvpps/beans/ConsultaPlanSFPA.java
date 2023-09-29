@@ -54,9 +54,10 @@ public class ConsultaPlanSFPA   implements Serializable {
 			queryUtil.and("SPLSFPA.FEC_INGRESO  BETWEEN '"+reporteRequest.getFechaInicio()+"' AND '"+reporteRequest.getFechaFin()+"'");
 		}
 
-		queryUtil.groupBy(" SPLSFPA.ID_PLAN_SFPA");
-		queryUtil.orderBy("SPLSFPA.ID_PLAN_SFPA ASC");
+		// queryUtil.groupBy(" SPLSFPA.ID_PLAN_SFPA");
+		// queryUtil.orderBy("SPLSFPA.ID_PLAN_SFPA ASC");
 		final String query = queryUtil.build();
+		query+= " GROUP BY SPLSFPA.ID_PLAN_SFPA  ORDER BY SPLSFPA.ID_PLAN_SFPA ASC";
 		log.info(" consultaPlanSFPA: " + query);
 		request.getDatos().put(AppConstantes.QUERY, ConsultaConstantes.queryEncoded(query));
 		log.info(" TERMINO - consultaPlanSFPA");
