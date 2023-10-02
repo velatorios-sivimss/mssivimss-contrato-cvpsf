@@ -12,6 +12,6 @@ public class FolioRequest {
 
 	private Integer idVelatorio;
 	
-	private String folioOrdenServicio;
+	private String idDelegacion;
 	
 }
