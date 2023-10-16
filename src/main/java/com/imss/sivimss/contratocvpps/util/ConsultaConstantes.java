@@ -61,8 +61,8 @@ public class ConsultaConstantes {
 	public static SelectQueryUtil detalleContratante () {
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
 		queryUtil.select("P.ID_PERSONA AS idPersona","P.CVE_RFC AS rfc","P.CVE_CURP AS curp","P.CVE_NSS AS nss","P.NOM_PERSONA AS nomPersona","P.NOM_PRIMER_APELLIDO AS nomPersonaPaterno",
-				"P.NOM_SEGUNDO_APELLIDO AS nomPersonaMaterno","P.NUM_SEXO AS numSexo","P.DES_OTRO_SEXO AS desOtroSexo","P.FEC_NAC as fechaNacimiento","P.ID_PAIS AS idPais","P.ID_ESTADO AS idEstado","P.DES_TELEFONO AS desTelefono",
-				"P.DES_CORREO AS desCorreo","P.TIP_PERSONA AS tipoPersona","C.ID_CONTRATANTE AS idContratante","C.CVE_MATRICULA AS claveMatricula","D.DES_CALLE AS desCalle","D.NUM_EXTERIOR AS numExterior",
+				"P.NOM_SEGUNDO_APELLIDO AS nomPersonaMaterno","P.NUM_SEXO AS numSexo","P.REF_OTRO_SEXO AS desOtroSexo","P.FEC_NAC as fechaNacimiento","P.ID_PAIS AS idPais","P.ID_ESTADO AS idEstado","P.REF_TELEFONO AS desTelefono",
+				"P.REF_CORREO AS desCorreo","P.TIP_PERSONA AS tipoPersona","C.ID_CONTRATANTE AS idContratante","C.CVE_MATRICULA AS claveMatricula","D.DES_CALLE AS desCalle","D.NUM_EXTERIOR AS numExterior",
 				"D.NUM_INTERIOR AS numInterior","D.DES_CP AS DesCodigoPostal","D.DES_COLONIA AS desColonia","D.DES_MUNICIPIO AS desMunicipio","D.DES_ESTADO AS desEstado")
 		.from("SVC_PERSONA P")
 		.innerJoin("SVC_CONTRATANTE C", "P.ID_PERSONA = C.ID_PERSONA")

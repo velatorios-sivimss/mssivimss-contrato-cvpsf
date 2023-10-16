@@ -9,7 +9,7 @@ public class ReportePagoAnticipado {
 
 	public String generaReporte(ReporteDto reporteDto) {
 		return "SELECT sp.MON_PRECIO as canPagoNum "
-				+ ", sp.DES_NOM_PAQUETE as paqueteAmparo "
+				+ ", sp.REF_PAQUETE_NOMBRE as paqueteAmparo "
 				+ ", CONCAT(sp2.NOM_PERSONA,' ',sp2.NOM_PRIMER_APELLIDO, ' ',sp2.NOM_SEGUNDO_APELLIDO) as nombreAfiliado "
 				+ ", sp2.CVE_RFC as rfc "
 				+ ", stpm.DES_TIPO_PAGO_MENSUAL as numPagos "
