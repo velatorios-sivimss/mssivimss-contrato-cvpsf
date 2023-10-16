@@ -96,13 +96,13 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 	public String insertDomicilio(ContratanteRequest contratanteRequest, UsuarioDto usuarioDto) {
 		log.info(" INICIO - insertDomicilio");
 		final QueryHelper q = new QueryHelper("INSERT INTO SVT_DOMICILIO");
-		q.agregarParametroValues("DES_CALLE", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesCalle() ));
+		q.agregarParametroValues("REF_CALLE", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesCalle() ));
 		q.agregarParametroValues("NUM_EXTERIOR", SelectQueryUtil.setValor(contratanteRequest.getCp().getNumExterior() ));
 		q.agregarParametroValues("NUM_INTERIOR", SelectQueryUtil.setValor(contratanteRequest.getCp().getNumInterior() ));
-		q.agregarParametroValues("DES_CP", String.valueOf(contratanteRequest.getCp().getCodigoPostal()));
-		q.agregarParametroValues("DES_COLONIA", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesColonia() ));
-		q.agregarParametroValues("DES_MUNICIPIO", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesMunicipio()));
-		q.agregarParametroValues("DES_ESTADO", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesEstado() ));
+		q.agregarParametroValues("REF_CP", String.valueOf(contratanteRequest.getCp().getCodigoPostal()));
+		q.agregarParametroValues("REF_COLONIA", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesColonia() ));
+		q.agregarParametroValues("REF_MUNICIPIO", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesMunicipio()));
+		q.agregarParametroValues("REF_ESTADO", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesEstado() ));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_ALTA, String.valueOf(usuarioDto.getIdUsuario()));
 		q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.CURRENT_DATE);
 		log.info(" TERMINO - insertDomicilio");
@@ -171,7 +171,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues(ConsultaConstantes.ID_TITULAR, SelectQueryUtil.setValor( map.get(ConsultaConstantes.ID_TITULAR).toString()));
 		q.agregarParametroValues(ConsultaConstantes.ID_TITULAR_SUBSTITUTO, SelectQueryUtil.setValor( map.get(ConsultaConstantes.ID_TITULAR_SUBSTITUTO).toString()));
 		q.agregarParametroValues("ID_PAQUETE", String.valueOf(planSFPARequest.getIdPaquete()));
-		q.agregarParametroValues("MON_PRECIO", String.valueOf(planSFPARequest.getMonPrecio()));
+		q.agregarParametroValues("IMP_PRECIO", String.valueOf(planSFPARequest.getMonPrecio()));
 		q.agregarParametroValues("ID_TIPO_PAGO_MENSUAL", String.valueOf(planSFPARequest.getIdTipoPagoMensual()));
 		q.agregarParametroValues("IND_TITULAR_SUBSTITUTO",String.valueOf(planSFPARequest.getIndTitularSubstituto()));
 		q.agregarParametroValues("IND_PROMOTOR",String.valueOf(planSFPARequest.getIndPromotor()));
@@ -193,7 +193,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues(ConsultaConstantes.ID_TITULAR, SelectQueryUtil.setValor( map.get(ConsultaConstantes.ID_TITULAR).toString()));
 		q.agregarParametroValues(ConsultaConstantes.ID_TITULAR_SUBSTITUTO, SelectQueryUtil.setValor( map.get(ConsultaConstantes.ID_TITULAR_SUBSTITUTO).toString()));
 		q.agregarParametroValues("ID_PAQUETE", String.valueOf(planSFPARequest.getIdPaquete()));
-		q.agregarParametroValues("MON_PRECIO", String.valueOf(planSFPARequest.getMonPrecio()));
+		q.agregarParametroValues("IMP_PRECIO", String.valueOf(planSFPARequest.getMonPrecio()));
 		q.agregarParametroValues("ID_TIPO_PAGO_MENSUAL", String.valueOf(planSFPARequest.getIdTipoPagoMensual()));
 		q.agregarParametroValues("IND_TITULAR_SUBSTITUTO",String.valueOf(planSFPARequest.getIndTitularSubstituto()));
 		q.agregarParametroValues("IND_PROMOTOR",String.valueOf(planSFPARequest.getIndPromotor()));
