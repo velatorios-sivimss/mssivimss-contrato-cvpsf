@@ -389,7 +389,6 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
             logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "consultarFolioOrden", AppConstantes.CONSULTA, authentication);
             List<FolioResponse>folioResponses;
             FolioRequest folioRequest  = new Gson().fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), FolioRequest.class);
-			Response<Object>response;
 			response = providerRestTemplate.consumirServicio(new FolioOrdenServicio().obtenerFolios(request, folioRequest).getDatos(), 
 					urlModCatalogos.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
 			consulta =new FolioOrdenServicio().obtenerFolios(request, folioRequest).getDatos().get(AppConstantes.QUERY).toString();
@@ -406,4 +405,5 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 	        throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
 		}
 	}
+
 }

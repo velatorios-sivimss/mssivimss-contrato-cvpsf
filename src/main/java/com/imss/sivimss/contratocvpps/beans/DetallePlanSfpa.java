@@ -21,13 +21,13 @@ public class DetallePlanSfpa  implements Serializable {/**
 		"SP.CVE_NSS as nss","SP.NOM_PERSONA as nomPersona","SP.NOM_PRIMER_APELLIDO as primerApellido","SP.NOM_SEGUNDO_APELLIDO as segundoApellido",
 		"SP.NUM_SEXO as sexo","SP.REF_OTRO_SEXO as otroSexo","SP.FEC_NAC as fecNacimiento","SP.ID_PAIS as idPais","SP.ID_ESTADO as idEstado",
 		"SP.REF_TELEFONO as telefono","SP.REF_TELEFONO_FIJO as telefonoFijo","SP.REF_CORREO as correo","SP.TIP_PERSONA as tipoPersona","SP.NUM_INE as ine",
-		"SD.DES_CALLE as desCalle","SD.NUM_EXTERIOR as numExterior","SD.NUM_INTERIOR as numInterior","SD.DES_CP as codigoPostal","SD.DES_COLONIA as desColonia",
-		"SD.DES_MUNICIPIO as desMunicipio","SD.DES_ESTADO as desEstado","SP2.CVE_RFC as rfc","SP2.CVE_CURP as curp","SC2.CVE_MATRICULA as matricula",
+		"SD.REF_CALLE as desCalle","SD.NUM_EXTERIOR as numExterior","SD.NUM_INTERIOR as numInterior","SD.REF_CP as codigoPostal","SD.REF_COLONIA as desColonia",
+		"SD.REF_MUNICIPIO as desMunicipio","SD.REF_ESTADO as desEstado","SP2.CVE_RFC as rfc","SP2.CVE_CURP as curp","SC2.CVE_MATRICULA as matricula",
 		"SP2.CVE_NSS as nss","SP2.NOM_PERSONA as nomPersona","SP2.NOM_PRIMER_APELLIDO as primerApellido","SP2.NOM_SEGUNDO_APELLIDO as segundoApellido",
 		"SP2.NUM_SEXO as sexo","SP2.REF_OTRO_SEXO as otroSexo","SP2.FEC_NAC as fecNacimiento","SP2.ID_PAIS as idPais","SP2.ID_ESTADO as idEstado",
 		"SP2.REF_TELEFONO as telefono","SP2.REF_TELEFONO_FIJO as telefonoFijo","SP2.REF_CORREO as correo","SP2.TIP_PERSONA as tipoPersona","SP2.NUM_INE as ine",
-		"SD2.DES_CALLE as desCalle","SD2.NUM_EXTERIOR as numExterior","SD2.NUM_INTERIOR as numInterior","SD2.DES_CP as codigoPostal","SD2.DES_COLONIA as desColonia",
-		"SD2.DES_MUNICIPIO as desMunicipio","SD2.DES_ESTADO as desEstado","SV.DES_VELATORIO","DATE_FORMAT(SPSFPA.FEC_INGRESO,'%d/%m/%Y')",
+		"SD2.REF_CALLE as desCalle","SD2.NUM_EXTERIOR as numExterior","SD2.NUM_INTERIOR as numInterior","SD2.REF_CP as codigoPostal","SD2.REF_COLONIA as desColonia",
+		"SD2.REF_MUNICIPIO as desMunicipio","SD2.REF_ESTADO as desEstado","SV.DES_VELATORIO","DATE_FORMAT(SPSFPA.FEC_INGRESO,'%d/%m/%Y')",
 		"(SELECT COUNT(*) FROM SVC_PAGO_SFPA PSFPA LEFT JOIN SVT_PLAN_SFPA PLSFPA ON PSFPA.ID_PLAN_SFPA = PLSFPA.ID_PLAN_SFPA AND PLSFPA.ID_ESTATUS_PLAN_SFPA NOT IN (6) "
 		.concat("AND PLSFPA.IND_ACTIVO = 1 WHERE PSFPA.ID_PLAN_SFPA =  ")+idPlanSfpa+" AND PSFPA.IND_ACTIVO = 1) AS PAGO")
 		.from("SVT_PLAN_SFPA SPSFPA").innerJoin("SVC_CONTRATANTE SC", "SC.ID_CONTRATANTE  = SPSFPA.ID_TITULAR")

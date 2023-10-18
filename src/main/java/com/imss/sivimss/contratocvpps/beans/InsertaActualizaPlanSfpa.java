@@ -150,13 +150,13 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 	
 	private String updateDomicilio(ContratanteRequest contratanteRequest, UsuarioDto usuarioDto) {
 		final QueryHelper q = new QueryHelper("UPDATE SVT_DOMICILIO ");
-		q.agregarParametroValues("DES_CALLE", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesCalle()));
+		q.agregarParametroValues("REF_CALLE", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesCalle()));
 		q.agregarParametroValues("NUM_EXTERIOR", SelectQueryUtil.setValor(contratanteRequest.getCp().getNumExterior()));
 		q.agregarParametroValues("NUM_INTERIOR", SelectQueryUtil.setValor(contratanteRequest.getCp().getNumInterior()));
-		q.agregarParametroValues("DES_CP", String.valueOf(contratanteRequest.getCp().getCodigoPostal()));
-		q.agregarParametroValues("DES_COLONIA", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesColonia()));
-		q.agregarParametroValues("DES_MUNICIPIO", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesMunicipio()));
-		q.agregarParametroValues("DES_ESTADO", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesEstado()));
+		q.agregarParametroValues("REF_CP", String.valueOf(contratanteRequest.getCp().getCodigoPostal()));
+		q.agregarParametroValues("REF_COLONIA", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesColonia()));
+		q.agregarParametroValues("REF_MUNICIPIO", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesMunicipio()));
+		q.agregarParametroValues("REF_ESTADO", SelectQueryUtil.setValor(contratanteRequest.getCp().getDesEstado()));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_ALTA, String.valueOf(usuarioDto.getIdUsuario()));
 		q.agregarParametroValues(ConsultaConstantes.FEC_ACTUALIZACION, ConsultaConstantes.CURRENT_DATE);
 		q.addWhere("ID_DOMICILIO = " + contratanteRequest.getCp().getIdDomicilio());
