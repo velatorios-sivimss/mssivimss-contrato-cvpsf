@@ -14,7 +14,7 @@ public class ReportePagoAnticipado {
 				+ ", sp2.CVE_RFC as rfc "
 				+ ", stpm.DES_TIPO_PAGO_MENSUAL as numPagos "
 				+ ", CONCAT(DATE_FORMAT(sps.FEC_ALTA, '%d de '),ELT(MONTH(sps.FEC_ALTA), \"ENERO\", \"FEBRERO\", \"MARZO\", \"ABRIL\", \"MAYO\", \"JUNIO\", \"JULIO\", \"AGOSTO\", \"SEPTIEMBRE\", \"OCTUBRE\", \"NOVIEMBRE\", \"DICIEMBRE\"),DATE_FORMAT(sps.FEC_ALTA, ' de %Y')) as fechaFirma "
-				+ ", CONCAT(sd.DES_MUNICIPIO, ', ', sd.DES_ESTADO) as lugarFirma"
+				+ ", CONCAT(sd.REF_MUNICIPIO, ', ', sd.REF_ESTADO) as lugarFirma"
 				+ ", sp.MON_PRECIO as cuotaAfiliacion "
 				+ ", (SELECT GROUP_CONCAT(ss.DES_SERVICIO SEPARATOR  ', ')"
 				+ " FROM SVT_SERVICIO ss "
