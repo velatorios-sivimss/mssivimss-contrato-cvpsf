@@ -18,6 +18,7 @@ public class PlanSFPARequest {
 	private Integer idPaquete;
 	private Double monPrecio;
 	private Integer idTipoPagoMensual;
+	private Integer numPagoMensual;
 	private Integer indTitularSubstituto;
 	private Integer indModificarTitularSubstituto;
 	private Integer indPromotor;

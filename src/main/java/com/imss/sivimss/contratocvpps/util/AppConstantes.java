@@ -29,6 +29,7 @@ public class AppConstantes {
 	
 	public static final String ALTA = "alta";
 	public static final String BAJA = "baja";
+	public static final String DELETE = "borrar";
 	public static final String MODIFICACION = "modificacion";
 	public static final String CONSULTA = "consulta";
 	public static final String ERROR_QUERY = "Error al ejecutar el query ";
@@ -36,6 +37,7 @@ public class AppConstantes {
 	public static final String ERROR_CONSULTAR = "52";//Error al consultar la información.
 	public static final String ERROR_GUARDAR = "5";//Error al guardar la información. Intenta nuevamente.
 	public static final String CATALOGO_CONSULTAR= "/consulta";
+	public static final String ERROR_AL_GENERAR_FOLIO = "Error al generar el folio del plan sfpa ";
 
 	private AppConstantes() {
 		throw new IllegalStateException("AppConstantes class");

@@ -15,7 +15,7 @@ import com.imss.sivimss.contratocvpps.model.response.PlanSFPAResponse;
 public class ConsultaConstantes {
 	
 	public static final String CIERRA_CONEXION_A_LA_BASE_DE_DATOS = "cierra conexion a la base de datos";
-	
+	public static final String AND_CVE_ESTATUS = "OS.ID_ESTATUS_ORDEN_SERVICIO = :estatusOrdenServicio";
 	public static final String ESTATUS_ORDEN_SERVICIO = "estatusOrdenServicio";
 	public static final String OS_CVE_FOLIO_CVE_FOLIO = "OS.CVE_FOLIO = :cveFolio";
 	public static final String NOM_SEGUNDO_APELLIDO = "NOM_SEGUNDO_APELLIDO";
@@ -33,7 +33,6 @@ public class ConsultaConstantes {
 	public static final String FEC_ACTUALIZACION = "FEC_ACTUALIZACION";
 	public static final String ID_BENEFICIARIO_2 = "ID_BENEFICIARIO_2";
 	public static final String ID_BENEFICIARIO_1 = "ID_BENEFICIARIO_1";
-	public static final String AND_CVE_ESTATUS = "OS.ID_ESTATUS_ORDEN_SERVICIO = :estatusOrdenServicio";
 	public static final String ID_USUARIO_ALTA = "ID_USUARIO_ALTA";
 	public static final String CU067_NOMBRE= "Consulta convenio Pago Anticipado: ";
 	public static final String TIPO_REPORTE = "tipoReporte";
@@ -44,11 +43,17 @@ public class ConsultaConstantes {
 	public static final String SEPARADOR = "separador";
 	public static final String ID_TABLA1 = "idTabla1";
 	public static final String ID_TABLA2 = "idTabla2";
-	public static final String ID_TABLA4 = "idTabla4";
 	public static final String ID_TABLA3 = "idTabla3";
+	public static final String ID_TABLA4 = "idTabla4";
+	public static final String ID_TABLA5 = "idTabla5";
+	public static final String ID_TABLA6 = "idTabla6";	
+	public static final String ID_TABLA7 = "idTabla7";	
 	public static final String FEC_ALTA = "FEC_ALTA";
 	public static final String ID_TABLA = "idTabla";
-	public static final String AFILIADO = "afiliado";
+	public static final String TITULAR = "titular";
+	public static final String TITULAR_SUBSTITUTO = "titular substituto";
+	public static final String BENEFICIARIO_1 = "beneficiario 1";
+	public static final String BENEFICIARIO_2 = "beneficiario 2";	
 	public static final String REPLACE = "replace";
 	public static final String QUERY = " query : ";
 	public static final String EXITO = "Exito"; 
@@ -92,7 +97,7 @@ public class ConsultaConstantes {
 		planSFPAResponse.setDesIdVelatorio(rs.getString(56));
 		planSFPAResponse.setFecIngreso(rs.getString(57));
 		planSFPAResponse.setNumPago(rs.getInt(58));
-		contratanteRequest.setPersona(AFILIADO);
+		contratanteRequest.setPersona(TITULAR);
 		contratanteRequest.setRfc(rs.getString(8));
 		contratanteRequest.setCurp(rs.getString(9));
 		contratanteRequest.setMatricula(rs.getString(10));

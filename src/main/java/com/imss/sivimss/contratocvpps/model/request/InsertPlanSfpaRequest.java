@@ -16,6 +16,6 @@ public class InsertPlanSfpaRequest {
 	 private ArrayList<String> actualizar;
 	 
 	 @JsonProperty
-	 private String id;
+	 private ArrayList<String> insertar2;
 
 }

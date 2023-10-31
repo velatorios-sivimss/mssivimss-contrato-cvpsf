@@ -17,11 +17,17 @@ import com.imss.sivimss.contratocvpps.util.SelectQueryUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ServFunerariosPagoAnticipado implements Serializable {
+public class PlanSFPA implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	private static final String SVC_TIPO_PAGO_MENSUAL_STPM = "SVC_TIPO_PAGO_MENSUAL STPM";
+	
+	private static final String SVT_PAQUETE_SP = "SVT_PAQUETE SP";
+	
 	private static final String SP_IND_ACTIVO_1 = "SP.IND_ACTIVO = 1";
+	
+	private static final String ID_VELATORIO = "idVelatorio";
 	
 	public DatosRequest detalleContratanteRfc(DatosRequest request, TitularRequest titularRequest ) {
 		log.info(" INICIO - detalleContratanteRfc");
@@ -60,7 +66,7 @@ public class ServFunerariosPagoAnticipado implements Serializable {
 		log.info(" INICIO - consultaTipoPagoMensual");
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
 		queryUtil.select("STPM.ID_TIPO_PAGO_MENSUAL AS ID_TIPO_PAGO_MENSUAL","STPM.DES_TIPO_PAGO_MENSUAL AS DES_TIPO_PAGO_MENSUAL")
-		.from("SVC_TIPO_PAGO_MENSUAL STPM");
+		.from(SVC_TIPO_PAGO_MENSUAL_STPM);
 		final String query = queryUtil.build();
 		log.info(" consultaTipoPagoMensual: " + query);
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
@@ -85,9 +91,9 @@ public class ServFunerariosPagoAnticipado implements Serializable {
 	public DatosRequest consultaPaquetes(DatosRequest request) {
 		log.info(" INICIO - consultaPaquetes");
 		SelectQueryUtil selectQueryVelatorio= new SelectQueryUtil();
-		selectQueryVelatorio.select("SP.ID_PAQUETE AS idPaquete","SP.REF_PAQUETE_NOMBRE AS nomPaquete","SP.REF_PAQUETE_DESCRIPCION AS descPaquete","SP.MON_PRECIO as monPrecio")
-		.from("SVT_PAQUETE SP")
-		.where("SP.REF_PAQUETE_NOMBRE IN ".concat("('Paquete Básico PA','Paquete con Cremación PA')"));
+		String string = "SVT_PAQUETE SP";
+		selectQueryVelatorio.select("SP.ID_PAQUETE AS idPaquete","SP.REF_PAQUETE_NOMBRE AS nomPaquete","SP.REF_PAQUETE_DESCRIPCION AS descPaquete","IFNULL(SP.MON_PRECIO,0) as monPrecio")
+		.from(string).where("IFNULL(SP.ID_PAQUETE ,0) > 0").and(SP_IND_ACTIVO_1);
 		
 		final String query =  selectQueryVelatorio.build();
 
@@ -99,58 +105,76 @@ public class ServFunerariosPagoAnticipado implements Serializable {
 		return request;
 	}
 	
-	public DatosRequest consultaFolioPlanSFPA(DatosRequest request, PlanSFPARequest planSFPARequest, UsuarioDto usuarioDto) {
+	public String obtenerFolioPlanSFPA(PlanSFPARequest planSFPARequest, UsuarioDto usuarioDto) {
 		log.info(" INICIO - consultaFolioPlanSFPA");
 		SelectQueryUtil velatorio = new SelectQueryUtil();
 		velatorio.select("SUBSTRING(UPPER(SV.DES_VELATORIO),1,3)").from("SVC_VELATORIO SV")
-				.where("SV.ID_VELATORIO = :idVelatorio").setParameter("idVelatorio", usuarioDto.getIdVelatorio());
+				.where("SV.ID_VELATORIO = :idVelatorio").setParameter(ID_VELATORIO, usuarioDto.getIdVelatorio());
 		
-		log.info(velatorio.build());
-
-		SelectQueryUtil spsfpa = new SelectQueryUtil();
-		spsfpa.select("COUNT(*)").from(ConsultaConstantes.SVT_PLAN_SFPA_SPSFPA).where("SPSFPA.ID_VELATORIO = :idVelatorio").setParameter("idVelatorio", usuarioDto.getIdVelatorio())
-				.and("SPSFPA.ID_ESTATUS_PLAN_SFPA not in (6)").and("SPSFPA.NUM_FOLIO_PLAN_SFPA IS NOT NULL");
+		SelectQueryUtil paquete = new SelectQueryUtil();
+		paquete.select("SUBSTRING(UPPER(SP.REF_PAQUETE_NOMBRE),1,3)").from(SVT_PAQUETE_SP)
+				.where("SP.ID_PAQUETE = :idPaquete").setParameter("idPaquete", planSFPARequest.getIdPaquete());
 		
-		log.info(spsfpa.build());
-
-		SelectQueryUtil spsfpaCount = new SelectQueryUtil();
-		spsfpaCount.select("COUNT(*)+1").from(ConsultaConstantes.SVT_PLAN_SFPA_SPSFPA).where("SPSFPA.ID_VELATORIO = :idVelatorio").setParameter("idVelatorio", usuarioDto.getIdVelatorio())
-				.and("SPSFPA.ID_ESTATUS_PLAN_SFPA not in (6)").and("SPSFPA.NUM_FOLIO_PLAN_SFPA IS NOT NULL");
+		SelectQueryUtil numeroPagoMensual = new SelectQueryUtil();
+		numeroPagoMensual.select("STPM.DES_TIPO_PAGO_MENSUAL").from(SVC_TIPO_PAGO_MENSUAL_STPM)
+				.where("STPM.ID_TIPO_PAGO_MENSUAL = :idTipoPagoMensual").setParameter("idTipoPagoMensual", planSFPARequest.getIdTipoPagoMensual());
 		
-		log.info(spsfpaCount.build());
+		SelectQueryUtil numeroConsecutivo  = new SelectQueryUtil();
+		numeroConsecutivo .select("IFNULL(MAX(SPSFPA.ID_PLAN_SFPA),0) + 1").from("SVT_PLAN_SFPA SPSFPA");
 
 		SelectQueryUtil selectQueryUtil = new SelectQueryUtil();
 		selectQueryUtil
-				.select("CONCAT((" + velatorio.build() + ")", "'-'", "LPAD((case when (" + spsfpa.build()
-						+ ") = 0 then 1 else (" + spsfpaCount.build() + ") end)" + ",6,'0')" + ") as numFolioPlanSFPA")
-				.from("dual");
+				.select("CONCAT_WS('-',(" + velatorio.build() + "),("+ paquete.build() +"),("+ numeroPagoMensual.build() +"),("+ numeroConsecutivo.build() +"))")
+				.from("DUAL )");
 		final String query = selectQueryUtil.build();
-		log.info(" consultaFolioPlanSFPA: " + query);
-		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
-		request.getDatos().put(AppConstantes.QUERY, encoded);
-		log.info(" TERMINO - consultaFolioPlanSFPA");
-		return request;
+		log.info(" TERMINO - consultaFolioPlanSFPA " + query);
+		return query;
 	}
 	
-	public DatosRequest consultaExistePersona(DatosRequest request, ContratanteRequest contratanteRequest) {
-		log.info(" INICIO - consultaExistePersona");
+	public String consultaExisteTitularBeneficiarios(ContratanteRequest contratanteRequest) {
+		log.info(" INICIO - consultaExisteTitularBeneficiarios");
+		SelectQueryUtil queryUtil = new SelectQueryUtil();
+		queryUtil.select("STB.ID_TITULAR_BENEFICIARIOS AS idTitularBeneficiarios","STB.ID_DOMICILIO AS idDomicilio","STB.ID_PERSONA AS idPersona")
+		.from("SVT_TITULAR_BENEFICIARIOS STB")
+		.innerJoin("SVC_PERSONA SP", "SP.ID_PERSONA = STB.ID_PERSONA")
+		.innerJoin("SVT_DOMICILIO SD", "SD.ID_DOMICILIO = STB.ID_DOMICILIO")
+		.where("IFNULL(STB.ID_TITULAR_BENEFICIARIOS ,0) > 0");
+		if(contratanteRequest.getCurp() != null && !contratanteRequest.getCurp().isEmpty()) {
+			queryUtil.and("SP.CVE_CURP = :curp").setParameter("curp", contratanteRequest.getCurp());
+		}
+		if(contratanteRequest.getRfc() != null && !contratanteRequest.getRfc().isEmpty()) {
+			queryUtil.or("SP.CVE_RFC = :rfc").setParameter("rfc", contratanteRequest.getRfc());
+		}
+		if (contratanteRequest.getIne() != null ) {
+			queryUtil.or("SP.NUM_INE = :ine").setParameter("ine", contratanteRequest.getIne());
+		}
+		queryUtil.orderBy("STB.ID_TITULAR_BENEFICIARIOS DESC LIMIT 1");
+		final String query = queryUtil.build();
+		log.info(" TERMINO - consultaExisteTitularBeneficiarios ");
+		return query;
+	}
+	
+	public String consultaExisteContratante(ContratanteRequest contratanteRequest) {
+		log.info(" INICIO - consultaExisteContratante");
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
 		queryUtil.select("SC.ID_CONTRATANTE AS idContratante","SC.ID_DOMICILIO AS idDomicilio","SC.ID_PERSONA AS idPersona")
 		.from("SVC_CONTRATANTE SC")
 		.innerJoin("SVC_PERSONA SP", "SP.ID_PERSONA = SC.ID_PERSONA")
 		.innerJoin("SVT_DOMICILIO SD", "SD.ID_DOMICILIO = SC.ID_DOMICILIO")
-		.where("SP.CVE_CURP = :curp").setParameter("curp", contratanteRequest.getCurp())
-		.or("SP.CVE_RFC = :rfc").setParameter("rfc", contratanteRequest.getRfc());
+		.where("IFNULL(SC.ID_CONTRATANTE ,0) > 0");
+		if(contratanteRequest.getCurp() != null && !contratanteRequest.getCurp().isEmpty()) {
+			queryUtil.and("SP.CVE_CURP = :curp").setParameter("curp", contratanteRequest.getCurp());
+		}
+		if(contratanteRequest.getRfc() != null && !contratanteRequest.getRfc().isEmpty()) {
+			queryUtil.or("SP.CVE_RFC = :rfc").setParameter("rfc", contratanteRequest.getRfc());
+		}
 		if (contratanteRequest.getIne() != null ) {
 			queryUtil.or("SP.NUM_INE = :ine").setParameter("ine", contratanteRequest.getIne());
 		}
-		
+		queryUtil.orderBy("SC.ID_CONTRATANTE DESC LIMIT 1");
 		final String query = queryUtil.build();
-		log.info(" consultaExistePersona: " + query);
-		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
-		request.getDatos().put(AppConstantes.QUERY, encoded);
-		log.info(" TERMINO - consultaExistePersona");
-		return request;
+		log.info(" TERMINO - consultaExisteContratante ");
+		return query;
 	}
 	
 	public DatosRequest consultaValidaAfiliado(DatosRequest request, ContratanteRequest contratanteRequest) {

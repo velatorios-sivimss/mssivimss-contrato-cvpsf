@@ -110,19 +110,20 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 			, List<ReportePagoAnticipadoReponse> reportePagoAnticipadoReponseFirma
 	        , List<ReportePagoAnticipadoReponse> reportePagoAnticipadoReponseCheck ) {
 		Map<String, Object> envioDatos = new HashMap<>();
-		envioDatos.put("lugarFirma", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getLugarFirma()));
-		envioDatos.put("canPagoNum",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getCanPagoNum()));
-		envioDatos.put("paqueteAmparado", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getPaqueteAmparo()));
+		envioDatos.put("ciudadFirma", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getCiudadFirma()));
+		envioDatos.put("totalImporte",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getTotalImporte()));
+		envioDatos.put("paqueteAmparado", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNomPaquete()));
 		envioDatos.put("servInclPaquete", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getServInclPaquete()));
-		envioDatos.put("nombreAfiliado", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNombreAfiliado()));
-		envioDatos.put("numPagos", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNumPagos()));
-		envioDatos.put("rfc", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getRfc()));
-		envioDatos.put("fechaFirma", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getFechaFirma()));
+		envioDatos.put("nombreTitular", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNombreTitular()));
+		envioDatos.put("numPago", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNumPago()));
+		envioDatos.put("rfcTitular", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getRfcTitular()));
+		envioDatos.put("fechaCPA", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getFechaFirma()));
+		envioDatos.put("correoVelatorio", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getCorreoVelatorio()));
 		envioDatos.put("cuotaAfiliacion", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getCuotaAfiliacion()));
 		envioDatos.put("numeroAfiliacion",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNumeroAfiliacion()));
 		envioDatos.put("datosBancarios","");
 		envioDatos.put("numeroINE","");
-		envioDatos.put("canPagoPalabras",NumeroAPalabra.convertirAPalabras(contratoServicioInmediatoResponse.get(0).getCanPagoNum(), true));
+		envioDatos.put("totalLetra",NumeroAPalabra.convertirAPalabras(contratoServicioInmediatoResponse.get(0).getTotalImporte(), true));
 		envioDatos.put("firmaDir",validarSiEsNull(reportePagoAnticipadoReponseFirma.get(0).getFirmDir()));
 		envioDatos.put("imgCheck",validarSiEsNull(reportePagoAnticipadoReponseCheck.get(0).getImgCheck()));
 	return envioDatos;

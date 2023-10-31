@@ -22,7 +22,7 @@ import com.google.gson.Gson;
 import com.imss.sivimss.contratocvpps.beans.DetallePlanSfpa;
 import com.imss.sivimss.contratocvpps.beans.FolioOrdenServicio;
 import com.imss.sivimss.contratocvpps.beans.InsertaActualizaPlanSfpa;
-import com.imss.sivimss.contratocvpps.beans.ServFunerariosPagoAnticipado;
+import com.imss.sivimss.contratocvpps.beans.PlanSFPA;
 import com.imss.sivimss.contratocvpps.exception.BadRequestException;
 import com.imss.sivimss.contratocvpps.model.request.ContratanteRequest;
 import com.imss.sivimss.contratocvpps.model.request.FolioRequest;
@@ -33,10 +33,13 @@ import com.imss.sivimss.contratocvpps.model.request.UsuarioDto;
 import com.imss.sivimss.contratocvpps.model.response.FolioResponse;
 import com.imss.sivimss.contratocvpps.model.response.PersonaResponse;
 import com.imss.sivimss.contratocvpps.model.response.PlanSFPAResponse;
-import com.imss.sivimss.contratocvpps.repository.InsertaPlanSfpaRepository;
+import com.imss.sivimss.contratocvpps.repository.ActualizarPlanSFPARepository;
+import com.imss.sivimss.contratocvpps.repository.GuardarPlanSFPARepository;
+import com.imss.sivimss.contratocvpps.repository.PlanSFPARepository;
 import com.imss.sivimss.contratocvpps.service.ReportePagoAnticipadoService;
-import com.imss.sivimss.contratocvpps.service.ServFunerariosPagoAnticipadoService;
+import com.imss.sivimss.contratocvpps.service.PlanSFPAService;
 import com.imss.sivimss.contratocvpps.util.AppConstantes;
+import com.imss.sivimss.contratocvpps.util.ConsultaConstantes;
 import com.imss.sivimss.contratocvpps.util.DatosRequest;
 import com.imss.sivimss.contratocvpps.util.LogUtil;
 import com.imss.sivimss.contratocvpps.util.MensajeResponseUtil;
@@ -47,7 +50,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPagoAnticipadoService {
+public class PlanSFPAServiceImpl implements PlanSFPAService {
 	
 	private static final String NO_SE_ENCONTRO_INFORMACION = "45"; // No se encontró información relacionada a tu
 	private static final String ERROR_AL_EJECUTAR_EL_QUERY = "Error al ejecutar el query ";
@@ -85,7 +88,13 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 	private ModelMapper modelMapper;
 	
 	@Autowired
-	private InsertaPlanSfpaRepository insertaPlanSfpaRepository;
+	private PlanSFPARepository planSFPARepository;
+	
+	@Autowired
+	private GuardarPlanSFPARepository guardarPlanSFPARepository;
+	
+	@Autowired
+	private ActualizarPlanSFPARepository actualizarPlanSFPARepository;
 	
 	private Response<Object>response;
 	
@@ -106,8 +115,8 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 				throw new BadRequestException(HttpStatus.BAD_REQUEST, INFORMACION_INCOMPLETA);
 			}
 			
-			response = providerRestTemplate.consumirServicioObject(new ServFunerariosPagoAnticipado().detalleContratanteRfc(request, titularRequest).getDatos(),urlModCatalogos.concat(CONSULTA_GENERICA), authentication);
-			consulta = new ServFunerariosPagoAnticipado().detalleContratanteRfc(request, titularRequest).getDatos().get(AppConstantes.QUERY).toString();
+			response = providerRestTemplate.consumirServicioObject(new PlanSFPA().detalleContratanteRfc(request, titularRequest).getDatos(),urlModCatalogos.concat(CONSULTA_GENERICA), authentication);
+			consulta = new PlanSFPA().detalleContratanteRfc(request, titularRequest).getDatos().get(AppConstantes.QUERY).toString();
 			if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
 				response.setMensaje("interno");
 				return response;
@@ -144,8 +153,8 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 				throw new BadRequestException(HttpStatus.BAD_REQUEST, INFORMACION_INCOMPLETA);
 			}
 
-			response = providerRestTemplate.consumirServicioObject(new ServFunerariosPagoAnticipado().detalleContratanteCurp(request, titularRequest).getDatos(),urlModCatalogos.concat(CONSULTA_GENERICA), authentication);
-			consulta = new ServFunerariosPagoAnticipado().detalleContratanteCurp(request, titularRequest).getDatos().get(AppConstantes.QUERY).toString();
+			response = providerRestTemplate.consumirServicioObject(new PlanSFPA().detalleContratanteCurp(request, titularRequest).getDatos(),urlModCatalogos.concat(CONSULTA_GENERICA), authentication);
+			consulta = new PlanSFPA().detalleContratanteCurp(request, titularRequest).getDatos().get(AppConstantes.QUERY).toString();
 			if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")) {
 				response.setMensaje("interno");
 				return response;
@@ -174,12 +183,12 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), " consulta tipo contratacion ", CONSULTA, authentication);
 
-			return MensajeResponseUtil.mensajeConsultaResponse(providerRestTemplate.consumirServicioObject(new ServFunerariosPagoAnticipado().consultaTipoContratacion(request).getDatos(),
+			return MensajeResponseUtil.mensajeConsultaResponse(providerRestTemplate.consumirServicioObject(new PlanSFPA().consultaTipoContratacion(request).getDatos(),
 					urlModCatalogos.concat(CONSULTA_GENERICA), authentication),NO_SE_ENCONTRO_INFORMACION);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			String consulta = new ServFunerariosPagoAnticipado().consultaTipoContratacion(request).getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = new PlanSFPA().consultaTipoContratacion(request).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error(ERROR_AL_EJECUTAR_EL_QUERY + decoded);
 			logUtil.crearArchivoLog(Level.SEVERE.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), FALLO_AL_EJECUTAR_EL_QUERY + decoded, CONSULTA,
@@ -194,12 +203,12 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), " consulta tipo contratacion ", CONSULTA, authentication);
 
-			return MensajeResponseUtil.mensajeConsultaResponse(providerRestTemplate.consumirServicioObject(new ServFunerariosPagoAnticipado().consultaTipoPagoMensual(request).getDatos(),
+			return MensajeResponseUtil.mensajeConsultaResponse(providerRestTemplate.consumirServicioObject(new PlanSFPA().consultaTipoPagoMensual(request).getDatos(),
 					urlModCatalogos.concat(CONSULTA_GENERICA), authentication),NO_SE_ENCONTRO_INFORMACION);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			String consulta = new ServFunerariosPagoAnticipado().consultaTipoPagoMensual(request).getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = new PlanSFPA().consultaTipoPagoMensual(request).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error(ERROR_AL_EJECUTAR_EL_QUERY + decoded);
 			logUtil.crearArchivoLog(Level.SEVERE.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), FALLO_AL_EJECUTAR_EL_QUERY + decoded, CONSULTA,
@@ -213,12 +222,12 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), " consulta promotores ", CONSULTA, authentication);
 
-			return MensajeResponseUtil.mensajeConsultaResponse(providerRestTemplate.consumirServicioObject(new ServFunerariosPagoAnticipado().consultaPromotores(request).getDatos(),
+			return MensajeResponseUtil.mensajeConsultaResponse(providerRestTemplate.consumirServicioObject(new PlanSFPA().consultaPromotores(request).getDatos(),
 					urlModCatalogos.concat(CONSULTA_GENERICA), authentication),NO_SE_ENCONTRO_INFORMACION);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			String consulta = new ServFunerariosPagoAnticipado().consultaPromotores(request).getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = new PlanSFPA().consultaPromotores(request).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error(ERROR_AL_EJECUTAR_EL_QUERY + decoded);
 			logUtil.crearArchivoLog(Level.SEVERE.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), FALLO_AL_EJECUTAR_EL_QUERY + decoded, CONSULTA,
@@ -232,12 +241,12 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 		try {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), " consulta paquetes ", CONSULTA, authentication);
 
-			return MensajeResponseUtil.mensajeConsultaResponse(providerRestTemplate.consumirServicioObject(new ServFunerariosPagoAnticipado().consultaPaquetes(request).getDatos(),
+			return MensajeResponseUtil.mensajeConsultaResponse(providerRestTemplate.consumirServicioObject(new PlanSFPA().consultaPaquetes(request).getDatos(),
 					urlModCatalogos.concat(CONSULTA_GENERICA), authentication),NO_SE_ENCONTRO_INFORMACION);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			String consulta = new ServFunerariosPagoAnticipado().consultaPaquetes(request).getDatos().get(AppConstantes.QUERY).toString();
+			String consulta = new PlanSFPA().consultaPaquetes(request).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error(ERROR_AL_EJECUTAR_EL_QUERY + decoded);
 			logUtil.crearArchivoLog(Level.SEVERE.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), FALLO_AL_EJECUTAR_EL_QUERY + decoded, CONSULTA,
@@ -254,9 +263,9 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 			
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), "consulta valida afiliado ", CONSULTA, authentication);
 			
-			query = new ServFunerariosPagoAnticipado().consultaValidaAfiliado(request, contratanteRequest).getDatos().get(AppConstantes.QUERY).toString();
+			query = new PlanSFPA().consultaValidaAfiliado(request, contratanteRequest).getDatos().get(AppConstantes.QUERY).toString();
 			
-			response =providerRestTemplate.consumirServicioObject(new ServFunerariosPagoAnticipado().consultaValidaAfiliado(request, contratanteRequest).getDatos(),
+			response =providerRestTemplate.consumirServicioObject(new PlanSFPA().consultaValidaAfiliado(request, contratanteRequest).getDatos(),
 					urlModCatalogos.concat(CONSULTA_GENERICA), authentication);
 			
 			if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
@@ -275,74 +284,57 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 		}
 		return response;
 	}
-
+	
 	@Override
-	public Response<Object> insertaPlanSFPA(DatosRequest request, Authentication authentication) throws IOException, SQLException {
+	public Response<Object> registrarPlanSFPA(DatosRequest request, Authentication authentication)throws IOException, SQLException {
 		try {
-			List<PlanSFPAResponse> planSFPAResponse;
 			PlanSFPARequest planSFPARequest = new Gson().fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), PlanSFPARequest.class);
 			UsuarioDto usuarioDto = new Gson().fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
-			response = providerRestTemplate.consumirServicioObject(new ServFunerariosPagoAnticipado().consultaFolioPlanSFPA(request, planSFPARequest, usuarioDto).getDatos(),urlModCatalogos.concat(CONSULTA_GENERICA), authentication);
-			if(planSFPARequest.getIdPlanSfpa()!= null) {
-				log.info(" Entro actualizar");
-				logUtil.crearArchivoLog(Level.INFO.toString(),this.getClass().getSimpleName(),this.getClass().getPackage().toString()," actualizar plan sfpa", AppConstantes.MODIFICACION,authentication);
-				List<ContratanteRequest> contratante = planSFPARequest.getTitularesBeneficiarios().stream().map(contratanteRequest ->  consultaExistePersona(request, authentication, contratanteRequest)) .collect(Collectors.toList());
-				planSFPARequest.setTitularesBeneficiarios(contratante);
-				InsertPlanSfpaRequest insertPlanSfpaRequest = new InsertaActualizaPlanSfpa().insertaPlanSfpa(planSFPARequest, usuarioDto);
-				response = insertaPlanSfpaRepository.actualizarPlanSfpa(insertPlanSfpaRequest);
-				if(Boolean.TRUE.equals(planSFPARequest.getIndTipoPagoMensual())) {
-					log.info(" Entro true");
-					Map<String, Object> map = new HashMap<>();
-					Map<String, Object> datos = new HashMap<>();
-					map.put("idPlanSFPA", planSFPARequest.getIdPlanSfpa());
-					DatosRequest datosRequest = new DatosRequest();
-					datos.put(AppConstantes.DATOS, map);
-					datosRequest.setDatos(datos);
-					response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication);
-				}
-			} else {
-				log.info(" Entro Insertar");
-				logUtil.crearArchivoLog(Level.INFO.toString(),this.getClass().getSimpleName(),this.getClass().getPackage().toString()," insertar plan sfpa", AppConstantes.ALTA,authentication);
-				if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
-					planSFPAResponse = Arrays.asList(modelMapper.map(response.getDatos(), PlanSFPAResponse[].class));
-					log.info("numFolio: " + planSFPAResponse.get(0).getNumFolioPlanSFPA());
-					planSFPARequest.setNumFolioPlanSfpa(planSFPAResponse.get(0).getNumFolioPlanSFPA());
-					List<ContratanteRequest> contratante = planSFPARequest.getTitularesBeneficiarios().stream().map(contratanteRequest ->  consultaExistePersona(request, authentication, contratanteRequest)) .collect(Collectors.toList());
-					planSFPARequest.setTitularesBeneficiarios(contratante);
-					InsertPlanSfpaRequest insertPlanSfpaRequest = new InsertaActualizaPlanSfpa().insertaPlanSfpa(planSFPARequest, usuarioDto);
-					PlanSFPAResponse planResponse =  insertaPlanSfpaRepository.insertarPlanSfpa(insertPlanSfpaRequest);
-					if (planResponse.getIdPlanSfpa() != null) {
-						Map<String, Object> map = new HashMap<>();
-						Map<String, Object> datos = new HashMap<>();
-						map.put("idPlanSFPA", planResponse.getIdPlanSfpa());
-						DatosRequest datosRequest = new DatosRequest();
-						datos.put(AppConstantes.DATOS, map);
-						datosRequest.setDatos(datos);
-						response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication);
-						if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")){
-							response.setMensaje(planSFPAResponse.get(0).getNumFolioPlanSFPA());
-						}
-					}
+			logUtil.crearArchivoLog(Level.INFO.toString(),this.getClass().getSimpleName(),this.getClass().getPackage().toString()," insertar plan sfpa", AppConstantes.ALTA,authentication);
+			List<ContratanteRequest> contratante = planSFPARequest.getTitularesBeneficiarios().stream().map(contratanteRequest ->  consultaExistePersona(request, authentication, contratanteRequest)) .collect(Collectors.toList());
+			planSFPARequest.setTitularesBeneficiarios(contratante);
+			planSFPARequest.setNumFolioPlanSfpa("(".concat(new PlanSFPA().obtenerFolioPlanSFPA(planSFPARequest, usuarioDto)));
+			InsertPlanSfpaRequest insertPlanSfpaRequest = new InsertaActualizaPlanSfpa().insertaPlanSfpa(planSFPARequest, usuarioDto);
+			PlanSFPAResponse planResponse =  guardarPlanSFPARepository.generaPlanSfpa(insertPlanSfpaRequest);
+			if (planResponse.getIdPlanSfpa() != null) {
+				Map<String, Object> map = new HashMap<>();
+				Map<String, Object> datos = new HashMap<>();
+				map.put("idPlanSFPA", planResponse.getIdPlanSfpa());
+				DatosRequest datosRequest = new DatosRequest();
+				datos.put(AppConstantes.DATOS, map);
+				datosRequest.setDatos(datos);
+				response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication);
+				if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")){
+					
 				}
 			}
-        } catch (Exception e) {
-        	e.printStackTrace();
-			log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_GUARDAR));
+		}catch (Exception e) {
 			log.error(e.getMessage());
-		    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_GUARDAR, AppConstantes.ALTA, authentication);
+		    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_AL_GENERAR_FOLIO, AppConstantes.ALTA, authentication);
 		    throw new IOException(AppConstantes.ERROR_GUARDAR, e.getCause());
 		}
-		return response;
-	
+		return null;
 	}
 
-	private ContratanteRequest consultaExistePersona(DatosRequest request, Authentication authentication, ContratanteRequest contratanteRequest) {
-	     response = providerRestTemplate.consumirServicioObject(new ServFunerariosPagoAnticipado().consultaExistePersona(request, contratanteRequest).getDatos(),urlModCatalogos.concat(CONSULTA_GENERICA), authentication);
-		if (response.getCodigo()==200 && !response.getDatos().toString().contains("[]")) {
-			List<PersonaResponse> personaResponse = Arrays.asList(modelMapper.map(response.getDatos(), PersonaResponse[].class));
-			contratanteRequest.setIdContratante(personaResponse.get(0).getIdContratante());
-			contratanteRequest.setIdPersona(personaResponse.get(0).getIdPersona());
-			contratanteRequest.getCp().setIdDomicilio(personaResponse.get(0).getIdDomicilio());
+
+
+	private ContratanteRequest consultaExistePersona(DatosRequest request, Authentication authentication, ContratanteRequest contratanteRequest)  {
+		PersonaResponse personaResponse;
+		try {
+			if(contratanteRequest.getPersona().equalsIgnoreCase(ConsultaConstantes.TITULAR)) {
+				personaResponse = planSFPARepository.datoContratante(new PlanSFPA().consultaExisteContratante(contratanteRequest));
+			} else {
+				personaResponse = planSFPARepository.datoContratante(new PlanSFPA().consultaExisteTitularBeneficiarios(contratanteRequest));
+			}
+			
+			if (personaResponse != null) {
+				contratanteRequest.setIdContratante(personaResponse.getIdContratante());
+				contratanteRequest.setIdTitularBeneficiarios(personaResponse.getIdTitularBeneficiarios());
+				contratanteRequest.setIdPersona(personaResponse.getIdPersona());
+				contratanteRequest.getCp().setIdDomicilio(personaResponse.getIdDomicilio());
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage());
 		}
 		return contratanteRequest;
 	}
@@ -354,7 +346,7 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 			PlanSFPARequest planSFPARequest = new Gson().fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), PlanSFPARequest.class);
 			UsuarioDto usuarioDto = new Gson().fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 			String insertPlanSfpaRequest = new InsertaActualizaPlanSfpa().updatePlanSfpa(planSFPARequest, usuarioDto);
-			response =  insertaPlanSfpaRepository.cancelarPlanSfpa(insertPlanSfpaRequest);
+			response =  planSFPARepository.cancelarPlanSfpa(insertPlanSfpaRequest);
 		   } catch (Exception e) {
 	        	e.printStackTrace();
 				log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_GUARDAR));
@@ -371,7 +363,7 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 		try {
 			PlanSFPARequest planSFPARequest = new Gson().fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), PlanSFPARequest.class);
 			String detalllePlanSfpa = new DetallePlanSfpa().consultaDetallePlanSfpa(planSFPARequest.getIdPlanSfpa());
-			response =  insertaPlanSfpaRepository.consultarDetallePlanSfpa(detalllePlanSfpa);
+			response =  planSFPARepository.consultarDetallePlanSfpa(detalllePlanSfpa);
 		   } catch (Exception e) {
 	        	e.printStackTrace();
 				log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_GUARDAR));
@@ -405,5 +397,7 @@ public class ServFunerariosPagoAnticipadoServiceImpl implements ServFunerariosPa
 	        throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
 		}
 	}
+
+
 
 }

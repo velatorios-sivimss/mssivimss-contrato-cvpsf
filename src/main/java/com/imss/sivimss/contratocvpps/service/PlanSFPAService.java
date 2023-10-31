@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import com.imss.sivimss.contratocvpps.util.DatosRequest;
 import com.imss.sivimss.contratocvpps.util.Response;
 
-public interface ServFunerariosPagoAnticipadoService {
+public interface PlanSFPAService {
 	
     Response<Object> detalleContratanteRfc(DatosRequest request, Authentication authentication) throws IOException;
 	
@@ -24,7 +24,7 @@ public interface ServFunerariosPagoAnticipadoService {
 	
 	Response<Object> consultaValidaAfiliado(DatosRequest request, Authentication authentication) throws IOException;
 	
-	Response<Object>  insertaPlanSFPA(DatosRequest request, Authentication authentication) throws IOException, SQLException;
+	Response<Object>  registrarPlanSFPA(DatosRequest request, Authentication authentication) throws IOException, SQLException;
 	
 	Response<Object>  cancelaPlanSFPA(DatosRequest request, Authentication authentication) throws IOException, SQLException;
 	

@@ -13,8 +13,8 @@ public class Persona {
 
 	private Integer idPersona;
 	private String persona;
-	private String rfc;
 	private String curp;
+	private String rfc;
 	private String nss;
 	private String nomPersona;
 	private String primerApellido;

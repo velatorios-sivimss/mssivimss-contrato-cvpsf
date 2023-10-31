@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.imss.sivimss.contratocvpps.service.ReportePagoAnticipadoService;
-import com.imss.sivimss.contratocvpps.service.ServFunerariosPagoAnticipadoService;
+import com.imss.sivimss.contratocvpps.service.PlanSFPAService;
 import com.imss.sivimss.contratocvpps.util.DatosRequest;
 import com.imss.sivimss.contratocvpps.util.LogUtil;
 import com.imss.sivimss.contratocvpps.util.ProviderServiceRestTemplate;
@@ -30,10 +30,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/serv-funerario-pago-anticipado")
-public class ServFunerariosPagoAnticipadoController {
+public class PlanSFPAController {
 
 	@Autowired
-	private ServFunerariosPagoAnticipadoService servFunerariosPagoAnticipadoService;
+	private PlanSFPAService planSFPAService;
 	
 	@Autowired
 	private ReportePagoAnticipadoService reportePagoAnticipadoService;
@@ -52,7 +52,7 @@ public class ServFunerariosPagoAnticipadoController {
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> detalleContratanteRfc(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
-		Response<Object> response =  servFunerariosPagoAnticipadoService.detalleContratanteRfc(request,authentication);
+		Response<Object> response =  planSFPAService.detalleContratanteRfc(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
@@ -61,7 +61,7 @@ public class ServFunerariosPagoAnticipadoController {
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> detalleContratanteCurp(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
-		Response<Object> response =  servFunerariosPagoAnticipadoService.detalleContratanteCurp(request,authentication);
+		Response<Object> response =  planSFPAService.detalleContratanteCurp(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
@@ -70,7 +70,7 @@ public class ServFunerariosPagoAnticipadoController {
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> consultaTipoContratacion(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
-		Response<Object> response =  servFunerariosPagoAnticipadoService.consultaTipoContratacion(request,authentication);
+		Response<Object> response =  planSFPAService.consultaTipoContratacion(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
@@ -79,7 +79,7 @@ public class ServFunerariosPagoAnticipadoController {
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> consultaTipoPagoMensual(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
-		Response<Object> response =  servFunerariosPagoAnticipadoService.consultaTipoPagoMensual(request,authentication);
+		Response<Object> response =  planSFPAService.consultaTipoPagoMensual(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
@@ -88,7 +88,7 @@ public class ServFunerariosPagoAnticipadoController {
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> consultaPromotores(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
-		Response<Object> response =  servFunerariosPagoAnticipadoService.consultaPromotores(request,authentication);
+		Response<Object> response =  planSFPAService.consultaPromotores(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
@@ -97,7 +97,7 @@ public class ServFunerariosPagoAnticipadoController {
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> consultaPaquetes(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
-		Response<Object> response =  servFunerariosPagoAnticipadoService.consultaPaquetes(request,authentication);
+		Response<Object> response =  planSFPAService.consultaPaquetes(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
@@ -106,7 +106,7 @@ public class ServFunerariosPagoAnticipadoController {
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> consultaValidaAfiliado(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
-		Response<Object> response =  servFunerariosPagoAnticipadoService.consultaValidaAfiliado(request,authentication);
+		Response<Object> response =  planSFPAService.consultaValidaAfiliado(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
@@ -115,7 +115,7 @@ public class ServFunerariosPagoAnticipadoController {
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> insertaPlanSFPA(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
-		Response<Object> response =   servFunerariosPagoAnticipadoService.insertaPlanSFPA(request,authentication);
+		Response<Object> response =   planSFPAService.registrarPlanSFPA(request, authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
@@ -124,7 +124,7 @@ public class ServFunerariosPagoAnticipadoController {
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> cancelaPlanSFPA(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
-		Response<Object> response =   servFunerariosPagoAnticipadoService.cancelaPlanSFPA(request,authentication);
+		Response<Object> response =   planSFPAService.cancelaPlanSFPA(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
@@ -139,7 +139,7 @@ public class ServFunerariosPagoAnticipadoController {
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> consultaDetallePlanSfpa(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
-		Response<Object> response =  servFunerariosPagoAnticipadoService.consultaDetallePlanSfpa(request,authentication);
+		Response<Object> response =  planSFPAService.consultaDetallePlanSfpa(request,authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
@@ -154,7 +154,7 @@ public class ServFunerariosPagoAnticipadoController {
 	
 	@PostMapping("/consultar/folio-orden")
 	public CompletableFuture<Object>consultarFolioOrden(@RequestBody DatosRequest request, Authentication authentication) throws IOException, SQLException{
-		Response<?>response = servFunerariosPagoAnticipadoService.consultarFolioOrden(request, authentication);
+		Response<?>response = planSFPAService.consultarFolioOrden(request, authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	

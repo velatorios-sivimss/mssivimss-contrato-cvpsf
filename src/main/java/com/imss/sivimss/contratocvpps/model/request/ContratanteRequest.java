@@ -12,6 +12,8 @@ public class ContratanteRequest extends Persona{
 
 	private Integer idContratante;
 	
+	private Integer idTitularBeneficiarios;
+	
 	private String matricula;
 
 	private DomicilioRequest cp;

@@ -11,6 +11,7 @@ import lombok.Setter;
 public class PersonaResponse {
 	
 	private Integer idContratante;
+	private Integer idTitularBeneficiarios;
 	private Integer idPersona;
 	private Integer idDomicilio;
 
