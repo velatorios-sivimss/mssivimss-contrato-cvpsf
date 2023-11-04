@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.DatatypeConverter;
 
 import com.imss.sivimss.contratocvpps.model.request.ReporteRequest;
 import com.imss.sivimss.contratocvpps.util.AppConstantes;
@@ -22,7 +23,7 @@ public class ConsultaPlanSFPA   implements Serializable {
 		log.info(" INICIO - consultaPlanSFPA");
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
 		queryUtil.select("DISTINCT SPLSFPA.ID_PLAN_SFPA AS ID_PLAN_SFPA","SPLSFPA.NUM_FOLIO_PLAN_SFPA AS NUM_FOLIO_PLAN_SFPA","CONCAT_WS(' ',SP.NOM_PERSONA,SP.NOM_PRIMER_APELLIDO,SP.NOM_SEGUNDO_APELLIDO ) AS TITULAR",
-		"SD.REF_ESTADO AS ESTADO","SP.REF_CORREO AS CORREO_ELECTRONICO","SPE.REF_PAQUETE_NOMBRE AS PAQUETE","TPM.DES_TIPO_PAGO_MENSUAL NUMERO_PAGO",
+		"SD.REF_ESTADO AS ESTADO","IFNULL(IF (SP.REF_CORREO = 'null','',SP.REF_CORREO) , '') AS CORREO_ELECTRONICO","SPE.REF_PAQUETE_NOMBRE AS PAQUETE","TPM.DES_TIPO_PAGO_MENSUAL NUMERO_PAGO",
 		"SEPLSFPA.DES_ESTATUS_PLAN_SFPA AS ESTATUS_PLAN_SFPA", "IFNULL(SEPA.DES_ESTATUS_PAGO_ANTICIPADO,'') AS ESTATUS_PAGO_ANTICIPADO")
 		.from("SVT_PLAN_SFPA SPLSFPA").leftJoin("SVC_PAGO_SFPA SPSFPA", "SPLSFPA.ID_PLAN_SFPA = SPSFPA.ID_PLAN_SFPA")
 		.innerJoin("SVC_CONTRATANTE SC", "SPLSFPA.ID_TITULAR = SC.ID_CONTRATANTE").innerJoin("SVC_PERSONA SP", "SP.ID_PERSONA = SC.ID_PERSONA")
@@ -90,9 +91,10 @@ public class ConsultaPlanSFPA   implements Serializable {
 		return condicciones.toString();
 	}
 	
-	public Map<String, Object> generarReportePlanSFPA(ReporteRequest reporteRequest, String rutaNombreReporte) {
+	public Map<String, Object> generarReportePlanSFPA(DatosRequest request, ReporteRequest reporteRequest, String rutaNombreReporte) {
 		Map<String, Object> envioDatos = new HashMap<>();
-		String condicion = consultaPlanSFPA(reporteRequest);
+		Map<String, Object> datosRequest = consultaPlanSFPA(request, reporteRequest).getDatos(); //  consultaPlanSFPA(reporteRequest);
+		String  condicion = new String(DatatypeConverter.parseBase64Binary(datosRequest.get(AppConstantes.QUERY).toString()));
 		
 		log.info("condicion::  " + condicion);
 		log.info("tipoRepirte::  " + reporteRequest.getTipoReporte());

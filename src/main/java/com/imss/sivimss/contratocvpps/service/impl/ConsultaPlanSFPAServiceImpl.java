@@ -87,7 +87,7 @@ public class ConsultaPlanSFPAServiceImpl  implements ConsultaPlanSFPAService {
 			ReporteRequest reporteRequest= new Gson().fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), ReporteRequest.class);
 			logUtil.crearArchivoLog(Level.INFO.toString(), CU68_NAME + GENERAR_DOCUMENTO + " Reporte Plan SFPA " + this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), "generarReportePlanSFPA", GENERA_DOCUMENTO, authentication);
-			Map<String, Object> envioDatos = new ConsultaPlanSFPA().generarReportePlanSFPA(reporteRequest,reporteConsultaPlanSFPA);
+			Map<String, Object> envioDatos = new ConsultaPlanSFPA().generarReportePlanSFPA(request, reporteRequest,reporteConsultaPlanSFPA);
 			consulta = envioDatos.get("condicion").toString();
 			response = providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
 			MensajeResponseUtil.mensajeResponseObject(response, ERROR_AL_DESCARGAR_DOCUMENTO);
