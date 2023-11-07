@@ -107,14 +107,12 @@ public class ServFunerariosPagoAnticipado implements Serializable {
 		log.info(velatorio.build());
 
 		SelectQueryUtil spsfpa = new SelectQueryUtil();
-		spsfpa.select("COUNT(*)").from(ConsultaConstantes.SVT_PLAN_SFPA_SPSFPA).where("SPSFPA.ID_VELATORIO = :idVelatorio").setParameter("idVelatorio", usuarioDto.getIdVelatorio())
-				.and("SPSFPA.ID_ESTATUS_PLAN_SFPA not in (6)").and("SPSFPA.NUM_FOLIO_PLAN_SFPA IS NOT NULL");
+		spsfpa.select("COUNT(SPSFPA.ID_PLAN_SFPA)").from(ConsultaConstantes.SVT_PLAN_SFPA_SPSFPA).where("SPSFPA.ID_VELATORIO = :idVelatorio").setParameter("idVelatorio", usuarioDto.getIdVelatorio());
 		
 		log.info(spsfpa.build());
 
 		SelectQueryUtil spsfpaCount = new SelectQueryUtil();
-		spsfpaCount.select("COUNT(*)+1").from(ConsultaConstantes.SVT_PLAN_SFPA_SPSFPA).where("SPSFPA.ID_VELATORIO = :idVelatorio").setParameter("idVelatorio", usuarioDto.getIdVelatorio())
-				.and("SPSFPA.ID_ESTATUS_PLAN_SFPA not in (6)").and("SPSFPA.NUM_FOLIO_PLAN_SFPA IS NOT NULL");
+		spsfpaCount.select("COUNT(SPSFPA.ID_PLAN_SFPA)+1").from(ConsultaConstantes.SVT_PLAN_SFPA_SPSFPA).where("SPSFPA.ID_VELATORIO = :idVelatorio").setParameter("idVelatorio", usuarioDto.getIdVelatorio());
 		
 		log.info(spsfpaCount.build());
 
@@ -122,7 +120,7 @@ public class ServFunerariosPagoAnticipado implements Serializable {
 		selectQueryUtil
 				.select("CONCAT((" + velatorio.build() + ")", "'-'", "LPAD((case when (" + spsfpa.build()
 						+ ") = 0 then 1 else (" + spsfpaCount.build() + ") end)" + ",6,'0')" + ") as numFolioPlanSFPA")
-				.from("dual");
+				.from("DUAL");
 		final String query = selectQueryUtil.build();
 		log.info(" consultaFolioPlanSFPA: " + query);
 		String encoded = DatatypeConverter.printBase64Binary(query.getBytes(StandardCharsets.UTF_8));
