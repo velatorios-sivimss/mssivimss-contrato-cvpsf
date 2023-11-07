@@ -8,10 +8,10 @@ import lombok.Setter;
 @Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PersonaResponse {
+public class PersonaTitularBeneficiariosResponse {
 	
-	private Integer idContratante;
-	private Integer idPersona;
-	private Integer idDomicilio;
+	private Integer idTitularBeneficiarios = 0;
+	private Integer idPersona = 0;
+	private Integer idDomicilio = 0;
 
 }

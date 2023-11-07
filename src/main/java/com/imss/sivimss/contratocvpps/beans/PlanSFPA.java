@@ -91,9 +91,8 @@ public class PlanSFPA implements Serializable {
 	public DatosRequest consultaPaquetes(DatosRequest request) {
 		log.info(" INICIO - consultaPaquetes");
 		SelectQueryUtil selectQueryVelatorio= new SelectQueryUtil();
-		String string = "SVT_PAQUETE SP";
 		selectQueryVelatorio.select("SP.ID_PAQUETE AS idPaquete","SP.REF_PAQUETE_NOMBRE AS nomPaquete","SP.REF_PAQUETE_DESCRIPCION AS descPaquete","IFNULL(SP.MON_PRECIO,0) as monPrecio")
-		.from(string).where("IFNULL(SP.ID_PAQUETE ,0) > 0").and(SP_IND_ACTIVO_1);
+		.from(SVT_PAQUETE_SP).where("IFNULL(SP.ID_PAQUETE ,0) > 0").and(SP_IND_ACTIVO_1);
 		
 		final String query =  selectQueryVelatorio.build();
 
@@ -134,21 +133,21 @@ public class PlanSFPA implements Serializable {
 	public String consultaExisteTitularBeneficiarios(ContratanteRequest contratanteRequest) {
 		log.info(" INICIO - consultaExisteTitularBeneficiarios");
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
-		queryUtil.select("STB.ID_TITULAR_BENEFICIARIOS AS idTitularBeneficiarios","STB.ID_DOMICILIO AS idDomicilio","STB.ID_PERSONA AS idPersona")
-		.from("SVT_TITULAR_BENEFICIARIOS STB")
-		.innerJoin("SVC_PERSONA SP", "SP.ID_PERSONA = STB.ID_PERSONA")
-		.innerJoin("SVT_DOMICILIO SD", "SD.ID_DOMICILIO = STB.ID_DOMICILIO")
-		.where("IFNULL(STB.ID_TITULAR_BENEFICIARIOS ,0) > 0");
+		queryUtil.select("STB.ID_TITULAR_BENEFICIARIOS AS idTitularBeneficiarios","SD.ID_DOMICILIO AS idDomicilio","SP.ID_PERSONA AS idPersona")
+		.from("SVC_PERSONA SP")
+		.leftJoin("SVT_TITULAR_BENEFICIARIOS STB", "SP.ID_PERSONA = STB.ID_PERSONA")
+		.leftJoin("SVT_DOMICILIO SD", "SD.ID_DOMICILIO = STB.ID_DOMICILIO")
+		.where("IFNULL(SP.ID_PERSONA ,0) > 0");
 		if(contratanteRequest.getCurp() != null && !contratanteRequest.getCurp().isEmpty()) {
 			queryUtil.and("SP.CVE_CURP = :curp").setParameter("curp", contratanteRequest.getCurp());
 		}
 		if(contratanteRequest.getRfc() != null && !contratanteRequest.getRfc().isEmpty()) {
-			queryUtil.or("SP.CVE_RFC = :rfc").setParameter("rfc", contratanteRequest.getRfc());
+			queryUtil.and("SP.CVE_RFC = :rfc").setParameter("rfc", contratanteRequest.getRfc());
 		}
 		if (contratanteRequest.getIne() != null ) {
-			queryUtil.or("SP.NUM_INE = :ine").setParameter("ine", contratanteRequest.getIne());
+			queryUtil.and("SP.NUM_INE = :ine").setParameter("ine", contratanteRequest.getIne());
 		}
-		queryUtil.orderBy("STB.ID_TITULAR_BENEFICIARIOS DESC LIMIT 1");
+		queryUtil.orderBy("SP.ID_PERSONA DESC LIMIT 1");
 		final String query = queryUtil.build();
 		log.info(" TERMINO - consultaExisteTitularBeneficiarios ");
 		return query;
@@ -157,21 +156,21 @@ public class PlanSFPA implements Serializable {
 	public String consultaExisteContratante(ContratanteRequest contratanteRequest) {
 		log.info(" INICIO - consultaExisteContratante");
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
-		queryUtil.select("SC.ID_CONTRATANTE AS idContratante","SC.ID_DOMICILIO AS idDomicilio","SC.ID_PERSONA AS idPersona")
-		.from("SVC_CONTRATANTE SC")
-		.innerJoin("SVC_PERSONA SP", "SP.ID_PERSONA = SC.ID_PERSONA")
-		.innerJoin("SVT_DOMICILIO SD", "SD.ID_DOMICILIO = SC.ID_DOMICILIO")
-		.where("IFNULL(SC.ID_CONTRATANTE ,0) > 0");
+		queryUtil.select("SC.ID_CONTRATANTE AS idContratante","SD.ID_DOMICILIO AS idDomicilio","SP.ID_PERSONA AS idPersona")
+		.from("SVC_PERSONA SP")
+		.leftJoin("SVC_CONTRATANTE SC", "SP.ID_PERSONA = SC.ID_PERSONA")
+		.leftJoin("SVT_DOMICILIO SD", "SD.ID_DOMICILIO = SC.ID_DOMICILIO")
+		.where("IFNULL(SP.ID_PERSONA , 0) > 0");
 		if(contratanteRequest.getCurp() != null && !contratanteRequest.getCurp().isEmpty()) {
 			queryUtil.and("SP.CVE_CURP = :curp").setParameter("curp", contratanteRequest.getCurp());
 		}
 		if(contratanteRequest.getRfc() != null && !contratanteRequest.getRfc().isEmpty()) {
-			queryUtil.or("SP.CVE_RFC = :rfc").setParameter("rfc", contratanteRequest.getRfc());
+			queryUtil.and("SP.CVE_RFC = :rfc").setParameter("rfc", contratanteRequest.getRfc());
 		}
 		if (contratanteRequest.getIne() != null ) {
-			queryUtil.or("SP.NUM_INE = :ine").setParameter("ine", contratanteRequest.getIne());
+			queryUtil.and("SP.NUM_INE = :ine").setParameter("ine", contratanteRequest.getIne());
 		}
-		queryUtil.orderBy("SC.ID_CONTRATANTE DESC LIMIT 1");
+		queryUtil.orderBy("SP.ID_PERSONA DESC LIMIT 1");
 		final String query = queryUtil.build();
 		log.info(" TERMINO - consultaExisteContratante ");
 		return query;
@@ -202,5 +201,34 @@ public class PlanSFPA implements Serializable {
 		request.getDatos().put(AppConstantes.QUERY, encoded);
 		log.info(" TERMINO - consultaValidaAfiliado");
 		return request;
+	}
+	
+	public String folioPlanSfpa(Integer idPlanSfpa) {
+		log.info(" INICIO - folioPlanSfpa");
+		StringBuilder query = new StringBuilder();
+		query.append(" SELECT NUM_FOLIO_PLAN_SFPA AS folioPlanSFPA FROM ").append(ConsultaConstantes.SVT_PLAN_SFPA_SPSFPA).append(" WHERE SPSFPA.ID_PLAN_SFPA = ").append(idPlanSfpa);
+		log.info(" TERMINO - folioPlanSfpa" + query);
+		return query.toString();
+	}
+	
+	public String consultarPagoSfpa(PlanSFPARequest planSFPARequest) {
+		log.info(" INICIO - consultarPagoSfpa");
+		SelectQueryUtil queryUtil = new SelectQueryUtil();
+		queryUtil.select("DATE_FORMAT(PSFPA.FEC_PARCIALIDAD,'%d/%m/%Y') AS FEC_PARCIALIDAD", "DATE_FORMAT(PSFPA.FEC_ALTA, '%d/%m/%Y') as FEC_ALTA")
+		.from("SVT_PAGO_SFPA PSFPA").where("IFNULL(PSFPA.ID_PAGO_SFPA ,0) > 0")
+		.and("PSFPA.ID_ESTATUS_PAGO = 8")
+		.and("PSFPA.ID_PLAN_SFPA = :idPlanSfpa").setParameter("idPlanSfpa", planSFPARequest.getIdPlanSfpa())
+		.orderBy("PSFPA.ID_PAGO_SFPA  ASC LIMIT 1");
+		final String query = queryUtil.build();
+		log.info(" TERMINO - consultarPagoSfpa: "  + query);
+		return query;
+	}
+	
+	public String eliminarPagoSfpa(PlanSFPARequest planSFPARequest) {
+		log.info(" INICIO - deletePagoSfpa");
+		StringBuilder delete = new StringBuilder();
+		delete.append("DELETE FROM SVT_PAGO_SFPA WHERE ID_PLAN_SFPA = ").append(planSFPARequest.getIdPlanSfpa());
+		log.info(" TERMINO - deletePagoSfpa: "  + delete);
+		return delete.toString();
 	}
 }
