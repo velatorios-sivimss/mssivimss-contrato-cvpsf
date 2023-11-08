@@ -48,8 +48,8 @@ public class GuardarPlanSFPARepository {
 		Integer i = 0;
 		try {
 
-			log.info(" inserciones: " + inserciones);
-			log.info(" updates: " + updates);
+     		log.info(" inserciones: " + inserciones + "tamano: " + inserciones.size());
+			log.info(" updates: " + updates  + "tamano: " + updates.size());
 
 			connection.setAutoCommit(false);
 
@@ -139,8 +139,8 @@ public class GuardarPlanSFPARepository {
 
 			i++;
 		}
-		planSFPAResponse.setNumFolioPlanSFPA(null);
+		planSFPAResponse.setIdPlanSfpa(idTabla7);
+
 		return planSFPAResponse;
 	}
-
 }

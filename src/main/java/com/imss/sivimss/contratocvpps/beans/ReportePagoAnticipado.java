@@ -8,29 +8,31 @@ import com.imss.sivimss.contratocvpps.model.request.ReporteDto;
 public class ReportePagoAnticipado {
 
 	public String generaReporte(ReporteDto reporteDto) {
-		return "SELECT sp.MON_PRECIO as canPagoNum "
-				+ ", sp.REF_PAQUETE_NOMBRE as paqueteAmparo "
-				+ ", CONCAT(sp2.NOM_PERSONA,' ',sp2.NOM_PRIMER_APELLIDO, ' ',sp2.NOM_SEGUNDO_APELLIDO) as nombreAfiliado "
-				+ ", sp2.CVE_RFC as rfc "
-				+ ", stpm.DES_TIPO_PAGO_MENSUAL as numPagos "
-				+ ", CONCAT(DATE_FORMAT(sps.FEC_ALTA, '%d de '),ELT(MONTH(sps.FEC_ALTA), \"ENERO\", \"FEBRERO\", \"MARZO\", \"ABRIL\", \"MAYO\", \"JUNIO\", \"JULIO\", \"AGOSTO\", \"SEPTIEMBRE\", \"OCTUBRE\", \"NOVIEMBRE\", \"DICIEMBRE\"),DATE_FORMAT(sps.FEC_ALTA, ' de %Y')) as fechaFirma "
-				+ ", CONCAT(sd.REF_MUNICIPIO, ', ', sd.REF_ESTADO) as lugarFirma"
-				+ ", sp.MON_PRECIO as cuotaAfiliacion "
-				+ ", (SELECT GROUP_CONCAT(ss.DES_SERVICIO SEPARATOR  ', ')"
-				+ " FROM SVT_SERVICIO ss "
-				+ " JOIN SVC_DETALLE_CARAC_PAQ sdcp on sdcp.ID_SERVICIO = ss.ID_SERVICIO "
-				+ " JOIN SVC_CARACTERISTICAS_PAQUETE scp on scp.ID_CARAC_PAQUETE = sdcp.ID_DETALLE_CARAC "
-				+ " JOIN SVT_PLAN_SFPA sps on sps.ID_PAQUETE = scp.ID_PAQUETE "
-				+ " WHERE sps.ID_PLAN_SFPA  = " + reporteDto.getIdPlanSFPA() + ") as servInclPaquete "
-				+ ", sc.ID_CONTRATANTE as numeroAfiliacion, IFNULL(sp2.NUM_INE,'') as numeroINE "
-				+ "FROM SVT_PLAN_SFPA sps  "
-				+ "JOIN SVT_PAQUETE sp on sp.ID_PAQUETE = sps.ID_PAQUETE and sp.IND_ACTIVO = 1 "
-				+ "JOIN SVC_CONTRATANTE sc on sc.ID_CONTRATANTE = sps.ID_TITULAR  "
-				+ "JOIN SVC_PERSONA sp2 on sp2.ID_PERSONA = sc.ID_PERSONA  "
-				+ "JOIN SVC_TIPO_PAGO_MENSUAL stpm  on stpm.ID_TIPO_PAGO_MENSUAL = sps.ID_TIPO_PAGO_MENSUAL  "
-				+ "JOIN SVC_VELATORIO sv on sv.ID_VELATORIO = sps.ID_VELATORIO  "
-				+ "JOIN SVT_DOMICILIO sd on sd.ID_DOMICILIO = sc.ID_DOMICILIO   "
-				+ "WHERE sps.ID_PLAN_SFPA = " + reporteDto.getIdPlanSFPA();
+		
+		StringBuilder query = new StringBuilder();
+		
+		query.append(" SELECT  CONCAT(IFNULL(P1.NOM_PERSONA,''),' ',IFNULL(P1.NOM_PRIMER_APELLIDO,''), ' ',IFNULL(P1.NOM_SEGUNDO_APELLIDO,'')) AS nombreTitular ")
+		.append("  , SPIS.DES_PAIS AS nacionalidadTitular ").append("  , P1.CVE_RFC AS rfcTitular ").append(" , DO1.REF_CALLE AS calleTitular ").append("  , DO1.NUM_EXTERIOR AS numExterior ")
+		.append("  , DO1.NUM_INTERIOR AS numInterior ").append(" , DO1.REF_COLONIA AS colonia ").append("  , DO1.REF_CP AS codigoPostal").append("  , DO1.REF_MUNICIPIO AS municipio ")
+		.append("  , DO1.REF_ESTADO AS estado ").append(" , P1.REF_CORREO AS correo ").append(" , P1.REF_TELEFONO AS telefono ").append(" , P1.REF_TELEFONO_FIJO AS telefonoFijo ")
+		.append("  , PQ.MON_PRECIO as totalImporte " ).append("  , TPM.DES_TIPO_PAGO_MENSUAL AS numPago ").append("  , CONCAT(DO.REF_MUNICIPIO, ', ', DO.REF_ESTADO) AS ciudadFirma ")
+		.append("  , CONCAT(DATE_FORMAT(PSFPA.FEC_ALTA, '%d de '),ELT(MONTH(PSFPA.FEC_ALTA), \"ENERO\", \"FEBRERO\", \"MARZO\", \"ABRIL\", \"MAYO\", \"JUNIO\", \"JULIO\", \"AGOSTO\", \"SEPTIEMBRE\", \"OCTUBRE\", \"NOVIEMBRE\", \"DICIEMBRE\"),DATE_FORMAT(PSFPA.FEC_ALTA, ' de %Y')) AS fechaFirma")
+		.append("  , PQ.REF_PAQUETE_NOMBRE AS nomPaquete ").append("  ,(SELECT GROUP_CONCAT(CONCAT( IFNULL(PAGO.IMP_MONTO_MENSUAL ,''),' - ',IFNULL(PAGO.FEC_PARCIALIDAD,'') ) SEPARATOR '\\n') FROM SVT_PAGO_SFPA PAGO JOIN SVT_PLAN_SFPA PLAN ON PLAN.ID_PLAN_SFPA = PAGO.ID_PLAN_SFPA WHERE PAGO.ID_PLAN_SFPA  =  " + reporteDto.getIdPlanSFPA() + " ) AS pagos ")
+		.append(" , (SELECT GROUP_CONCAT(SO.DES_SERVICIO SEPARATOR  ', ') FROM SVT_SERVICIO SO JOIN SVC_DETALLE_CARAC_PAQ DCP ON DCP.ID_SERVICIO = SO.ID_SERVICIO JOIN SVC_CARACTERISTICAS_PAQUETE CPQ ON CPQ.ID_CARAC_PAQUETE = DCP.ID_DETALLE_CARAC JOIN SVT_PLAN_SFPA PSFPA ON PSFPA.ID_PAQUETE = CPQ.ID_PAQUETE WHERE PSFPA.ID_PLAN_SFPA  =  " + reporteDto.getIdPlanSFPA() + " ) AS servInclPaquete ")
+		.append("  , US.REF_CORREOE AS correoVelatorio ").append("  , CTE.ID_CONTRATANTE AS numeroAfiliacion ").append("  , CONCAT(IFNULL(P2.NOM_PERSONA,''),' ',IFNULL(P2.NOM_PRIMER_APELLIDO,''), ' ',IFNULL(P2.NOM_SEGUNDO_APELLIDO,'')) AS nombreSustituto ").append(" , P2.FEC_NAC AS fecNacSustituto")
+		.append("  , P2.CVE_RFC AS rfcSustituto ").append("  , P2.REF_TELEFONO AS telefonoSustituto  ").append("  , CONCAT(IFNULL(DO2.REF_CALLE,''),' ',IFNULL(DO2.NUM_EXTERIOR,''), ' ',IFNULL(DO2.NUM_INTERIOR,''), ' ',IFNULL(DO2.REF_COLONIA,''),' ',IFNULL(DO2.REF_MUNICIPIO,''), ' ',IFNULL(DO2.REF_ESTADO,''), ' ',IFNULL(DO2.REF_CP,'')) AS direccionSustituto ")
+		.append("  , CONCAT(IFNULL(P3.NOM_PERSONA,''),' ',IFNULL(P3.NOM_PRIMER_APELLIDO,''), ' ',IFNULL(P3.NOM_SEGUNDO_APELLIDO,'')) AS nombreB1 ").append(" , P3.FEC_NAC AS fecNacB1 ").append("  , P3.CVE_RFC AS rfcB1 ").append("  , P3.REF_TELEFONO AS telefonoB1 ")
+		.append("  , CONCAT(IFNULL(DO3.REF_CALLE,''),' ',IFNULL(DO3.NUM_EXTERIOR,''), ' ',IFNULL(DO3.NUM_INTERIOR,''), ' ',IFNULL(DO3.REF_COLONIA,''),' ',IFNULL(DO3.REF_MUNICIPIO,''), ' ',IFNULL(DO3.REF_ESTADO,''), ' ',IFNULL(DO3.REF_CP,'')) AS direccionB1")
+		.append("  , CONCAT(IFNULL(P4.NOM_PERSONA,''),' ',IFNULL(P4.NOM_PRIMER_APELLIDO,''), ' ',IFNULL(P4.NOM_SEGUNDO_APELLIDO,'')) AS nombreB2 ").append("  , P4.FEC_NAC AS fecNacB2 ").append("  , P4.CVE_RFC AS rfcB2 ").append("  , P4.REF_TELEFONO AS telefonoB2 ")
+		.append("  , CONCAT(IFNULL(DO4.REF_CALLE,''),' ',IFNULL(DO4.NUM_EXTERIOR,''), ' ',IFNULL(DO4.NUM_INTERIOR,''), ' ',IFNULL(DO4.REF_COLONIA,''),' ',IFNULL(DO4.REF_MUNICIPIO,''), ' ',IFNULL(DO4.REF_ESTADO,''), ' ',IFNULL(DO4.REF_CP,'')) AS direccionB2 ")
+		.append("  FROM SVT_PLAN_SFPA PSFPA  ").append("  JOIN SVT_PAQUETE PQ ON PQ.ID_PAQUETE = PSFPA.ID_PAQUETE and PQ.IND_ACTIVO = 1 " ).append("  JOIN SVC_CONTRATANTE CTE ON CTE.ID_CONTRATANTE = PSFPA.ID_TITULAR ")
+		.append(" JOIN SVC_PERSONA P1 ON P1.ID_PERSONA = CTE.ID_PERSONA ").append("  JOIN SVC_PAIS SPIS ON P1.ID_PAIS = SPIS.ID_PAIS ").append(" JOIN SVT_DOMICILIO DO1 ON CTE.ID_DOMICILIO = DO1.ID_DOMICILIO  ").append(" JOIN SVC_TIPO_PAGO_MENSUAL TPM  on TPM.ID_TIPO_PAGO_MENSUAL = PSFPA.ID_TIPO_PAGO_MENSUAL  ")
+		.append(" JOIN SVC_VELATORIO VO ON VO.ID_VELATORIO = PSFPA.ID_VELATORIO ").append(" JOIN SVT_USUARIOS US ON US.ID_USUARIO = VO.ID_USUARIO_ADMIN ").append(" JOIN SVT_DOMICILIO DO ON DO.ID_DOMICILIO = CTE.ID_DOMICILIO ").append(" LEFT JOIN SVT_TITULAR_BENEFICIARIOS TBSP1 ON TBSP1.ID_TITULAR_BENEFICIARIOS  = PSFPA.ID_TITULAR_SUBSTITUTO ")
+		.append(" LEFT JOIN SVC_PERSONA P2 ON P2.ID_PERSONA = TBSP1.ID_PERSONA ").append(" LEFT JOIN SVT_DOMICILIO DO2 ON DO2.ID_DOMICILIO = TBSP1.ID_DOMICILIO ").append(" LEFT JOIN SVT_TITULAR_BENEFICIARIOS TBSP2 ON TBSP2.ID_TITULAR_BENEFICIARIOS  = PSFPA.ID_BENEFICIARIO_1 ")
+		.append(" LEFT JOIN SVC_PERSONA P3 ON P3.ID_PERSONA = TBSP2.ID_PERSONA ").append(" LEFT JOIN SVT_DOMICILIO DO3 ON DO3.ID_DOMICILIO = TBSP2.ID_DOMICILIO ").append(" LEFT JOIN SVT_TITULAR_BENEFICIARIOS TBSP3 ON TBSP3.ID_TITULAR_BENEFICIARIOS  = PSFPA.ID_BENEFICIARIO_2 ")
+		.append(" LEFT JOIN SVC_PERSONA P4 ON P4.ID_PERSONA = TBSP3.ID_PERSONA ").append(" LEFT JOIN SVT_DOMICILIO DO4 ON DO4.ID_DOMICILIO = TBSP3.ID_DOMICILIO").append(" WHERE PSFPA.ID_PLAN_SFPA = ").append(reporteDto.getIdPlanSFPA());
+		
+		return query.toString();
 	}
 	
 	public String getImagenCheck() {

@@ -97,7 +97,12 @@ public class ConsultaConstantes {
 		planSFPAResponse.setDesIdVelatorio(rs.getString(56));
 		planSFPAResponse.setFecIngreso(rs.getString(57));
 		planSFPAResponse.setNumPago(rs.getInt(58));
+		planSFPAResponse.setIdPromotor(rs.getInt(63));
+		planSFPAResponse.setIndPromotor(rs.getInt(64));
+		planSFPAResponse.setIndActivo(rs.getInt(65));
+		planSFPAResponse.setIdVelatorio(rs.getInt(66));
 		contratanteRequest.setPersona(TITULAR);
+		contratanteRequest.setIdPersona(rs.getInt(59));
 		contratanteRequest.setRfc(rs.getString(8));
 		contratanteRequest.setCurp(rs.getString(9));
 		contratanteRequest.setMatricula(rs.getString(10));
@@ -115,6 +120,7 @@ public class ConsultaConstantes {
 		contratanteRequest.setCorreo(rs.getString(22));
 		contratanteRequest.setTipoPersona(rs.getString(23));
 		contratanteRequest.setIne(rs.getString(24));
+		cp.setIdDomicilio(rs.getInt(60));
 		cp.setDesCalle(rs.getString(25));
 		cp.setNumExterior(rs.getString(26));
 		cp.setNumInterior(rs.getString(27));
@@ -124,10 +130,11 @@ public class ConsultaConstantes {
 		cp.setDesEstado(rs.getString(31));
 		contratanteRequest.setCp(cp);
 		titularesBeneficiarios.add(contratanteRequest);
-		if(rs.getInt(6) == 0){
+		if(rs.getInt(61) != 0){
 			ContratanteRequest contratanteRequest2 = new ContratanteRequest();
 			DomicilioRequest cp2 = new DomicilioRequest ();
-			contratanteRequest2.setPersona("contratante");
+			contratanteRequest2.setPersona(TITULAR_SUBSTITUTO);
+			contratanteRequest2.setIdPersona(rs.getInt(61));
 			contratanteRequest2.setRfc(rs.getString(32));
 			contratanteRequest2.setCurp(rs.getString(33));
 			contratanteRequest2.setMatricula(rs.getString(34));
@@ -145,6 +152,7 @@ public class ConsultaConstantes {
 			contratanteRequest2.setCorreo(rs.getString(46));
 			contratanteRequest2.setTipoPersona(rs.getString(47));
 			contratanteRequest2.setIne(rs.getString(48));
+			cp2.setIdDomicilio(rs.getInt(62));
 			cp2.setDesCalle(rs.getString(49));
 			cp2.setNumExterior(rs.getString(50));
 			cp2.setNumInterior(rs.getString(51));
@@ -154,6 +162,72 @@ public class ConsultaConstantes {
 			cp2.setDesEstado(rs.getString(55));
 			contratanteRequest2.setCp(cp2);
 			titularesBeneficiarios.add(contratanteRequest2);
+		}
+		if(rs.getInt(67) != 0){
+			ContratanteRequest contratanteRequest3 = new ContratanteRequest();
+			DomicilioRequest cp3 = new DomicilioRequest ();
+			contratanteRequest3.setPersona(BENEFICIARIO_1);
+			contratanteRequest3.setIdPersona(rs.getInt(67));
+			contratanteRequest3.setRfc(rs.getString(68));
+			contratanteRequest3.setCurp(rs.getString(69));
+			contratanteRequest3.setMatricula(rs.getString(70));
+			contratanteRequest3.setNss(rs.getString(71));
+			contratanteRequest3.setNomPersona(rs.getString(72));
+			contratanteRequest3.setPrimerApellido(rs.getString(73));
+			contratanteRequest3.setSegundoApellido(rs.getString(74));
+			contratanteRequest3.setSexo(rs.getString(75));
+			contratanteRequest3.setOtroSexo(rs.getString(76));
+			contratanteRequest3.setFecNacimiento(rs.getString(77));
+			contratanteRequest3.setIdPais(rs.getInt(78));
+			contratanteRequest3.setIdEstado(rs.getInt(79));
+			contratanteRequest3.setTelefono(rs.getString(80));
+			contratanteRequest3.setTelefonoFijo(rs.getString(81));
+			contratanteRequest3.setCorreo(rs.getString(82));
+			contratanteRequest3.setTipoPersona(rs.getString(83));
+			contratanteRequest3.setIne(rs.getString(84));
+			cp3.setIdDomicilio(rs.getInt(85));
+			cp3.setDesCalle(rs.getString(86));
+			cp3.setNumExterior(rs.getString(87));
+			cp3.setNumInterior(rs.getString(88));
+			cp3.setCodigoPostal(rs.getInt(89));
+			cp3.setDesColonia(rs.getString(90));
+			cp3.setDesMunicipio(rs.getString(91));
+			cp3.setDesEstado(rs.getString(92));
+			contratanteRequest3.setCp(cp3);
+			titularesBeneficiarios.add(contratanteRequest3);
+		}
+		if(rs.getInt(93) != 0){
+			ContratanteRequest contratanteRequest4 = new ContratanteRequest();
+			DomicilioRequest cp4 = new DomicilioRequest ();
+			contratanteRequest4.setPersona(BENEFICIARIO_2);
+			contratanteRequest4.setIdPersona(rs.getInt(93));
+			contratanteRequest4.setRfc(rs.getString(94));
+			contratanteRequest4.setCurp(rs.getString(95));
+			contratanteRequest4.setMatricula(rs.getString(96));
+			contratanteRequest4.setNss(rs.getString(97));
+			contratanteRequest4.setNomPersona(rs.getString(98));
+			contratanteRequest4.setPrimerApellido(rs.getString(99));
+			contratanteRequest4.setSegundoApellido(rs.getString(100));
+			contratanteRequest4.setSexo(rs.getString(101));
+			contratanteRequest4.setOtroSexo(rs.getString(102));
+			contratanteRequest4.setFecNacimiento(rs.getString(103));
+			contratanteRequest4.setIdPais(rs.getInt(104));
+			contratanteRequest4.setIdEstado(rs.getInt(105));
+			contratanteRequest4.setTelefono(rs.getString(106));
+			contratanteRequest4.setTelefonoFijo(rs.getString(107));
+			contratanteRequest4.setCorreo(rs.getString(108));
+			contratanteRequest4.setTipoPersona(rs.getString(109));
+			contratanteRequest4.setIne(rs.getString(110));
+			cp4.setIdDomicilio(rs.getInt(111));
+			cp4.setDesCalle(rs.getString(112));
+			cp4.setNumExterior(rs.getString(113));
+			cp4.setNumInterior(rs.getString(114));
+			cp4.setCodigoPostal(rs.getInt(115));
+			cp4.setDesColonia(rs.getString(116));
+			cp4.setDesMunicipio(rs.getString(117));
+			cp4.setDesEstado(rs.getString(118));
+			contratanteRequest4.setCp(cp4);
+			titularesBeneficiarios.add(contratanteRequest4);
 		}
 		planSFPAResponse.setTitularesBeneficiarios(titularesBeneficiarios);
 		return planSFPAResponse;

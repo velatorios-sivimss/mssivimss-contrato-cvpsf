@@ -119,6 +119,15 @@ public class PlanSFPAController {
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
+	@PostMapping("/actualiza/plan/sfpa")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> actualizaPlanSFPA(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
+		Response<Object> response =   planSFPAService.actualizarPlanSFPA(request, authentication);
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+	
 	@PostMapping("/cancela/plan/sfpa")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
