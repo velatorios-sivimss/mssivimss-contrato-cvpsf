@@ -32,25 +32,25 @@ public class ConsultaPlanSFPA   implements Serializable {
 		.innerJoin("SVC_ESTATUS_PLAN_SFPA SEPLSFPA", "SEPLSFPA.ID_ESTATUS_PLAN_SFPA = SPLSFPA.ID_ESTATUS_PLAN_SFPA")
 		.leftJoin("SVC_ESTATUS_PAGO_ANTICIPADO SEPA", "SEPA.ID_ESTATUS_PAGO_ANTICIPADO = SPSFPA.ID_ESTATUS_PAGO")
 		.where("IFNULL(SPLSFPA.ID_PLAN_SFPA ,0) > 0");
-		if(reporteRequest.getIdVelatorio() != null) {
+		if(reporteRequest.getIdVelatorio() != null &&  ConsultaConstantes.EMPTY_STRING.equals(reporteRequest.getIdVelatorio())) {
 			queryUtil.and("SPLSFPA.ID_VELATORIO IN ("+reporteRequest.getIdVelatorio()+")");
 		}
-		if(reporteRequest.getNumFolioPlanSfpa() != null) {
+		if(reporteRequest.getNumFolioPlanSfpa() != null &&  ConsultaConstantes.EMPTY_STRING.equals(reporteRequest.getNumFolioPlanSfpa())) {
 			queryUtil.and("SPLSFPA.NUM_FOLIO_PLAN_SFPA = :numFolioPlanSfpa").setParameter("numFolioPlanSfpa", reporteRequest.getNumFolioPlanSfpa());
 		}
-		if(reporteRequest.getRfc() != null) {
+		if(reporteRequest.getRfc() != null &&  ConsultaConstantes.EMPTY_STRING.equals(reporteRequest.getRfc())) {
 			queryUtil.and("SP.CVE_RFC = :rfc").setParameter("rfc", reporteRequest.getRfc());
 		}
-		if(reporteRequest.getCurp() != null) {
+		if(reporteRequest.getCurp() != null  &&  ConsultaConstantes.EMPTY_STRING.equals(reporteRequest.getCurp())) {
 			queryUtil.and("SP.CVE_CURP = :curp").setParameter("curp", reporteRequest.getCurp());
 		}
-		if(reporteRequest.getNombreAfiliado() != null) {
+		if(reporteRequest.getNombreAfiliado() != null &&  ConsultaConstantes.EMPTY_STRING.equals(reporteRequest.getNombreAfiliado())) {
 			queryUtil.and("CONCAT_WS(' ',SP.NOM_PERSONA,SP.NOM_PRIMER_APELLIDO,SP.NOM_SEGUNDO_APELLIDO ) LIKE '%"+reporteRequest.getNombreAfiliado()+"%'");
 		}
-		if(reporteRequest.getIdEstatusPlanSfpa() != null) {
+		if(reporteRequest.getIdEstatusPlanSfpa() != null && 0 < reporteRequest.getIdEstatusPlanSfpa()) {
 			queryUtil.and("SPLSFPA.ID_ESTATUS_PLAN_SFPA = :idEstatusPlanSfpa").setParameter("idEstatusPlanSfpa", reporteRequest.getIdEstatusPlanSfpa());
 		}
-		if(reporteRequest.getFechaInicio() != null && reporteRequest.getFechaFin() != null) {
+		if((reporteRequest.getFechaInicio() != null && reporteRequest.getFechaFin() != null) && (ConsultaConstantes.EMPTY_STRING.equals(reporteRequest.getFechaInicio()) && ConsultaConstantes.EMPTY_STRING.equals(reporteRequest.getFechaFin()))) {
 			queryUtil.and("SPLSFPA.FEC_INGRESO  BETWEEN '"+reporteRequest.getFechaInicio()+"' AND '"+reporteRequest.getFechaFin()+"'");
 		}
 
@@ -66,25 +66,25 @@ public class ConsultaPlanSFPA   implements Serializable {
 	public String consultaPlanSFPA(ReporteRequest reporteRequest) {
 		StringBuilder condicciones = new StringBuilder();
 		
-		if(reporteRequest.getIdVelatorio() != null) {
+		if(reporteRequest.getIdVelatorio() != null &&  ConsultaConstantes.EMPTY_STRING.equals(reporteRequest.getIdVelatorio())) {
 			condicciones.append(" AND SPLSFPA.ID_VELATORIO IN (").append(reporteRequest.getIdVelatorio()).append(")");
 		}
-		if(reporteRequest.getNumFolioPlanSfpa() != null) {
+		if(reporteRequest.getNumFolioPlanSfpa() != null &&  ConsultaConstantes.EMPTY_STRING.equals(reporteRequest.getNumFolioPlanSfpa())) {
 			condicciones.append(" AND SPLSFPA.NUM_FOLIO_PLAN_SFPA = '").append(reporteRequest.getNumFolioPlanSfpa()).append(ConsultaConstantes.COMILLA_SIMPLE);
 		}
-		if(reporteRequest.getRfc() != null) {
+		if(reporteRequest.getRfc() != null &&  ConsultaConstantes.EMPTY_STRING.equals(reporteRequest.getRfc())) {
 			condicciones.append("AND SP.CVE_RFC = '").append(reporteRequest.getRfc()).append(ConsultaConstantes.COMILLA_SIMPLE);
 		}
-		if(reporteRequest.getCurp() != null) {
+		if(reporteRequest.getCurp() != null  &&  ConsultaConstantes.EMPTY_STRING.equals(reporteRequest.getCurp())) {
 			condicciones.append("AND SP.CVE_CURP = '").append(reporteRequest.getCurp()).append(ConsultaConstantes.COMILLA_SIMPLE);
 		}
-		if(reporteRequest.getNombreAfiliado() != null) {
+		if(reporteRequest.getNombreAfiliado() != null &&  ConsultaConstantes.EMPTY_STRING.equals(reporteRequest.getNombreAfiliado())) {
 			condicciones.append(" AND CONCAT_WS(' ',SP.NOM_PERSONA,SP.NOM_PRIMER_APELLIDO,SP.NOM_SEGUNDO_APELLIDO ) LIKE '%").append(reporteRequest.getNombreAfiliado()).append("%'");
 		}
-		if(reporteRequest.getIdEstatusPlanSfpa() != null) {
+		if(reporteRequest.getIdEstatusPlanSfpa() != null && 0 < reporteRequest.getIdEstatusPlanSfpa()) {
 			condicciones.append(" AND SPLSFPA.ID_ESTATUS_PLAN_SFPA = ").append(reporteRequest.getIdEstatusPlanSfpa());
 		}
-		if(reporteRequest.getFechaInicio() != null && reporteRequest.getFechaFin() != null) {
+		if((reporteRequest.getFechaInicio() != null && reporteRequest.getFechaFin() != null) && (ConsultaConstantes.EMPTY_STRING.equals(reporteRequest.getFechaInicio()) && ConsultaConstantes.EMPTY_STRING.equals(reporteRequest.getFechaFin()))) {
 			condicciones.append(" AND SPLSFPA.FEC_INGRESO  BETWEEN '").append(reporteRequest.getFechaInicio()).append("' AND '").append(reporteRequest.getFechaFin()).append(ConsultaConstantes.COMILLA_SIMPLE);
 		}
 		return condicciones.toString();

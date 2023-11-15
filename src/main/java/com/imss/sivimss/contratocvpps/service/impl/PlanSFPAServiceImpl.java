@@ -336,6 +336,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 			}
 			InsertPlanSfpaRequest insertPlanSfpaRequest = new InsertaActualizaPlanSfpa().insertaPlanSfpa(planSFPARequest, pagoFechaResponse, usuarioDto);
 			response  =  actualizarPlanSFPARepository.actulizaPlanSfpa(insertPlanSfpaRequest);
+			response.setMensaje(planSFPARequest.getNumFolioPlanSfpa());
 			if (response.getCodigo() == 200){
 				if(Boolean.TRUE.equals(planSFPARequest.getIndTipoPagoMensual())) {
 					Map<String, Object> map = new HashMap<>();

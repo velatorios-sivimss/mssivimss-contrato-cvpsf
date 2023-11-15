@@ -58,6 +58,7 @@ public class ConsultaConstantes {
 	public static final String QUERY = " query : ";
 	public static final String EXITO = "Exito"; 
 	public static final String COMILLA_SIMPLE = "'";
+	public static final String EMPTY_STRING = "";
 	
 	private ConsultaConstantes() {
 		super();
