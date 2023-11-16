@@ -34,6 +34,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		InsertPlanSfpaRequest insertPlanSfpaRequest = new InsertPlanSfpaRequest();
 		ArrayList<String> insertar = new ArrayList<>();
 		ArrayList<String> actualizar = new ArrayList<>();
+		ArrayList<String> insertar2 = new ArrayList<>();
 		if (planSFPARequest.getIdPlanSfpa()!= null) {
 			for(ContratanteRequest contratanteRequest: planSFPARequest.getTitularesBeneficiarios()) {
 				log.info("  idPersona:  " + contratanteRequest.getIdPersona() +"  idContratante:  "+  contratanteRequest.getIdContratante() + "  IdDomicilio:  "+ contratanteRequest.getCp().getIdDomicilio());
@@ -74,7 +75,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 			}
 			
 			if(Boolean.TRUE.equals(planSFPARequest.getIndTipoPagoMensual())) {
-				insertPlanSfpaRequest.setInsertar2(actualizarPagoSFPA(planSFPARequest, pagoFechaResponse, usuarioDto));
+				insertar2 = actualizarPagoSFPA(planSFPARequest, pagoFechaResponse, usuarioDto);
 			}
 			
 			query = updatePlanSfpa(planSFPARequest, usuarioDto, map);
@@ -119,7 +120,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 				map = obtenerContrante(planSFPARequest, contratanteRequest, map);
 			}
 			
-			insertPlanSfpaRequest.setInsertar2(guardarPagoSFPA(planSFPARequest, usuarioDto));
+			insertar2 = guardarPagoSFPA(planSFPARequest, usuarioDto);
 			
 			query = insertPlanSfpa(planSFPARequest, usuarioDto, map);
 			insertar.add(query);
@@ -127,6 +128,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		
 		insertPlanSfpaRequest.setInsertar(insertar);
 		insertPlanSfpaRequest.setActualizar(actualizar);
+		insertPlanSfpaRequest.setInsertar2(insertar2);
 	
 		log.info(" TERMINO - insertaPlanSfpa");
 		return insertPlanSfpaRequest;
@@ -223,7 +225,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues(ID_DOMICILIO, String.valueOf(contratanteRequest.getCp().getIdDomicilio()));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_MODIFICA, String.valueOf(usuarioDto.getIdUsuario()));
 		q.agregarParametroValues(ConsultaConstantes.FEC_ACTUALIZACION, ConsultaConstantes.CURRENT_DATE);
-		q.addWhere("ID_CONTRATANTE = " + contratanteRequest.getIdContratante());
+		q.addWhere("ID_TITULAR_BENEFICIARIOS = " + contratanteRequest.getIdTitularBeneficiarios());
 		log.info(" TERMINO - updateTitularBeneficiarios");
 		return q.obtenerQueryActualizar();
 	}
@@ -302,7 +304,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 	private String updatePlanSfpa(PlanSFPARequest planSFPARequest, UsuarioDto usuarioDto, Map<String, String> map) {
 		log.info(" INICIO - updatePlanSfpa");
 		final QueryHelper q = new QueryHelper("UPDATE SVT_PLAN_SFPA");
-		q.agregarParametroValues("NUM_FOLIO_PLAN_SFPA", planSFPARequest.getNumFolioPlanSfpa());
+		q.agregarParametroValues("NUM_FOLIO_PLAN_SFPA",planSFPARequest.getIndTipoPagoMensual().booleanValue()== true? planSFPARequest.getNumFolioPlanSfpa():SelectQueryUtil.setValor(planSFPARequest.getNumFolioPlanSfpa()));
 		q.agregarParametroValues("ID_TIPO_CONTRATACION", String.valueOf( planSFPARequest.getIdTipoContratacion()));
 		q.agregarParametroValues(ConsultaConstantes.ID_TITULAR, SelectQueryUtil.setValor( map.get(ConsultaConstantes.ID_TITULAR).toString()));
 		if(planSFPARequest.getTitularesBeneficiarios().size() == 2) {
@@ -366,24 +368,25 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 	}
 	
 	public ArrayList<String> actualizarPagoSFPA(PlanSFPARequest planSFPARequest, PagoFechaResponse pagoFechaResponse,  UsuarioDto usuarioDto) {
-		log.info(" INICIO - guardarPagoSFPA");
+		log.info(" INICIO - actualizarPagoSFPA");
 		ArrayList<String> insertar2 = new ArrayList<>();
 		for (int i = 0; i < planSFPARequest.getNumPagoMensual(); i++) {
+			LocalDate fechaAlta = LocalDate.parse(pagoFechaResponse.getFechaAlta(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 			LocalDate fechaAnterior = LocalDate.parse(pagoFechaResponse.getFechaParcialidad(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 			LocalDate fechafinal = fechaAnterior.plusMonths(i);
 			final QueryHelper q = new QueryHelper("INSERT INTO SVT_PAGO_SFPA");
-			q.agregarParametroValues("ID_PLAN_SFPA", ConsultaConstantes.ID_TABLA7);
+			q.agregarParametroValues("ID_PLAN_SFPA", String.valueOf(planSFPARequest.getIdPlanSfpa()));
 			q.agregarParametroValues("ID_ESTATUS_PAGO", i == 0?String.valueOf(8):String.valueOf(7));
 			q.agregarParametroValues(IND_ACTIVO, String.valueOf(1));
 			q.agregarParametroValues("IMP_MONTO_MENSUAL", String.valueOf(planSFPARequest.getMonPrecio()/planSFPARequest.getNumPagoMensual()));
 			q.agregarParametroValues("FEC_PARCIALIDAD", ConsultaConstantes.COMILLA_SIMPLE.concat(fechafinal.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).concat(ConsultaConstantes.COMILLA_SIMPLE));
-			q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.COMILLA_SIMPLE.concat(pagoFechaResponse.getFechaAlta()).concat(ConsultaConstantes.COMILLA_SIMPLE));
+			q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.COMILLA_SIMPLE.concat(fechaAlta.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).concat(ConsultaConstantes.COMILLA_SIMPLE));
 			q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_ALTA, String.valueOf(usuarioDto.getIdUsuario()));
 			q.agregarParametroValues(ConsultaConstantes.FEC_ACTUALIZACION, ConsultaConstantes.CURRENT_DATE);
 			q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_MODIFICA, String.valueOf(usuarioDto.getIdUsuario()));
 			insertar2.add(q.obtenerQueryInsertar());
 		}
-		log.info(" TERMINO - guardarPagoSFPA");
+		log.info(" TERMINO - actualizarPagoSFPA");
 		return insertar2;
 	}
 	

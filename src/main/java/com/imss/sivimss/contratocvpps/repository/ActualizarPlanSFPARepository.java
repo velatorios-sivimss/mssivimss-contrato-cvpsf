@@ -51,12 +51,12 @@ public class ActualizarPlanSFPARepository {
 		Integer i = 0;
 		try {
 
-			log.info(" inserciones: " + inserciones);
-			log.info(" updates: " + updates);
+			log.info(" inserciones: " + inserciones + "tamano: " + inserciones.size());
+			log.info(" updates: " + updates  + "tamano: " + updates.size());
 
 			connection.setAutoCommit(false);
 
-			if ((inserciones.size() == 12 || inserciones.size() == 9 || inserciones.size() == 6 || inserciones.size() == 3||  inserciones.isEmpty()) && (updates.size() == 1 || updates.size() == 4 || updates.size() == 7 || updates.size() == 10 || updates.size() == 13)) {// listo
+			if ((inserciones.size() == 13 || inserciones.size() == 10 || inserciones.size() == 7|| inserciones.size() == 4) && (updates.isEmpty() || updates.size() == 3 || updates.size() == 6 || updates.size() == 9)) {// listo
 				response  = accionActualiza(request, id, connection, idTabla1, idTabla2, idTabla3,idTabla4, idTabla5, idTabla6, idTabla7, i);
 			}
 
@@ -88,7 +88,7 @@ public class ActualizarPlanSFPARepository {
 			Integer idTabla5, Integer idTabla6, Integer idTabla7, Integer i) throws IOException, SQLException {
 		ResultSet rs;
 		PlanSFPAResponse planSFPAResponse = new PlanSFPAResponse();
-		log.info("Entro accionInserta");
+		log.info("Entro accionActualiza");
 		for (String insercion : request.getActualizar()) {
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), "", AppConstantes.MODIFICACION + " " + insercion);
 			statement = connection.createStatement();

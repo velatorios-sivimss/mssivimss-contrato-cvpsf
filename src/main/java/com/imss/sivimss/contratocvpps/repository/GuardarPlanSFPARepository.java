@@ -34,6 +34,7 @@ public class GuardarPlanSFPARepository {
 
 	public PlanSFPAResponse generaPlanSfpa(InsertPlanSfpaRequest request) throws Exception {
 		ArrayList<String> inserciones = request.getInsertar();
+		ArrayList<String> inserciones2 = request.getInsertar2();
 		ArrayList<String> updates = request.getActualizar();
 		PlanSFPAResponse planSFPAResponse = new PlanSFPAResponse();
 		Connection connection = database.getConnection();
@@ -49,6 +50,7 @@ public class GuardarPlanSFPARepository {
 		try {
 
      		log.info(" inserciones: " + inserciones + "tamano: " + inserciones.size());
+     		log.info(" inserciones2: " + inserciones2 + "tamano: " + inserciones2.size());
 			log.info(" updates: " + updates  + "tamano: " + updates.size());
 
 			connection.setAutoCommit(false);
