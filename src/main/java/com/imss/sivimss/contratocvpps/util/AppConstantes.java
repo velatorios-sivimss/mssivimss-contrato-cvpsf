@@ -26,6 +26,7 @@ public class AppConstantes {
 	public static final String FORBIDDENEXCEPTION_MENSAJE = "No tiene autorización para realizar la solicitud.";
 	public static final String CIRCUITBREAKER = "186"; // El servicio no responde, no permite más llamadas.
 	public static final String OCURRIO_ERROR_GENERICO = "187";// Ocurrio un error al procesar tu solicitud.
+	public static final String MENSAJE = "Ha ocurrido un error al recuperar la informacion";
 	
 	public static final String ALTA = "alta";
 	public static final String BAJA = "baja";
@@ -38,6 +39,8 @@ public class AppConstantes {
 	public static final String ERROR_GUARDAR = "5";//Error al guardar la información. Intenta nuevamente.
 	public static final String CATALOGO_CONSULTAR= "/consulta";
 	public static final String ERROR_AL_GENERAR_FOLIO = "Error al generar el folio del plan sfpa ";
+	
+	public static final String USR_CONTRASENIA= "registrarUsuario";
 
 	private AppConstantes() {
 		throw new IllegalStateException("AppConstantes class");

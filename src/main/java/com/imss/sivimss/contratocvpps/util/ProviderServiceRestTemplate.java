@@ -1,6 +1,6 @@
 package com.imss.sivimss.contratocvpps.util;
 
-
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-
 
 import com.google.gson.Gson;
 import com.imss.sivimss.contratocvpps.security.jwt.JwtTokenProvider;
@@ -61,6 +60,11 @@ public class ProviderServiceRestTemplate {
 	public Response<Object> consumirServicioReportes(Map<String, Object> dato, String url, Authentication authentication) {
 		Response<Object> respuestaGenerado = restTemplateUtil.sendPostRequestByteArrayReportesToken(url,new DatosReporteDTO(dato),
 				jwtTokenProvider.createToken((String) authentication.getPrincipal()), Response.class);
+		return validarResponse(respuestaGenerado);
+	}
+	
+	public Response<Object> consumirServicio(Object dato, String url) throws IOException {
+		Response<Object> respuestaGenerado=restTemplateUtil.sendPostRequestByteArrayToken(url, dato,jwtTokenProvider.createToken(""), Response.class);
 		return validarResponse(respuestaGenerado);
 	}
 
