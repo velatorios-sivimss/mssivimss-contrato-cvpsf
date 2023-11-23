@@ -33,5 +33,7 @@ public interface PlanSFPAService {
 	Response<Object>  consultaDetallePlanSfpa(DatosRequest request, Authentication authentication) throws IOException, SQLException;
 	
 	Response<Object> consultarFolioOrden(DatosRequest request, Authentication authentication) throws IOException;
+	
+	Response<Object>  consultaDetalleLineaPlanSFPA(DatosRequest request, Authentication authentication) throws IOException, SQLException;
 
 }
