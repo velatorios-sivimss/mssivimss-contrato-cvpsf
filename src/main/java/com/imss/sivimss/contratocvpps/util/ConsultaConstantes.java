@@ -10,6 +10,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import com.imss.sivimss.contratocvpps.model.request.ContratanteRequest;
 import com.imss.sivimss.contratocvpps.model.request.DomicilioRequest;
+import com.imss.sivimss.contratocvpps.model.response.LineaPlanSFPAResponse;
 import com.imss.sivimss.contratocvpps.model.response.PlanSFPAResponse;
 
 public class ConsultaConstantes {
@@ -232,6 +233,17 @@ public class ConsultaConstantes {
 		}
 		planSFPAResponse.setTitularesBeneficiarios(titularesBeneficiarios);
 		return planSFPAResponse;
+	}
+	
+	public static  LineaPlanSFPAResponse generarDetalleLineaPlan(ResultSet rs) throws SQLException {
+		LineaPlanSFPAResponse response = new LineaPlanSFPAResponse();
+		response.setIdPlanSfpa(rs.getInt(1));
+		response.setNumFolioPlanSFPA(rs.getString(2));
+		response.setCurpTitular(rs.getString(3));
+		response.setNombreTitular(rs.getString(4));
+		response.setCurpSubtitular(rs.getString(5));
+		response.setNombreSubtitular(rs.getString(6));
+		return response;
 	}
 	
 	public static String queryEncoded (String query) {

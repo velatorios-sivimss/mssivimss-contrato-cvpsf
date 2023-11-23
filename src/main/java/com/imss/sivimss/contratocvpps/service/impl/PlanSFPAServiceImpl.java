@@ -27,6 +27,7 @@ import com.imss.sivimss.contratocvpps.exception.BadRequestException;
 import com.imss.sivimss.contratocvpps.model.request.ContratanteRequest;
 import com.imss.sivimss.contratocvpps.model.request.FolioRequest;
 import com.imss.sivimss.contratocvpps.model.request.InsertPlanSfpaRequest;
+import com.imss.sivimss.contratocvpps.model.request.LineaPlanSFPARequest;
 import com.imss.sivimss.contratocvpps.model.request.PlanSFPARequest;
 import com.imss.sivimss.contratocvpps.model.request.TitularRequest;
 import com.imss.sivimss.contratocvpps.model.request.UsuarioDto;
@@ -306,6 +307,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 				datos.put(AppConstantes.DATOS, map);
 				datosRequest.setDatos(datos); response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication); 
 				if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")) {
+					response.setCodigo(planSFPARequest.getIdPlanSfpa());
 					response.setMensaje(planSFPARepository.obtenerFolioPlanSfpa(new PlanSFPA().folioPlanSfpa(planResponse.getIdPlanSfpa()))); 
 				}
 		    }
@@ -347,6 +349,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 					datosRequest.setDatos(datos);
 					response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication);
 					if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")){
+						response.setCodigo(planSFPARequest.getIdPlanSfpa());
 						response.setMensaje(planSFPARepository.obtenerFolioPlanSfpa(new PlanSFPA().folioPlanSfpa(planSFPARequest.getIdPlanSfpa()))); 
 					}
 				}
@@ -453,5 +456,22 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 	        logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + decoded, AppConstantes.CONSULTA, authentication);
 	        throw new IOException(AppConstantes.ERROR_CONSULTAR, e.getCause());
 		}
+	}
+
+	@Override
+	public Response<Object> consultaDetalleLineaPlanSFPA(DatosRequest request, Authentication authentication)
+			throws IOException, SQLException {
+		try {
+			LineaPlanSFPARequest lineaPlanSFPARequest = new Gson().fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), LineaPlanSFPARequest.class);
+			String detalllePlanSfpa = new DetallePlanSfpa().consultaLineaDetallePlanSFPA(lineaPlanSFPARequest.getIdTitular());
+			response =  planSFPARepository.consultarLineaDetallePlanSfpa(detalllePlanSfpa);
+		   } catch (Exception e) {
+	        	e.printStackTrace();
+				log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_GUARDAR));
+				log.error(e.getMessage());
+			    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_GUARDAR, AppConstantes.ALTA, authentication);
+			    throw new IOException(AppConstantes.ERROR_GUARDAR, e.getCause());
+			}
+		return response;
 	}
 }
