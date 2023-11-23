@@ -1,5 +1,6 @@
 package com.imss.sivimss.contratocvpps.repository;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,8 +9,10 @@ import java.util.logging.Level;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.imss.sivimss.contratocvpps.model.request.ContratanteRequest;
 import com.imss.sivimss.contratocvpps.model.response.LineaPlanSFPAResponse;
 import com.imss.sivimss.contratocvpps.model.response.NumeroPagoPlanSfpaResponse;
 import com.imss.sivimss.contratocvpps.model.response.PagoFechaResponse;
@@ -20,9 +23,13 @@ import com.imss.sivimss.contratocvpps.util.AppConstantes;
 import com.imss.sivimss.contratocvpps.util.ConsultaConstantes;
 import com.imss.sivimss.contratocvpps.util.ConvertirGenerico;
 import com.imss.sivimss.contratocvpps.util.Database;
+import com.imss.sivimss.contratocvpps.util.GeneraCredencialesUtil;
 import com.imss.sivimss.contratocvpps.util.LogUtil;
 import com.imss.sivimss.contratocvpps.util.Response;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class PlanSFPARepository {
 	
@@ -40,6 +47,9 @@ public class PlanSFPARepository {
 	private ResultSet rs;
 	
 	private Response<Object> response;
+	
+	@Autowired
+	private GeneraCredencialesUtil generaCredenciales;
 	
 	public Response<Object> cancelarPlanSfpa(String request) throws Exception {
 		Connection connection = database.getConnection();
@@ -303,5 +313,56 @@ public class PlanSFPARepository {
 			}
 		}
 		return response;
+	}
+	
+	
+	public Response<Object> registrarUsuario(String request) throws IOException {
+		Response <Object>resp = new Response<>();
+		ContratanteRequest contratanteR = new ContratanteRequest();
+		Connection connection = database.getConnection();
+		try {
+			
+			statement = connection.createStatement();
+			connection.setAutoCommit(false);
+			rs=statement.executeQuery(request);
+			if (rs.next()) {
+				contratanteR.setIdContratante(rs.getInt(1));
+				contratanteR.setIdPersona(rs.getInt(2));
+				contratanteR.setNomPersona(rs.getString(3));
+				contratanteR.setPrimerApellido(rs.getString(4));
+				contratanteR.setSegundoApellido(rs.getString(5));
+				contratanteR.setCorreo(rs.getString(6));
+				String contrasenia= generaCredenciales.generarContrasenia(contratanteR.getNomPersona() , contratanteR.getPrimerApellido());
+				String user = generaCredenciales.insertarUser(contratanteR.getIdContratante(),contratanteR.getNomPersona(), contratanteR.getPrimerApellido(), contrasenia, contratanteR.getIdPersona(), statement);
+				resp = generaCredenciales.enviarCorreo(user, contratanteR.getCorreo(), contratanteR.getNomPersona(), contratanteR.getPrimerApellido(), contratanteR.getSegundoApellido(), contrasenia);
+			}
+			connection.commit();
+		}catch (Exception e) {
+			throw new IOException("Fallo al ejecutar la query" + e.getMessage());
+		
+		}finally {
+			
+			try {
+				
+				if(statement!=null) {
+					statement.close();
+				}                               
+				if(connection!=null) {
+					connection.close();
+				}
+				
+			} catch (SQLException ex) {
+				
+				log.info(ex.getMessage());
+    
+			}
+	}
+		if (resp.getCodigo()==null) {
+			resp = new Response<>(true, HttpStatus.OK.value(), "error al enviar el correo",
+					null );
+		} else {
+			resp = new Response<>(false, HttpStatus.OK.value(), "OK",contratanteR.getIdContratante() );
+		}
+		return resp;
 	}
 }

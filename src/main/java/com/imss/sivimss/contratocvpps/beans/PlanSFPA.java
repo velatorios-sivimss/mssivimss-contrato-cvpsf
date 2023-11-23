@@ -231,4 +231,16 @@ public class PlanSFPA implements Serializable {
 		log.info(" TERMINO - deletePagoSfpa: "  + delete);
 		return delete.toString();
 	}
+	
+	public String consultaPlanSFPA(Integer idPlanSfpa) {
+		log.info(" INICIO - consultaPlanSFPA");
+		SelectQueryUtil queryUtil = new SelectQueryUtil();
+		queryUtil.select("SPSFPA.ID_TITULAR as idTitular","SP.ID_PERSONA AS idPersona","IFNULL(SP.NOM_PERSONA, '') AS nomPersona","IFNULL(SP.NOM_PRIMER_APELLIDO, '') AS nomApellidoPaterno",
+		"IFNULL(SP.NOM_SEGUNDO_APELLIDO, '') AS nomApellidoMaterno","IFNULL(SP.REF_CORREO , '') AS correo").from("SVT_PLAN_SFPA SPSFPA")
+		.innerJoin("SVC_CONTRATANTE SC", "SC.ID_CONTRATANTE = SPSFPA.ID_TITULAR").innerJoin("SVC_PERSONA", "SP.ID_PERSONA = SC.ID_PERSONA")
+		.where("IFNULL(SPSFPA.ID_PLAN_SFPA ,0) > 0").and("SPSFPA.ID_PLAN_SFPA = :idPlanSfpa").setParameter("idPlanSfpa", idPlanSfpa);
+		final String query = queryUtil.build();
+		log.info(" TERMINO - consultaPlanSFPA"+ query);
+		return query;
+	}
 }
