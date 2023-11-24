@@ -308,10 +308,9 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 				datosRequest.setDatos(datos); 
 				response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication); 
 				if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")) {
-					response = planSFPARepository.registrarUsuario(new PlanSFPA().consultaPlanSFPA(planResponse.getIdPlanSfpa())) ;
-					if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")) {
+					Response<Object> res = planSFPARepository.registrarUsuario(new PlanSFPA().consultaPlanSFPA(planResponse.getIdPlanSfpa())) ;
+					if (res.getCodigo() == 200 && !res.getDatos().toString().contains("[]")) {
 						response.setMensaje(planSFPARepository.obtenerFolioPlanSfpa(new PlanSFPA().folioPlanSfpa(planResponse.getIdPlanSfpa()))); 
-						response.setDatos(response.getDatos());
 					}
 				}
 		    }
@@ -353,7 +352,6 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 					datosRequest.setDatos(datos);
 					response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication);
 					if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")){
-						response.setCodigo(planSFPARequest.getIdPlanSfpa());
 						response.setMensaje(planSFPARepository.obtenerFolioPlanSfpa(new PlanSFPA().folioPlanSfpa(planSFPARequest.getIdPlanSfpa()))); 
 					}
 				}
