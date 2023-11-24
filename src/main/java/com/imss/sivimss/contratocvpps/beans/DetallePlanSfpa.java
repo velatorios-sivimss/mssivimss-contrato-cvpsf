@@ -57,17 +57,17 @@ public class DetallePlanSfpa  implements Serializable {/**
 		return query;
 	}
 	
-	public String consultaLineaDetallePlanSFPA(Integer idTitular) {
+	public String consultaLineaDetallePlanSFPA(String cveUsuario) {
 		log.info(" INICIO - consultaLineaDetallePlanSFPA");
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
 		queryUtil.select("SPSFPA.ID_PLAN_SFPA as idPlanSfpa", "IFNULL(SPSFPA.NUM_FOLIO_PLAN_SFPA, '') as numFolioPlanSfpa","IFNULL(SP.CVE_CURP, '') as curpTitular",
 				"IFNULL(CONCAT_WS(' ',SP.NOM_PERSONA,SP.NOM_PRIMER_APELLIDO,SP.NOM_SEGUNDO_APELLIDO), '') AS nombreTitular","IFNULL(SP2.CVE_CURP, '') as curpSubtitular",
 				"IFNULL(CONCAT_WS(' ',SP2.NOM_PERSONA,SP2.NOM_PRIMER_APELLIDO,SP2.NOM_SEGUNDO_APELLIDO), '') AS nombreSubtitular")
-		.from("SVT_PLAN_SFPA SPSFPA").innerJoin("SVC_CONTRATANTE SC", "SC.ID_CONTRATANTE = SPSFPA.ID_TITULAR")
-		.innerJoin("SVC_PERSONA SP", "SP.ID_PERSONA = SC.ID_PERSONA").innerJoin("SVT_DOMICILIO SD", "SD.ID_DOMICILIO = SC.ID_DOMICILIO")
+		.from("SVT_PLAN_SFPA SPSFPA").innerJoin("SVC_CONTRATANTE SC", "SC.ID_CONTRATANTE = SPSFPA.ID_TITULAR").innerJoin("SVC_PERSONA SP", "SP.ID_PERSONA = SC.ID_PERSONA")
+		.innerJoin("SVT_USUARIOS SU", "SU.ID_PERSONA = SP.ID_PERSONA").innerJoin("SVT_DOMICILIO SD", "SD.ID_DOMICILIO = SC.ID_DOMICILIO")
 		.leftJoin("SVT_TITULAR_BENEFICIARIOS STB2", "STB2.ID_TITULAR_BENEFICIARIOS = SPSFPA.ID_TITULAR_SUBSTITUTO")
 		.leftJoin("SVC_PERSONA SP2", "SP2.ID_PERSONA = STB2.ID_PERSONA").leftJoin("SVT_DOMICILIO SD2", "SD2.ID_DOMICILIO = STB2.ID_DOMICILIO")
-		.innerJoin("SVC_VELATORIO SV", "SV.ID_VELATORIO = SPSFPA.ID_VELATORIO").where("SPSFPA.ID_TITULAR = :idTitular").setParameter("idTitular", idTitular);
+		.innerJoin("SVC_VELATORIO SV", "SV.ID_VELATORIO = SPSFPA.ID_VELATORIO").where("SU.CVE_USUARIO = :cveUsuario").setParameter("cveUsuario", cveUsuario);
 		final String query = queryUtil.build();
 		log.info(" TERMINO - consultaLineaDetallePlanSFPA"+ query );
 		return query;

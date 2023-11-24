@@ -465,7 +465,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 			throws IOException, SQLException {
 		try {
 			LineaPlanSFPARequest lineaPlanSFPARequest = new Gson().fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), LineaPlanSFPARequest.class);
-			String detalllePlanSfpa = new DetallePlanSfpa().consultaLineaDetallePlanSFPA(lineaPlanSFPARequest.getIdTitular());
+			String detalllePlanSfpa = new DetallePlanSfpa().consultaLineaDetallePlanSFPA(lineaPlanSFPARequest.getCveUsuario());
 			response =  planSFPARepository.consultarLineaDetallePlanSfpa(detalllePlanSfpa);
 		   } catch (Exception e) {
 	        	e.printStackTrace();

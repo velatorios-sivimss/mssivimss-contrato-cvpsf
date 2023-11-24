@@ -10,6 +10,6 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LineaPlanSFPARequest {
 	
-	private Integer idTitular;
+	private String cveUsuario;
 
 }
