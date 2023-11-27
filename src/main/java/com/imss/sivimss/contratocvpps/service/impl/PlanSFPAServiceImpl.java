@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.imss.sivimss.contratocvpps.beans.DetallePlanSfpa;
 import com.imss.sivimss.contratocvpps.beans.FolioOrdenServicio;
 import com.imss.sivimss.contratocvpps.beans.InsertaActualizaPlanSfpa;
+import com.imss.sivimss.contratocvpps.beans.InsertaLineaPlanSFPA;
 import com.imss.sivimss.contratocvpps.beans.PlanSFPA;
 import com.imss.sivimss.contratocvpps.exception.BadRequestException;
 import com.imss.sivimss.contratocvpps.model.request.ContratanteRequest;
@@ -65,6 +66,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 	private static final String CURP_NO_VALIDO = "34"; // CURP no valido.
 	private static final String RFC_NO_VALIDO = "33"; // R.F.C. no valido.
 	private static final String CONSULTA = "consulta";
+	private static final String ID_PLAN_SFPA = "idPlanSFPA";
 
 	@Value("${endpoints.mod-catalogos}")
 	private String urlModCatalogos;
@@ -302,7 +304,42 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 			if(planResponse.getIdPlanSfpa() != null) { 
 				Map<String, Object> map = new HashMap<>(); 
 				Map<String, Object> datos = new HashMap<>();
-				map.put("idPlanSFPA", planResponse.getIdPlanSfpa()); 
+				map.put(ID_PLAN_SFPA, planResponse.getIdPlanSfpa()); 
+				DatosRequest datosRequest = new DatosRequest(); 
+				datos.put(AppConstantes.DATOS, map);
+				datosRequest.setDatos(datos); 
+				response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication); 
+				if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")) {
+					Response<Object> res = planSFPARepository.registrarUsuario(new PlanSFPA().consultaPlanSFPA(planResponse.getIdPlanSfpa())) ;
+					if (res.getCodigo() == 200 && !res.getDatos().toString().contains("[]")) {
+						response.setMensaje(planSFPARepository.obtenerFolioPlanSfpa(new PlanSFPA().folioPlanSfpa(planResponse.getIdPlanSfpa()))); 
+					}
+				}
+		    }
+		}catch (Exception e) {
+			e.printStackTrace();
+			log.error(e.getMessage());
+		    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_AL_GENERAR_FOLIO, AppConstantes.ALTA, authentication);
+		    throw new IOException(AppConstantes.ERROR_GUARDAR, e.getCause());
+		}
+		return response;
+	}
+	
+	@Override
+	public Response<Object> registrarLineaPlanSFPA(DatosRequest request, Authentication authentication)throws IOException, SQLException {
+		try {
+			PlanSFPARequest planSFPARequest = new Gson().fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), PlanSFPARequest.class);
+			UsuarioDto usuarioDto = new Gson().fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
+			logUtil.crearArchivoLog(Level.INFO.toString(),this.getClass().getSimpleName(),this.getClass().getPackage().toString()," insertar linea plan sfpa", AppConstantes.ALTA,authentication);
+			List<ContratanteRequest> contratante = planSFPARequest.getTitularesBeneficiarios().stream().map(contratanteRequest ->  consultaExistePersona(request, authentication, contratanteRequest)) .collect(Collectors.toList());
+			planSFPARequest.setTitularesBeneficiarios(contratante);
+			planSFPARequest.setNumFolioPlanSfpa("(".concat(new PlanSFPA().obtenerFolioPlanSFPA(planSFPARequest, usuarioDto)));
+			InsertPlanSfpaRequest insertPlanSfpaRequest = new InsertaLineaPlanSFPA().insertaLineaPlanSfpa(planSFPARequest, usuarioDto);
+			PlanSFPAResponse planResponse = guardarPlanSFPARepository.generaPlanSfpa(insertPlanSfpaRequest); 
+			if(planResponse.getIdPlanSfpa() != null) { 
+				Map<String, Object> map = new HashMap<>(); 
+				Map<String, Object> datos = new HashMap<>();
+				map.put(ID_PLAN_SFPA, planResponse.getIdPlanSfpa()); 
 				DatosRequest datosRequest = new DatosRequest(); 
 				datos.put(AppConstantes.DATOS, map);
 				datosRequest.setDatos(datos); 
@@ -346,7 +383,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 				if(Boolean.TRUE.equals(planSFPARequest.getIndTipoPagoMensual())) {
 					Map<String, Object> map = new HashMap<>();
 					Map<String, Object> datos = new HashMap<>();
-					map.put("idPlanSFPA", planSFPARequest.getIdPlanSfpa());
+					map.put(ID_PLAN_SFPA, planSFPARequest.getIdPlanSfpa());
 					DatosRequest datosRequest = new DatosRequest();
 					datos.put(AppConstantes.DATOS, map);
 					datosRequest.setDatos(datos);
