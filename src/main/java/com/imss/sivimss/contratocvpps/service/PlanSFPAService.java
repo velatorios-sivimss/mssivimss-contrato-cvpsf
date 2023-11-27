@@ -26,6 +26,8 @@ public interface PlanSFPAService {
 	
 	Response<Object>  registrarPlanSFPA(DatosRequest request, Authentication authentication) throws IOException, SQLException;
 	
+	Response<Object>  registrarLineaPlanSFPA(DatosRequest request, Authentication authentication) throws IOException, SQLException;
+	
 	Response<Object>  actualizarPlanSFPA(DatosRequest request, Authentication authentication) throws IOException, SQLException;
 	
 	Response<Object>  cancelaPlanSFPA(DatosRequest request, Authentication authentication) throws IOException, SQLException;
