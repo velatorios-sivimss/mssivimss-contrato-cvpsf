@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
+import com.imss.sivimss.contratocvpps.beans.ReporteConcentradoSFPA;
 import com.imss.sivimss.contratocvpps.beans.ReportePagoAnticipado;
 import com.imss.sivimss.contratocvpps.model.request.ReporteDto;
 import com.imss.sivimss.contratocvpps.model.request.ReporteSiniestrosPFRequest;
@@ -58,12 +59,16 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 	
 	@Value("${reporte.anexo-convenio-pago-anticipado}")
 	private String convenioPagoAnticipado;
+	
+	@Value("${reporte.concentrado-servicios-sfpa}")
+	private String reporteConcentradoSFPA;
 
 	@Autowired 
 	private ModelMapper modelMapper;
 	
 	@Autowired
 	private LogUtil logUtil;
+
 	
 	@Value("${reporte.siniestros-prevision-funeraria}")
 	private String generarReporteSiniestrosPF;
@@ -218,5 +223,19 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 			return LocalDate.parse( fechaInicial).format(DateTimeFormatter.ofPattern( "dd-MM-uuuu" )).toString().concat(" - ").concat(LocalDate.parse( fechaFinal).format(DateTimeFormatter.ofPattern( "dd-MM-uuuu" )).toString());
 		}
 		return "";
+	}
+	@Override
+	public Response<Object> concentradoReportePlanSFPA(DatosRequest request, Authentication authentication)
+			throws IOException {
+		ReporteConcentradoSFPA reporteConcentrado = new ReporteConcentradoSFPA();
+		try {
+			ReporteSiniestrosPFRequest concentradoRequest = new Gson().fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), ReporteSiniestrosPFRequest.class);
+			Map<String, Object> envioDatos = reporteConcentrado.generaConcentradoSFPA(concentradoRequest, reporteConcentradoSFPA);
+		   return MensajeResponseUtil.mensajeResponseObject(providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication), ERROR_AL_DESCARGAR_DOCUMENTO);
+		} catch (Exception e) {
+			log.error("Error.. {}", e.getMessage());
+            logUtil.crearArchivoLog(Level.SEVERE.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), "Fallo al ejecutar el reporte : " + e.getMessage(), CONSULTA, authentication);
+            throw new IOException("64", e.getCause());
+		}
 	}
 }
