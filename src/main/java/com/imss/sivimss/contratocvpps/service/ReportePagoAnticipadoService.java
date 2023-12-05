@@ -11,4 +11,6 @@ public interface ReportePagoAnticipadoService {
 
     Response<Object> generaReporteConvenioPagoAnticipado(DatosRequest request, Authentication authentication) throws IOException;
     Response<Object> generarReporteSiniestros(DatosRequest request, Authentication authentication)throws IOException ;
+	Response<Object> concentradoReportePlanSFPA(DatosRequest request, Authentication authentication) throws IOException ;
+
 }
