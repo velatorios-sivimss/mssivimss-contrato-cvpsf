@@ -20,22 +20,23 @@ public class ReporteConcentradoSFPA {
 		log.info(" INICIO - generaReporteSiniestrosPF : ");
 		StringBuilder condicion = new StringBuilder();
 		if(concentradoRequest.getId_delegacion()!=null) {
-			condicion.append(" vel.ID_DELEGACION="+concentradoRequest.getId_delegacion());
+			condicion.append(" AND vel.ID_DELEGACION="+concentradoRequest.getId_delegacion());
 		}
 		if(concentradoRequest.getId_velatorio()!=null) {
-			condicion.append(" sfpa.ID_VELATORIO="+concentradoRequest.getId_velatorio());
+			condicion.append(" AND sfpa.ID_VELATORIO="+concentradoRequest.getId_velatorio());
 		}
 		if(concentradoRequest.getFecha_inicial()!=null) {
 			String fechaInicio = formatFecha(concentradoRequest.getFecha_inicial());
-			condicion.append(" sfpa.FEC_INGRESO>="+fechaInicio);
+			condicion.append(" AND sfpa.FEC_INGRESO>='"+fechaInicio+"'");
 		}
 		if(concentradoRequest.getFecha_final()!=null) {
 			String fechaFin = formatFecha(concentradoRequest.getFecha_final());
-			condicion.append(" sfpa.FEC_INGRESO<="+fechaFin);
+			condicion.append(" AND sfpa.FEC_INGRESO<='"+fechaFin+"'");
 		}
 		Map<String, Object> envioDatos = new HashMap<>();
-		envioDatos.put("condition", condicion.toString());
-		envioDatos.put("fecIncio", concentradoRequest.getFecha_inicial());
+		envioDatos.put("condition", condicion.toString().replaceFirst("AND", "WHERE"));
+		log.info("where "+condicion.toString().replaceFirst("AND", "WHERE"));
+		envioDatos.put("fecInicio", concentradoRequest.getFecha_inicial());
 		envioDatos.put("fecFin", concentradoRequest.getFecha_final());
 		envioDatos.put("tipoReporte", concentradoRequest.getTipoReporte());
 		envioDatos.put("rutaNombreReporte", reporteConcentradoSFPA);
