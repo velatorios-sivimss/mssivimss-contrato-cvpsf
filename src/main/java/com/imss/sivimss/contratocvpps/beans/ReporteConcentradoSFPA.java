@@ -35,7 +35,7 @@ public class ReporteConcentradoSFPA {
 		}
 		Map<String, Object> envioDatos = new HashMap<>();
 		envioDatos.put("condition", condicion.toString().replaceFirst("AND", "WHERE"));
-		log.info("where "+condicion.toString().replaceFirst("AND", "WHERE"));
+		log.info("where "+envioDatos.toString());
 		envioDatos.put("fecInicio", concentradoRequest.getFecha_inicial());
 		envioDatos.put("fecFin", concentradoRequest.getFecha_final());
 		envioDatos.put("tipoReporte", concentradoRequest.getTipoReporte());
