@@ -44,7 +44,7 @@ endpoints:
    ms-reportes: ${msit_REPORTES_GENERALES}
    ms-rfc: ${msit_SAT}
    ms-curp: ${msit_RENAPO}
-   envio-correo: "http://serviciosdigitalesinterno-stage.imss.gob.mx/serviciosDigitales-rest/v1/util/correoElectronico/enviar"
+   envio-correo: "https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ser-externos/v1/catalogos/externos/enviar/correo/recuperacontrasenia"
   
 reporte:
     anexo-convenio-pago-anticipado: ${msit_ANEXO_CONVENIO_PA}
