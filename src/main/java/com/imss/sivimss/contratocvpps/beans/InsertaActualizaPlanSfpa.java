@@ -33,6 +33,9 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		log.info(" INICIO - insertaPlanSfpa");
 		String query = "";
 		Map<String, String> map = new HashMap<>();
+		map.put(ConsultaConstantes.ID_BENEFICIARIO_1,  null);
+		map.put(ConsultaConstantes.ID_BENEFICIARIO_2,  null);
+		
 		InsertPlanSfpaRequest insertPlanSfpaRequest = new InsertPlanSfpaRequest();
 		ArrayList<String> insertar = new ArrayList<>();
 		ArrayList<String> actualizar = new ArrayList<>();
@@ -73,6 +76,8 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 						insertar.add(insertTitularBeneficiarios(contratanteRequest, usuarioDto));
 					}
 				}
+				
+				
 				map =  obtenerContrante(planSFPARequest, contratanteRequest, map);
 			}
 			
@@ -286,10 +291,11 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		if(map.get(ConsultaConstantes.ID_TITULAR_SUBSTITUTO).toString()!=null) {
 		q.agregarParametroValues(ConsultaConstantes.ID_TITULAR_SUBSTITUTO, SelectQueryUtil.setValor( map.get(ConsultaConstantes.ID_TITULAR_SUBSTITUTO).toString()));
 		}
-		if(map.get(ConsultaConstantes.ID_BENEFICIARIO_1).toString()!=null ) {
+		
+		if(map.get(ConsultaConstantes.ID_BENEFICIARIO_1)!=null ) {
 			q.agregarParametroValues(ConsultaConstantes.ID_BENEFICIARIO_1, SelectQueryUtil.setValor( map.get(ConsultaConstantes.ID_BENEFICIARIO_1).toString()));
 		}
-			if(map.get(ConsultaConstantes.ID_BENEFICIARIO_2).toString()!=null) {
+			if(map.get(ConsultaConstantes.ID_BENEFICIARIO_2)!=null) {
 				q.agregarParametroValues(ConsultaConstantes.ID_BENEFICIARIO_2, SelectQueryUtil.setValor( map.get(ConsultaConstantes.ID_BENEFICIARIO_2).toString()));
 			
 		}
