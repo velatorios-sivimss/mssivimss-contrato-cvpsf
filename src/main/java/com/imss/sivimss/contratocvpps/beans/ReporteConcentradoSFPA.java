@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ReporteConcentradoSFPA {
 	
 	public Map<String, Object> generaConcentradoSFPA(ReporteSiniestrosPFRequest concentradoRequest, String reporteConcentradoSFPA) throws ParseException {
-		log.info(" INICIO - generaReporteSiniestrosPF : ");
+		log.info(" INICIO - generaReporteConcentrado : ");
 		StringBuilder condicion = new StringBuilder();
 		if(concentradoRequest.getId_delegacion()!=null) {
 			condicion.append(" AND vel.ID_DELEGACION="+concentradoRequest.getId_delegacion());

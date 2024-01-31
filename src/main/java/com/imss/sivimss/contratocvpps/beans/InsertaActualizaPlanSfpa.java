@@ -21,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class InsertaActualizaPlanSfpa  implements Serializable {
 	
+	private String refPersona;
+	
 	private static final String CVE_MATRICULA = "CVE_MATRICULA";
 	private static final String IND_ACTIVO = "IND_ACTIVO";
 	private static final String ID_DOMICILIO = "ID_DOMICILIO";
@@ -82,7 +84,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 			insertar.add(query);
 		} else  {
 			for(ContratanteRequest contratanteRequest: planSFPARequest.getTitularesBeneficiarios()) {
-				log.info("  idPersona:  " + contratanteRequest.getIdPersona() +"  idContratante:  "+  contratanteRequest.getIdTitularBeneficiarios() + "  IdDomicilio:  "+ contratanteRequest.getCp().getIdDomicilio());
+				log.info( "TITULAR" +"  idPersona:  " + contratanteRequest.getIdPersona() +"  idContratante:  "+  contratanteRequest.getIdTitularBeneficiarios() + "  IdDomicilio:  "+ contratanteRequest.getCp().getIdDomicilio());
 				if(contratanteRequest.getPersona().equalsIgnoreCase(ConsultaConstantes.TITULAR)) {
 					if(0 < contratanteRequest.getIdPersona()) {
 						insertar.add(updatePersona(contratanteRequest, usuarioDto));
@@ -100,6 +102,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 						insertar.add(insertContratante(contratanteRequest, usuarioDto));
 					}
 				} else {
+					log.info( contratanteRequest.getPersona() +"  idPersona:  " + contratanteRequest.getIdPersona() +"  idContratante:  "+  contratanteRequest.getIdTitularBeneficiarios() + "  IdDomicilio:  "+ contratanteRequest.getCp().getIdDomicilio());
 					if(0 < contratanteRequest.getIdPersona()) {	
 						insertar.add(updatePersona(contratanteRequest, usuarioDto));
 					} else {
@@ -152,7 +155,8 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues("REF_TELEFONO", SelectQueryUtil.setValor(contratanteRequest.getTelefono() ));
 		q.agregarParametroValues("REF_TELEFONO_FIJO", SelectQueryUtil.setValor(contratanteRequest.getTelefonoFijo() ));
 		q.agregarParametroValues("REF_CORREO", SelectQueryUtil.setValor(contratanteRequest.getCorreo() ));
-		q.agregarParametroValues("TIP_PERSONA", SelectQueryUtil.setValor(contratanteRequest.getTipoPersona() ));
+		q.agregarParametroValues("TIP_PERSONA", SelectQueryUtil.setValor(contratanteRequest.getPersona()));
+		//q.agregarParametroValues("TIP_PERSONA", SelectQueryUtil.setValor(contratanteRequest.getTipoPersona() ));
 		q.agregarParametroValues("NUM_INE", SelectQueryUtil.setValor(contratanteRequest.getIne() ));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_ALTA, String.valueOf(usuarioDto.getIdUsuario()));
 		q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.CURRENT_DATE);
@@ -202,6 +206,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		return q.obtenerQueryActualizar();
 	}
 	
+	//aqui esta la falla 
 	public String insertTitularBeneficiarios(ContratanteRequest contratanteRequest, UsuarioDto usuarioDto) {
 		log.info(" INICIO - insertTitularBeneficiarios");
 		final QueryHelper q = new QueryHelper("INSERT INTO SVT_TITULAR_BENEFICIARIOS");
@@ -273,18 +278,20 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 	
 	private String insertPlanSfpa(PlanSFPARequest planSFPARequest, UsuarioDto usuarioDto, Map<String, String> map) {
 		log.info(" INICIO - insertPlanSfpa");
+		//revisar query
 		final QueryHelper q = new QueryHelper("INSERT INTO SVT_PLAN_SFPA");
 		q.agregarParametroValues("NUM_FOLIO_PLAN_SFPA", planSFPARequest.getNumFolioPlanSfpa());
 		q.agregarParametroValues("ID_TIPO_CONTRATACION", String.valueOf( planSFPARequest.getIdTipoContratacion()));
 		q.agregarParametroValues(ConsultaConstantes.ID_TITULAR, SelectQueryUtil.setValor( map.get(ConsultaConstantes.ID_TITULAR).toString()));
-		if(planSFPARequest.getTitularesBeneficiarios().size() == 2) {
+		if(map.get(ConsultaConstantes.ID_TITULAR_SUBSTITUTO).toString()!=null) {
 		q.agregarParametroValues(ConsultaConstantes.ID_TITULAR_SUBSTITUTO, SelectQueryUtil.setValor( map.get(ConsultaConstantes.ID_TITULAR_SUBSTITUTO).toString()));
 		}
-		if(planSFPARequest.getTitularesBeneficiarios().size() == 3) {
+		if(map.get(ConsultaConstantes.ID_BENEFICIARIO_1).toString()!=null ) {
 			q.agregarParametroValues(ConsultaConstantes.ID_BENEFICIARIO_1, SelectQueryUtil.setValor( map.get(ConsultaConstantes.ID_BENEFICIARIO_1).toString()));
 		}
-		if(planSFPARequest.getTitularesBeneficiarios().size() == 4) {
-			q.agregarParametroValues(ConsultaConstantes.ID_BENEFICIARIO_2, SelectQueryUtil.setValor( map.get(ConsultaConstantes.ID_BENEFICIARIO_2).toString()));
+			if(map.get(ConsultaConstantes.ID_BENEFICIARIO_2).toString()!=null) {
+				q.agregarParametroValues(ConsultaConstantes.ID_BENEFICIARIO_2, SelectQueryUtil.setValor( map.get(ConsultaConstantes.ID_BENEFICIARIO_2).toString()));
+			
 		}
 		q.agregarParametroValues("ID_PAQUETE", String.valueOf(planSFPARequest.getIdPaquete()));
 		q.agregarParametroValues("IMP_PRECIO", String.valueOf(planSFPARequest.getMonPrecio()));
@@ -405,14 +412,16 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 			map.put(ConsultaConstantes.ID_TITULAR_SUBSTITUTO, String.valueOf(contratanteRequest.getIdTitularBeneficiarios()));
 		} else if (contratanteRequest.getPersona().equals(ConsultaConstantes.TITULAR_SUBSTITUTO)  && contratanteRequest.getIdTitularBeneficiarios() == 0 &&  planSFPARequest.getIndTitularSubstituto() == 0 ) {
 			map.put(ConsultaConstantes.ID_TITULAR_SUBSTITUTO, "idTabla4");
+			
 		} else if (contratanteRequest.getPersona().equals(ConsultaConstantes.BENEFICIARIO_1)  && contratanteRequest.getIdTitularBeneficiarios() != 0) {
 			map.put(ConsultaConstantes.ID_BENEFICIARIO_1, String.valueOf(contratanteRequest.getIdTitularBeneficiarios()));
 		}else if (contratanteRequest.getPersona().equals(ConsultaConstantes.BENEFICIARIO_1)  && contratanteRequest.getIdTitularBeneficiarios() == 0) {
-			map.put(ConsultaConstantes.ID_BENEFICIARIO_1, "idTabla5");
+			map.put(ConsultaConstantes.ID_BENEFICIARIO_1, "idTabla4");
+		//se manda el beneficiarios a el mapa datos
 		}else if (contratanteRequest.getPersona().equals(ConsultaConstantes.BENEFICIARIO_2)  && contratanteRequest.getIdTitularBeneficiarios() != 0) {
 			map.put(ConsultaConstantes.ID_BENEFICIARIO_2, String.valueOf(contratanteRequest.getIdTitularBeneficiarios()));
 		}else if (contratanteRequest.getPersona().equals(ConsultaConstantes.BENEFICIARIO_2)  && contratanteRequest.getIdTitularBeneficiarios() == 0 ) {
-			map.put(ConsultaConstantes.ID_BENEFICIARIO_2, "idTabla6");
+			map.put(ConsultaConstantes.ID_BENEFICIARIO_2, "idTabla5");
 		}
 		return map;
 	}
