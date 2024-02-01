@@ -61,7 +61,7 @@ public class GeneraCredencialesUtil{
         }
       
         char randomChar = caracteres.charAt(randomInt);
-        char[] apellido= paterno.toCharArray();
+        char[] apellido= paterno.toLowerCase().toCharArray();
         
         char pLetra = apellido[0];//paterno 0
         String pLetraS = String.valueOf(pLetra); 
@@ -72,7 +72,7 @@ public class GeneraCredencialesUtil{
         SimpleDateFormat fecActual = new SimpleDateFormat("MM");
 		String numMes = fecActual.format(new Date());
 		
-		return nombre.toUpperCase()+randomChar+"."+pLetraS.toUpperCase()+sLetra+numMes;
+		return nombre+randomChar+"."+pLetraS.toUpperCase()+sLetra+numMes;
 	} 
 	
 	public String insertarUsuario(Integer idPersona, String contrasenia, String user) {
