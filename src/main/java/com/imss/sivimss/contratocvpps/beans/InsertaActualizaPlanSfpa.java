@@ -288,7 +288,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		q.agregarParametroValues("NUM_FOLIO_PLAN_SFPA", planSFPARequest.getNumFolioPlanSfpa());
 		q.agregarParametroValues("ID_TIPO_CONTRATACION", String.valueOf( planSFPARequest.getIdTipoContratacion()));
 		q.agregarParametroValues(ConsultaConstantes.ID_TITULAR, SelectQueryUtil.setValor( map.get(ConsultaConstantes.ID_TITULAR).toString()));
-		if(map.get(ConsultaConstantes.ID_TITULAR_SUBSTITUTO).toString()!=null) {
+		if(map.get(ConsultaConstantes.ID_TITULAR_SUBSTITUTO)!=null) {
 			//valor 3 0 4
 		q.agregarParametroValues(ConsultaConstantes.ID_TITULAR_SUBSTITUTO, SelectQueryUtil.setValor( map.get(ConsultaConstantes.ID_TITULAR_SUBSTITUTO).toString()));
 		}
@@ -416,7 +416,7 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 			map.put(ConsultaConstantes.ID_TITULAR,  String.valueOf(ConsultaConstantes.ID_TABLA3));
 		} else if(contratanteRequest.getPersona().equals(ConsultaConstantes.TITULAR)  && contratanteRequest.getIdContratante() == 0 &&  planSFPARequest.getIndTitularSubstituto() == 1 ) {
 			map.put(ConsultaConstantes.ID_TITULAR, ConsultaConstantes.ID_TABLA3);
-			map.put(ConsultaConstantes.ID_TITULAR_SUBSTITUTO, ConsultaConstantes.ID_TABLA3);
+			map.put(ConsultaConstantes.ID_TITULAR_SUBSTITUTO, null);
 		} else if(contratanteRequest.getPersona().equals(ConsultaConstantes.TITULAR_SUBSTITUTO)  && contratanteRequest.getIdTitularBeneficiarios() != 0 &&  planSFPARequest.getIndTitularSubstituto() == 0 ) {
 			map.put(ConsultaConstantes.ID_TITULAR_SUBSTITUTO, String.valueOf(contratanteRequest.getIdTitularBeneficiarios()));
 		} else if (contratanteRequest.getPersona().equals(ConsultaConstantes.TITULAR_SUBSTITUTO)  && contratanteRequest.getIdTitularBeneficiarios() == 0 &&  planSFPARequest.getIndTitularSubstituto() == 0 ) {
