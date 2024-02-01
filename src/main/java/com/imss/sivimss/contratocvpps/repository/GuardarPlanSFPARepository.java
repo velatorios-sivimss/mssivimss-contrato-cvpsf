@@ -32,7 +32,7 @@ public class GuardarPlanSFPARepository {
 
 	private Statement statement;
 
-	public PlanSFPAResponse generaPlanSfpa(InsertPlanSfpaRequest request) throws Exception {
+	public PlanSFPAResponse generaPlanSfpa(InsertPlanSfpaRequest request, Integer indSubstituto) throws Exception {
 		ArrayList<String> inserciones = request.getInsertar();
 		ArrayList<String> inserciones2 = request.getInsertar2();
 		ArrayList<String> updates = request.getActualizar();
@@ -56,7 +56,7 @@ public class GuardarPlanSFPARepository {
 			connection.setAutoCommit(false);
 
 			if ((inserciones.size() == 13 || inserciones.size() == 10 || inserciones.size() == 7|| inserciones.size() == 4) && (updates.isEmpty() || updates.size() == 3 || updates.size() == 6 || updates.size() == 9)) {// listo
-				planSFPAResponse = accionInserta(request, id, connection, idTabla1, idTabla2, idTabla3,idTabla4, idTabla5, idTabla6, idTabla7, i);
+				planSFPAResponse = accionInserta(request, id, connection, idTabla1, idTabla2, idTabla3,idTabla4, idTabla5, idTabla6, idTabla7, i, indSubstituto);
 			}
 
 			connection.commit();
@@ -84,7 +84,7 @@ public class GuardarPlanSFPARepository {
 
 	private PlanSFPAResponse accionInserta(InsertPlanSfpaRequest request, Integer id,
 			Connection connection, Integer idTabla1, Integer idTabla2, Integer idTabla3, Integer idTabla4,
-			Integer idTabla5, Integer idTabla6, Integer idTabla7, Integer i) throws IOException, SQLException {
+			Integer idTabla5, Integer idTabla6, Integer idTabla7, Integer i, Integer indSubstituto) throws IOException, SQLException {
 		ResultSet rs;
 		PlanSFPAResponse planSFPAResponse = new PlanSFPAResponse();
 		log.info("Entro accionInserta");
@@ -116,17 +116,17 @@ public class GuardarPlanSFPARepository {
 				idTabla7 = id;
 			}
 
-			if (i.equals(0) || i.equals(3) || i.equals(6) || i.equals(9)) {
+			if (i.equals(0) || i.equals(3) || i.equals(6) || i.equals(9) ) {
 				idTabla1 = id;
 			} else if (i.equals(1) || i.equals(4) || i.equals(7) || i.equals(10)) {
 				idTabla2 = id;
 			} else if (i.equals(2)) {
 				idTabla3 = id;
-			} else if (i.equals(5)) {
+			} else if (i.equals(5) && indSubstituto==0) {
 				idTabla4 = id;
-			} else if (i.equals(8)) {
+			} else if (i.equals(8) && idTabla4>0 || indSubstituto==1 && idTabla5==0) {
 				idTabla5 = id;
-			} else if (i.equals(11)) {
+			} else if (i.equals(11) || idTabla5>0) {
 				idTabla6 = id;
 			}
 			i++;

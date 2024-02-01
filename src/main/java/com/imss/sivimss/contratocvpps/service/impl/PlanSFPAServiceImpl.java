@@ -300,7 +300,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 			planSFPARequest.setTitularesBeneficiarios(contratante);
 			planSFPARequest.setNumFolioPlanSfpa("(".concat(new PlanSFPA().obtenerFolioPlanSFPA(planSFPARequest, usuarioDto)));
 			InsertPlanSfpaRequest insertPlanSfpaRequest = new InsertaActualizaPlanSfpa().insertaPlanSfpa(planSFPARequest, null, usuarioDto);
-			PlanSFPAResponse planResponse = guardarPlanSFPARepository.generaPlanSfpa(insertPlanSfpaRequest); 
+			PlanSFPAResponse planResponse = guardarPlanSFPARepository.generaPlanSfpa(insertPlanSfpaRequest, planSFPARequest.getIndTitularSubstituto()); 
 			if(planResponse.getIdPlanSfpa() != null) { 
 				Map<String, Object> map = new HashMap<>(); 
 				Map<String, Object> datos = new HashMap<>();
@@ -335,7 +335,8 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 			planSFPARequest.setTitularesBeneficiarios(contratante);
 			planSFPARequest.setNumFolioPlanSfpa("(".concat(new PlanSFPA().obtenerFolioPlanSFPA(planSFPARequest, usuarioDto)));
 			InsertPlanSfpaRequest insertPlanSfpaRequest = new InsertaLineaPlanSFPA().insertaLineaPlanSfpa(planSFPARequest, usuarioDto);
-			PlanSFPAResponse planResponse = guardarPlanSFPARepository.generaPlanSfpa(insertPlanSfpaRequest); 
+			//checar
+			PlanSFPAResponse planResponse = guardarPlanSFPARepository.generaPlanSfpa(insertPlanSfpaRequest, planSFPARequest.getIndTitularSubstituto()); 
 			if(planResponse.getIdPlanSfpa() != null) { 
 				Map<String, Object> map = new HashMap<>(); 
 				Map<String, Object> datos = new HashMap<>();
