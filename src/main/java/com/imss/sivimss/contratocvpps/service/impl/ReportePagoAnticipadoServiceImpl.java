@@ -77,44 +77,46 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 	@Override
 	public Response<Object> generaReporteConvenioPagoAnticipado(DatosRequest request, Authentication authentication) throws IOException {
 		Gson gson = new Gson();
+		//Response<Object> response;
 		String datosJson = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
-		Map<String, Object>parametro= new HashMap<>();
+		//Map<String, Object>parametro= new HashMap<>();
 		ReporteDto reporteDto= gson.fromJson(datosJson, ReporteDto.class);
 		log.info("idPlanSFPA : " + reporteDto.getIdPlanSFPA() );
 		String query = reportePagoAnticipado.generaReporte(reporteDto);
-		log.info("query : " + query );
-		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
-		parametro.put(AppConstantes.QUERY, encoded);
-		request.setDatos(parametro);
-		Response<Object> response = providerRestTemplate.consumirServicio(request.getDatos(),urlModCatalogos.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
-		List<ReportePagoAnticipadoReponse> reportePagoAnticipadoReponse = Arrays.asList(modelMapper.map(response.getDatos(), ReportePagoAnticipadoReponse[].class));
+		List<ReportePagoAnticipadoReponse> reportePagoAnticipadoReponse = obtieneParams(request, query, authentication);
+		
+		query = reportePagoAnticipado.getNomFibeso();
+		List<ReportePagoAnticipadoReponse> reportePagoNomFibeso = obtieneParams( request, query, authentication);
 		
 		query = reportePagoAnticipado.getImagenFirma();
-		log.info(query );
-		encoded = DatatypeConverter.printBase64Binary(query.getBytes());
-		parametro.put(AppConstantes.QUERY, encoded);
-		request.setDatos(parametro);
-		response = providerRestTemplate.consumirServicio(request.getDatos(),urlModCatalogos.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+		List<ReportePagoAnticipadoReponse> reportePagoAnticipadoReponseFirma = obtieneParams( request, query, authentication);
+				
 		
-		List<ReportePagoAnticipadoReponse> reportePagoAnticipadoReponseFirma = Arrays.asList(modelMapper.map(response.getDatos(), ReportePagoAnticipadoReponse[].class));
 		query = reportePagoAnticipado.getImagenCheck();
-		log.info(query );
-		encoded = DatatypeConverter.printBase64Binary(query.getBytes());
-		parametro.put(AppConstantes.QUERY, encoded);
-		request.setDatos(parametro);
-		response = providerRestTemplate.consumirServicio(request.getDatos(),urlModCatalogos.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
-		List<ReportePagoAnticipadoReponse> reportePagoAnticipadoReponseCheck = Arrays.asList(modelMapper.map(response.getDatos(), ReportePagoAnticipadoReponse[].class));
+		List<ReportePagoAnticipadoReponse> reportePagoAnticipadoReponseCheck =  obtieneParams(request, query, authentication);
 		
-    	Map<String, Object> envioDatos = generarMap(reportePagoAnticipadoReponse, reportePagoAnticipadoReponseFirma, reportePagoAnticipadoReponseCheck);
+    	Map<String, Object> envioDatos = generarMap(reportePagoAnticipadoReponse, reportePagoAnticipadoReponseFirma, reportePagoAnticipadoReponseCheck, reportePagoNomFibeso);
 		envioDatos.put(TIPO_REPORTE, "pdf");
 		envioDatos.put(RUTA_NOMBRE_REPORTE, convenioPagoAnticipado);
     	
 		return MensajeResponseUtil.mensajeConsultaResponseObject(providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication), AGREGADO_CORRECTAMENTE);
 		
 	}
+	
+	private List<ReportePagoAnticipadoReponse> obtieneParams(DatosRequest request,
+			String query, Authentication authentication) {
+		Map<String, Object>parametro= new HashMap<>();
+		log.info(query );
+		String encoded = DatatypeConverter.printBase64Binary(query.getBytes());
+		 parametro.put(AppConstantes.QUERY, encoded);
+		request.setDatos(parametro);
+		Response<Object> response = providerRestTemplate.consumirServicio(request.getDatos(),urlModCatalogos.concat(AppConstantes.CATALOGO_CONSULTAR), authentication);
+		return Arrays.asList(modelMapper.map(response.getDatos(), ReportePagoAnticipadoReponse[].class));
+	}
+
 	private Map<String, Object> generarMap( List<ReportePagoAnticipadoReponse> contratoServicioInmediatoResponse
 			, List<ReportePagoAnticipadoReponse> reportePagoAnticipadoReponseFirma
-	        , List<ReportePagoAnticipadoReponse> reportePagoAnticipadoReponseCheck ) {
+	        , List<ReportePagoAnticipadoReponse> reportePagoAnticipadoReponseCheck, List<ReportePagoAnticipadoReponse> reportePagoNomFibeso ) {
 		Map<String, Object> envioDatos = new HashMap<>();
 		envioDatos.put("nombreTitular", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNombreTitular()));
 		envioDatos.put("nacionalidadTitular", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNacionalidadTitular()));
@@ -156,6 +158,8 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 		envioDatos.put("totalLetra",NumeroAPalabra.convertirAPalabras(contratoServicioInmediatoResponse.get(0).getTotalImporte(), true));
 		envioDatos.put("firmaDir",validarSiEsNull(reportePagoAnticipadoReponseFirma.get(0).getFirmDir()));
 		envioDatos.put("imgCheck",validarSiEsNull(reportePagoAnticipadoReponseCheck.get(0).getImgCheck()));
+		envioDatos.put("nomFibeso",validarSiEsNull(reportePagoNomFibeso.get(0).getNomFibeso()));
+		log.info("--->" +envioDatos.get("nomFibeso").toString());
 	return envioDatos;
 	}
 

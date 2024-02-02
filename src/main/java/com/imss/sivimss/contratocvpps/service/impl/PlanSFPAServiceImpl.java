@@ -300,6 +300,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 			planSFPARequest.setTitularesBeneficiarios(contratante);
 			planSFPARequest.setNumFolioPlanSfpa("(".concat(new PlanSFPA().obtenerFolioPlanSFPA(planSFPARequest, usuarioDto)));
 			InsertPlanSfpaRequest insertPlanSfpaRequest = new InsertaActualizaPlanSfpa().insertaPlanSfpa(planSFPARequest, null, usuarioDto);
+			 
 			PlanSFPAResponse planResponse = guardarPlanSFPARepository.generaPlanSfpa(insertPlanSfpaRequest, planSFPARequest.getIndTitularSubstituto()); 
 			if(planResponse.getIdPlanSfpa() != null) { 
 				Map<String, Object> map = new HashMap<>(); 
@@ -378,7 +379,8 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 				}
 			}
 			InsertPlanSfpaRequest insertPlanSfpaRequest = new InsertaActualizaPlanSfpa().insertaPlanSfpa(planSFPARequest, pagoFechaResponse, usuarioDto);
-			response  =  actualizarPlanSFPARepository.actulizaPlanSfpa(insertPlanSfpaRequest);
+			//ENTRAR AL METODO PARA REVISAR EL UPDATE
+			response  =  actualizarPlanSFPARepository.actulizaPlanSfpa(insertPlanSfpaRequest, planSFPARequest.getIndTitularSubstituto());
 			response.setMensaje(planSFPARequest.getNumFolioPlanSfpa());
 			if (response.getCodigo() == 200){
 				if(Boolean.TRUE.equals(planSFPARequest.getIndTipoPagoMensual())) {
