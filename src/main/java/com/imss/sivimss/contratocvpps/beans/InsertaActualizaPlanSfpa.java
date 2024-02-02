@@ -366,14 +366,15 @@ public class InsertaActualizaPlanSfpa  implements Serializable {
 		log.info(" INICIO - guardarPagoSFPA");
 		ArrayList<String> insertar2 = new ArrayList<>();
 		for (int i = 0; i < planSFPARequest.getNumPagoMensual(); i++) {
-			LocalDate fechaActual = LocalDate.now();
-			LocalDate fechafinal = fechaActual.plusMonths(i);
+			//LocalDate fechaActual = LocalDate.now();
+			//LocalDate fechafinal = fechaActual.plusMonths(i);
 			final QueryHelper q = new QueryHelper("INSERT INTO SVT_PAGO_SFPA");
 			q.agregarParametroValues("ID_PLAN_SFPA", ConsultaConstantes.ID_TABLA7);
 			q.agregarParametroValues("ID_ESTATUS_PAGO", i == 0?String.valueOf(8):String.valueOf(7));
 			q.agregarParametroValues(IND_ACTIVO, String.valueOf(1));
 			q.agregarParametroValues("IMP_MONTO_MENSUAL", String.valueOf(planSFPARequest.getMonPrecio()/planSFPARequest.getNumPagoMensual()));
-			q.agregarParametroValues("FEC_PARCIALIDAD", ConsultaConstantes.COMILLA_SIMPLE.concat(fechafinal.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).concat(ConsultaConstantes.COMILLA_SIMPLE));
+			q.agregarParametroValues("FEC_PARCIALIDAD", "DATE_ADD(CURDATE(), INTERVAL " +i+" MONTH)");
+			//q.agregarParametroValues("FEC_PARCIALIDAD", ConsultaConstantes.COMILLA_SIMPLE.concat(fechafinal.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).concat(ConsultaConstantes.COMILLA_SIMPLE));
 			q.agregarParametroValues(ConsultaConstantes.FEC_ALTA, ConsultaConstantes.CURRENT_DATE);
 			q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_ALTA, String.valueOf(usuarioDto.getIdUsuario()));
 			insertar2.add(q.obtenerQueryInsertar());
