@@ -50,4 +50,6 @@ private String direccionB2;
 private String canPagoPalabras;
 private String firmDir;
 private String imgCheck;
+private String nomFibeso;
+
 }
