@@ -44,13 +44,13 @@ endpoints:
    ms-reportes: ${msit_REPORTES_GENERALES}
    ms-rfc: ${msit_SAT}
    ms-curp: ${msit_RENAPO}
-   envio-correo: "https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ser-externos/v1/catalogos/externos/enviar/correo/recuperacontrasenia"
+   envio-correo:  ${msit_CORREO_REGISTRO}
   
 reporte:
     anexo-convenio-pago-anticipado: ${msit_ANEXO_CONVENIO_PA}
     consulta-plan-sfpa: "reportes/generales/ReporteConsultaPagosAnticipadosSpfa68.jrxml"
     siniestros-prevision-funeraria: "reportes/modulo/ResumenPrevisionFuneraria.jrxml"
-    concentrado-servicios-sfpa: "reportes/modulo/ConcentradoServiciosSFPA_v2.jrxml"
+    concentrado-servicios-sfpa:  ${msit_CONCENTRADO_SERVICIOS_SFPA}
 
 jwt:
   secretkey-flujo: ${msit_SECRET_KEY}
