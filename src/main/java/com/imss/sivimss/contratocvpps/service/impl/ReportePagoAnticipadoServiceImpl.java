@@ -121,6 +121,7 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 		envioDatos.put("nombreTitular", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNombreTitular()));
 		envioDatos.put("nacionalidadTitular", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNacionalidadTitular()));
 		envioDatos.put("rfcTitular", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getRfcTitular()));
+		
 		envioDatos.put("calleTitular", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getCalleTitular()));
 		envioDatos.put("numExterior", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNumExterior()));
 		envioDatos.put("numInterior", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNumInterior()));
@@ -128,6 +129,13 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 		envioDatos.put("codigoPostal", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getCodigoPostal()));
 		envioDatos.put("municipio", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getMunicipio()));
 		envioDatos.put("estado", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getEstado()));
+		String direccion= validarSiEsNull(contratoServicioInmediatoResponse.get(0).getCalleTitular())+
+				" "+validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNumExterior())+
+				" "+validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNumInterior())+
+				" "+validarSiEsNull(contratoServicioInmediatoResponse.get(0).getColonia())+
+				" "+validarSiEsNull(contratoServicioInmediatoResponse.get(0).getCodigoPostal())+
+				" "+validarSiEsNull(contratoServicioInmediatoResponse.get(0).getMunicipio())+
+				" "+validarSiEsNull(contratoServicioInmediatoResponse.get(0).getEstado());
 		envioDatos.put("correo", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getCorreo()));
 		envioDatos.put("telefono", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getTelefono()));
 		envioDatos.put("telefonoFijo", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getTelefonoFijo()));
@@ -140,16 +148,18 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 		envioDatos.put("servInclPaquete", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getServInclPaquete()));
 		envioDatos.put("correoVelatorio", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getCorreoVelatorio()));
 		envioDatos.put("numeroAfiliacion",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNumeroAfiliacion()));
-		envioDatos.put("nombreSustituto",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNombreSustituto()));
-		envioDatos.put("fecNacSustituto",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getFecNacSustituto()));
-		envioDatos.put("rfcSustituto",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getRfcSustituto()));
-		envioDatos.put("telefonoSustituto",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getTelefonoSustituto()));
-		envioDatos.put("direccionSustituto",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getDireccionSustituto()));
+		
+		envioDatos.put("nombreSustituto",Boolean.TRUE.equals(contratoServicioInmediatoResponse.get(0).getIndTitularSubs()) ?  validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNombreTitular()) : validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNombreSustituto()));
+		envioDatos.put("fecNacSustituto",Boolean.TRUE.equals(contratoServicioInmediatoResponse.get(0).getIndTitularSubs()) ? validarSiEsNull(contratoServicioInmediatoResponse.get(0).getFecNacTitular()) :validarSiEsNull(contratoServicioInmediatoResponse.get(0).getFecNacSustituto()));
+		envioDatos.put("rfcSustituto",Boolean.TRUE.equals(contratoServicioInmediatoResponse.get(0).getIndTitularSubs()) ? validarSiEsNull(contratoServicioInmediatoResponse.get(0).getRfcTitular()) : validarSiEsNull(contratoServicioInmediatoResponse.get(0).getRfcSustituto()));
+		envioDatos.put("telefonoSustituto", Boolean.TRUE.equals(contratoServicioInmediatoResponse.get(0).getIndTitularSubs()) ?  validarSiEsNull(contratoServicioInmediatoResponse.get(0).getTelefono()) : validarSiEsNull(contratoServicioInmediatoResponse.get(0).getTelefonoSustituto()));
+		envioDatos.put("direccionSustituto",Boolean.TRUE.equals(contratoServicioInmediatoResponse.get(0).getIndTitularSubs()) ?direccion : validarSiEsNull(contratoServicioInmediatoResponse.get(0).getDireccionSustituto()));
+		
 		envioDatos.put("nombreB1",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNombreB1()));
 		envioDatos.put("fecNacB1",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getFecNacB1()));
 		envioDatos.put("rfcB1",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getRfcB1()));
-		envioDatos.put("telefonoB1",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getTelefonoSustituto()));
-		envioDatos.put("direccionB1",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getDireccionSustituto()));
+		envioDatos.put("telefonoB1",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getTelefonoB1()));
+		envioDatos.put("direccionB1",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getDireccionB1()));
 		envioDatos.put("nombreB2",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNombreB2()));
 		envioDatos.put("fecNacB2",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getFecNacB2()));
 		envioDatos.put("rfcB2",validarSiEsNull(contratoServicioInmediatoResponse.get(0).getRfcB2()));
