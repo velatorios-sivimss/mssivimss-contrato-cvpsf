@@ -11,7 +11,9 @@ public class ReportePagoAnticipado {
 		
 		StringBuilder query = new StringBuilder();
 		
-		query.append(" SELECT  CONCAT(IFNULL(P1.NOM_PERSONA,''),' ',IFNULL(P1.NOM_PRIMER_APELLIDO,''), ' ',IFNULL(P1.NOM_SEGUNDO_APELLIDO,'')) AS nombreTitular ")
+		query.append("SELECT PSFPA.IND_TITULAR_SUBSTITUTO indTitularSubs")
+		.append(",  P1.FEC_NAC fecNacTitular")
+		.append(" , CONCAT(IFNULL(P1.NOM_PERSONA,''),' ',IFNULL(P1.NOM_PRIMER_APELLIDO,''), ' ',IFNULL(P1.NOM_SEGUNDO_APELLIDO,'')) AS nombreTitular ")
 		.append("  , SPIS.DES_PAIS AS nacionalidadTitular ").append("  , P1.CVE_RFC AS rfcTitular ").append(" , DO1.REF_CALLE AS calleTitular ").append("  , DO1.NUM_EXTERIOR AS numExterior ")
 		.append("  , DO1.NUM_INTERIOR AS numInterior ").append(" , DO1.REF_COLONIA AS colonia ").append("  , DO1.REF_CP AS codigoPostal").append("  , DO1.REF_MUNICIPIO AS municipio ")
 		.append("  , DO1.REF_ESTADO AS estado ").append(" , P1.REF_CORREO AS correo ").append(" , P1.REF_TELEFONO AS telefono ").append(" , P1.REF_TELEFONO_FIJO AS telefonoFijo ")
