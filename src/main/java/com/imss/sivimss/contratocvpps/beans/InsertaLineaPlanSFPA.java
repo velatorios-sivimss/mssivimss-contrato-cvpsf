@@ -213,7 +213,7 @@ public class InsertaLineaPlanSFPA implements Serializable {
 		q.agregarParametroValues("REF_TELEFONO", SelectQueryUtil.setValor(contratanteRequest.getTelefono()));
 		q.agregarParametroValues("REF_TELEFONO_FIJO", SelectQueryUtil.setValor(contratanteRequest.getTelefonoFijo()));
 		q.agregarParametroValues("REF_CORREO", SelectQueryUtil.setValor(contratanteRequest.getCorreo()));
-		q.agregarParametroValues("TIP_PERSONA", SelectQueryUtil.setValor(contratanteRequest.getTipoPersona()));
+		q.agregarParametroValues("TIP_PERSONA", "'"+contratanteRequest.getPersona()+"67A'");
 		q.agregarParametroValues("NUM_INE", SelectQueryUtil.setValor(contratanteRequest.getIne()));
 		q.agregarParametroValues(ConsultaConstantes.ID_USUARIO_MODIFICA, String.valueOf(usuarioDto.getIdUsuario()));
 		q.agregarParametroValues(ConsultaConstantes.FEC_ACTUALIZACION, ConsultaConstantes.CURRENT_DATE);
