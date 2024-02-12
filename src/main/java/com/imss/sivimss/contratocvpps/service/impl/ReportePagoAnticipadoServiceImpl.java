@@ -132,8 +132,8 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 		String direccion= validarSiEsNull(contratoServicioInmediatoResponse.get(0).getCalleTitular())+
 				" "+validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNumExterior())+
 				" "+validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNumInterior())+
-				" "+validarSiEsNull(contratoServicioInmediatoResponse.get(0).getColonia())+
 				" "+validarSiEsNull(contratoServicioInmediatoResponse.get(0).getCodigoPostal())+
+				" "+validarSiEsNull(contratoServicioInmediatoResponse.get(0).getColonia())+
 				" "+validarSiEsNull(contratoServicioInmediatoResponse.get(0).getMunicipio())+
 				" "+validarSiEsNull(contratoServicioInmediatoResponse.get(0).getEstado());
 		envioDatos.put("correo", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getCorreo()));

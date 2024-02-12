@@ -102,6 +102,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 	private ActualizarPlanSFPARepository actualizarPlanSFPARepository;
 	
 	private Response<Object>response;
+	private Boolean existeContratante = false;
 	
 	@Autowired
 	private ReportePagoAnticipadoService reportePagoAnticipadoService;
@@ -310,7 +311,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 				datos.put(AppConstantes.DATOS, map);
 				datosRequest.setDatos(datos); 
 				response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication); 
-				if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]")) {
+				if (response.getCodigo() == 200 && !response.getDatos().toString().contains("[]") && Boolean.FALSE.equals(existeContratante)) {
 					Response<Object> res = planSFPARepository.registrarUsuario(new PlanSFPA().consultaPlanSFPA(planResponse.getIdPlanSfpa())) ;
 					if (res.getCodigo() == 200 && !res.getDatos().toString().contains("[]")) {
 						response.setMensaje(planSFPARepository.obtenerFolioPlanSfpa(new PlanSFPA().folioPlanSfpa(planResponse.getIdPlanSfpa()))); 
@@ -415,6 +416,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 				
 				personaResponse = planSFPARepository.datoContratante(new PlanSFPA().consultaExisteContratante(contratanteRequest));
 				if (personaResponse != null) {
+					existeContratante = true;
 					contratanteRequest.setIdContratante(personaResponse.getIdContratante());
 					contratanteRequest.setIdPersona(personaResponse.getIdPersona());
 					contratanteRequest.getCp().setIdDomicilio(personaResponse.getIdDomicilio());
