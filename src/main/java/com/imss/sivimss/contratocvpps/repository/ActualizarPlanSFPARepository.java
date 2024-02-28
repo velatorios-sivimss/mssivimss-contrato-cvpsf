@@ -87,60 +87,69 @@ public class ActualizarPlanSFPARepository {
 	private Response<Object> accionActualiza(InsertPlanSfpaRequest request, Integer id,
 			Connection connection, Integer idTabla1, Integer idTabla2, Integer idTabla3, Integer idTabla4,
 			Integer idTabla5, Integer idTabla6, Integer idTabla7, Integer i, Integer indSubstituto) throws IOException, SQLException {
-		ResultSet rs;
+	
 		PlanSFPAResponse planSFPAResponse = new PlanSFPAResponse();
-		log.info("Entro accionActualiza");
-		for (String insercion : request.getActualizar()) {
-			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), "", AppConstantes.MODIFICACION + " " + insercion);
-			statement = connection.createStatement();
-			statement.executeUpdate(insercion, Statement.RETURN_GENERATED_KEYS);
-		}
+		try (Statement stat = connection.createStatement();) {
+			log.info("Entro accionActualiza");
+			for (String insercion : request.getActualizar()) {
+				logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),
+						this.getClass().getPackage().toString(), "", AppConstantes.MODIFICACION + " " + insercion);
 
-		for (String insercion : request.getInsertar()) {
-			if (i.equals(2) || i.equals(4) || i.equals(5) || i.equals(8) || i.equals(11)) {
-				insercion = insercion.replace(ConsultaConstantes.ID_TABLA1, idTabla1.toString());
-				insercion = insercion.replace(ConsultaConstantes.ID_TABLA2, idTabla2.toString());
-			} else if (i.equals(3) || i.equals(6) || i.equals(9) || i.equals(12)) {
-				insercion = insercion.replace(ConsultaConstantes.ID_TABLA3, idTabla3.toString());
-				insercion = insercion.replace(ConsultaConstantes.ID_TABLA4, idTabla4.toString());
-				insercion = insercion.replace(ConsultaConstantes.ID_TABLA5, idTabla5.toString());
-				insercion = insercion.replace(ConsultaConstantes.ID_TABLA6, idTabla6.toString());
+				stat.executeUpdate(insercion, Statement.RETURN_GENERATED_KEYS);
 			}
 
-			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), "", AppConstantes.ALTA + " " + insercion);
-			statement = connection.createStatement();
-			statement.executeUpdate(insercion, Statement.RETURN_GENERATED_KEYS);
-			rs = statement.getGeneratedKeys();
+			for (String insercion : request.getInsertar()) {
+				if (i.equals(2) || i.equals(4) || i.equals(5) || i.equals(8) || i.equals(11)) {
+					insercion = insercion.replace(ConsultaConstantes.ID_TABLA1, idTabla1.toString());
+					insercion = insercion.replace(ConsultaConstantes.ID_TABLA2, idTabla2.toString());
+				} else if (i.equals(3) || i.equals(6) || i.equals(9) || i.equals(12)) {
+					insercion = insercion.replace(ConsultaConstantes.ID_TABLA3, idTabla3.toString());
+					insercion = insercion.replace(ConsultaConstantes.ID_TABLA4, idTabla4.toString());
+					insercion = insercion.replace(ConsultaConstantes.ID_TABLA5, idTabla5.toString());
+					insercion = insercion.replace(ConsultaConstantes.ID_TABLA6, idTabla6.toString());
+				}
 
-			if (rs.next()) {
-				id = rs.getInt(1);
-				logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), "", AppConstantes.ALTA + " " + id.toString());
-				planSFPAResponse.setIdPlanSfpa(id);
-				response= new Response<>(false, 200, ConsultaConstantes.EXITO, ConvertirGenerico.convertInstanceOfObject(planSFPAResponse));
+				logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),
+						this.getClass().getPackage().toString(), "", AppConstantes.ALTA + " " + insercion);
+
+				stat.executeUpdate(insercion, Statement.RETURN_GENERATED_KEYS);
+
+				try (ResultSet rs = stat.getGeneratedKeys();) {
+
+					if (rs.next()) {
+						id = rs.getInt(1);
+						logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),
+								this.getClass().getPackage().toString(), "", AppConstantes.ALTA + " " + id.toString());
+						planSFPAResponse.setIdPlanSfpa(id);
+						response = new Response<>(false, 200, ConsultaConstantes.EXITO,
+								ConvertirGenerico.convertInstanceOfObject(planSFPAResponse));
+					}
+
+					if (i.equals(0) || i.equals(3) || i.equals(6) || i.equals(9)) {
+						idTabla1 = id;
+					} else if (i.equals(1) || i.equals(4) || i.equals(7) || i.equals(10)) {
+						idTabla2 = id;
+					} else if (i.equals(2)) {
+						idTabla3 = id;
+					} else if (i.equals(5) && indSubstituto == 0) {
+						idTabla4 = id;
+					} else if (i.equals(8) && idTabla4 > 0 || indSubstituto == 1 && idTabla5 == 0) {
+						idTabla5 = id;
+					} else if (i.equals(11) || idTabla5 > 0) {
+						idTabla6 = id;
+					}
+					i++;
+				}
 			}
 
-			if (i.equals(0) || i.equals(3) || i.equals(6) || i.equals(9)) {
-				idTabla1 = id;
-			} else if (i.equals(1) || i.equals(4) || i.equals(7) || i.equals(10)) {
-				idTabla2 = id;
-			} else if (i.equals(2)) {
-				idTabla3 = id;
-			} else if (i.equals(5) && indSubstituto==0) {
-				idTabla4 = id;
-			} else if (i.equals(8) && idTabla4>0 || indSubstituto==1 && idTabla5==0) {
-				idTabla5 = id;
-			} else if (i.equals(11) || idTabla5>0) {
-				idTabla6 = id;
+			for (String insercion : request.getInsertar2()) {
+				insercion = insercion.replace(ConsultaConstantes.ID_TABLA7, idTabla7.toString());
+				logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),
+						this.getClass().getPackage().toString(), "", AppConstantes.ALTA + " " + insercion);
+
+				stat.executeUpdate(insercion, Statement.RETURN_GENERATED_KEYS);
+				i++;
 			}
-			i++;
-		}
-		
-		for (String insercion : request.getInsertar2()) {
-			insercion = insercion.replace(ConsultaConstantes.ID_TABLA7, idTabla7.toString());
-			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), "", AppConstantes.ALTA + " " + insercion);
-			statement = connection.createStatement();
-			statement.executeUpdate(insercion, Statement.RETURN_GENERATED_KEYS);
-			i++;
 		}
 		response= new Response<>(false, 200, ConsultaConstantes.EXITO, "");
 		
