@@ -67,7 +67,7 @@ public class ConsultaPlanSFPAServiceImpl  implements ConsultaPlanSFPAService {
 			return MensajeResponseUtil.mensajeConsultaResponse(providerRestTemplate.consumirServicioObject(envioDatos,
 					urlModCatalogos.concat(CONSULTA_PAGINADO), authentication),NO_SE_ENCONTRO_INFORMACION);
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			log.error( CU68_NAME + ERROR_AL_EJECUTAR_EL_QUERY + consulta);
 			logUtil.crearArchivoLog(Level.SEVERE.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), FALLO_AL_EJECUTAR_EL_QUERY + consulta, CONSULTA,
 					authentication);
@@ -92,7 +92,7 @@ public class ConsultaPlanSFPAServiceImpl  implements ConsultaPlanSFPAService {
 			response = providerRestTemplate.consumirServicioReportes(envioDatos, urlReportes, authentication);
 			MensajeResponseUtil.mensajeResponseObject(response, ERROR_AL_DESCARGAR_DOCUMENTO);
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			log.error( CU68_NAME + ERROR_AL_EJECUTAR_EL_QUERY + consulta);
 			logUtil.crearArchivoLog(Level.SEVERE.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), FALLO_AL_EJECUTAR_EL_QUERY + consulta, CONSULTA,
 					authentication);

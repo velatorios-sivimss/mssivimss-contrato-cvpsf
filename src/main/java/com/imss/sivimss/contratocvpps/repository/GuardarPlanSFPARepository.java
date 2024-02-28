@@ -62,7 +62,7 @@ public class GuardarPlanSFPARepository {
 			connection.commit();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			logUtil.crearArchivoLog(Level.INFO.toString(), this.getClass().getSimpleName(),
 					this.getClass().getPackage().toString(), e.getMessage(), ConsultaConstantes.FALLO_QUERY);
 			throw new Exception(ConsultaConstantes.FALLO_QUERY + e.getMessage());

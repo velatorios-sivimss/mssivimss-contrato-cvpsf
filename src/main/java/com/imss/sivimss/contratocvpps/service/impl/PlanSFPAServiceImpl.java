@@ -193,7 +193,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 					urlModCatalogos.concat(CONSULTA_GENERICA), authentication),NO_SE_ENCONTRO_INFORMACION);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 			String consulta = new PlanSFPA().consultaTipoContratacion(request).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error(ERROR_AL_EJECUTAR_EL_QUERY + decoded);
@@ -213,7 +213,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 					urlModCatalogos.concat(CONSULTA_GENERICA), authentication),NO_SE_ENCONTRO_INFORMACION);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 			String consulta = new PlanSFPA().consultaTipoPagoMensual(request).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error(ERROR_AL_EJECUTAR_EL_QUERY + decoded);
@@ -232,7 +232,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 					urlModCatalogos.concat(CONSULTA_GENERICA), authentication),NO_SE_ENCONTRO_INFORMACION);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 			String consulta = new PlanSFPA().consultaPromotores(request).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error(ERROR_AL_EJECUTAR_EL_QUERY + decoded);
@@ -251,7 +251,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 					urlModCatalogos.concat(CONSULTA_GENERICA), authentication),NO_SE_ENCONTRO_INFORMACION);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 			String consulta = new PlanSFPA().consultaPaquetes(request).getDatos().get(AppConstantes.QUERY).toString();
 			String decoded = new String(DatatypeConverter.parseBase64Binary(consulta));
 			log.error(ERROR_AL_EJECUTAR_EL_QUERY + decoded);
@@ -281,7 +281,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 				return MensajeResponseUtil.mensajeConsultaResponse(response, NO_SE_ENCONTRO_INFORMACION);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 			String decoded = new String(DatatypeConverter.parseBase64Binary(query));
 			log.error(ERROR_AL_EJECUTAR_EL_QUERY + decoded);
 			logUtil.crearArchivoLog(Level.SEVERE.toString(), this.getClass().getSimpleName(),this.getClass().getPackage().toString(), FALLO_AL_EJECUTAR_EL_QUERY + decoded, CONSULTA,
@@ -319,7 +319,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 				}
 		    }
 		}catch (Exception e) {
-			e.printStackTrace();
+			
 			log.error(e.getMessage());
 		    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_AL_GENERAR_FOLIO, AppConstantes.ALTA, authentication);
 		    throw new IOException(AppConstantes.ERROR_GUARDAR, e.getCause());
@@ -355,7 +355,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 				}
 		    }
 		}catch (Exception e) {
-			e.printStackTrace();
+			
 			log.error(e.getMessage());
 		    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_AL_GENERAR_FOLIO, AppConstantes.ALTA, authentication);
 		    throw new IOException(AppConstantes.ERROR_GUARDAR, e.getCause());
@@ -398,7 +398,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 				}
 			}
 		}catch (Exception e) {
-			e.printStackTrace();
+			
 			log.error(e.getMessage());
 		    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_AL_GENERAR_FOLIO, AppConstantes.ALTA, authentication);
 		    throw new IOException(AppConstantes.ERROR_GUARDAR, e.getCause());
@@ -452,7 +452,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 			String insertPlanSfpaRequest = new InsertaActualizaPlanSfpa().updatePlanSfpa(planSFPARequest, usuarioDto);
 			response =  planSFPARepository.cancelarPlanSfpa(insertPlanSfpaRequest);
 		   } catch (Exception e) {
-	        	e.printStackTrace();
+	        	
 				log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_GUARDAR));
 				log.error(e.getMessage());
 			    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_GUARDAR, AppConstantes.ALTA, authentication);
@@ -469,7 +469,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 			String detalllePlanSfpa = new DetallePlanSfpa().consultaDetallePlanSfpa(planSFPARequest.getIdPlanSfpa());
 			response =  planSFPARepository.consultarDetallePlanSfpa(detalllePlanSfpa);
 		   } catch (Exception e) {
-	        	e.printStackTrace();
+	        	
 				log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_GUARDAR));
 				log.error(e.getMessage());
 			    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_GUARDAR, AppConstantes.ALTA, authentication);
@@ -510,7 +510,7 @@ public class PlanSFPAServiceImpl implements PlanSFPAService {
 			String detalllePlanSfpa = new DetallePlanSfpa().consultaLineaDetallePlanSFPA(lineaPlanSFPARequest.getCveUsuario());
 			response =  planSFPARepository.consultarLineaDetallePlanSfpa(detalllePlanSfpa);
 		   } catch (Exception e) {
-	        	e.printStackTrace();
+	        	
 				log.error(AppConstantes.ERROR_QUERY.concat(AppConstantes.ERROR_GUARDAR));
 				log.error(e.getMessage());
 			    logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(), this.getClass().getPackage().toString(), AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_GUARDAR, AppConstantes.ALTA, authentication);
