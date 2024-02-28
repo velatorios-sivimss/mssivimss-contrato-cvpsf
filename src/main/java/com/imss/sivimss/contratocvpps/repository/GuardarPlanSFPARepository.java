@@ -59,7 +59,7 @@ public class GuardarPlanSFPARepository {
 				planSFPAResponse = accionInserta(request, id, connection, idTabla1, idTabla2, idTabla3,idTabla4, idTabla5, idTabla6, idTabla7, i, indSubstituto);
 			}
 
-			//connection.commit();
+			connection.commit();
 
 		} catch (Exception e) {
 			e.printStackTrace();
