@@ -30,7 +30,7 @@ public class ConsultaConstantes {
 	public static final String ID_USUARIO_MODIFICA = "ID_USUARIO_MODIFICA";
 	public static final String GENERAR_DOCUMENTO = "Generar Reporte: " ;
 	public static final String GENERA_DOCUMENTO = "Genera_Documento";
-	public static final String CURRENT_DATE = "CURRENT_DATE()";
+	public static final String CURRENT_DATE = "CURRENT_TIMESTAMP()";
 	public static final String FEC_ACTUALIZACION = "FEC_ACTUALIZACION";
 	public static final String ID_BENEFICIARIO_2 = "ID_BENEFICIARIO_2";
 	public static final String ID_BENEFICIARIO_1 = "ID_BENEFICIARIO_1";
