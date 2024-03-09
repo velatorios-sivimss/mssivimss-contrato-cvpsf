@@ -49,7 +49,7 @@ public class DetallePlanSfpa implements Serializable {
 				"SD2.REF_CALLE as desCalle", "SD2.NUM_EXTERIOR as numExterior", "SD2.NUM_INTERIOR as numInterior",
 				"SD2.REF_CP as codigoPostal", "SD2.REF_COLONIA as desColonia",
 				"SD2.REF_MUNICIPIO as desMunicipio", "SD2.REF_ESTADO as desEstado", "SV.DES_VELATORIO",
-				"DATE_FORMAT(STR_TO_DATE(SPSFPA.FEC_INGRESO,'%Y-%m-%d'),'%d/%m/%Y')",
+				"DATE_FORMAT(STR_TO_DATE(SPSFPA.FEC_INGRESO,'%Y-%m-%d'),'%d/%m/%Y') as fechaIngreso",
 				"(SELECT COUNT(*) FROM SVT_PAGO_SFPA PSFPA INNER JOIN SVT_PLAN_SFPA PLSFPA ON PSFPA.ID_PLAN_SFPA = PLSFPA.ID_PLAN_SFPA AND PSFPA.ID_ESTATUS_PAGO = 4 AND PLSFPA.ID_ESTATUS_PLAN_SFPA NOT IN (6) "
 						.concat("AND PLSFPA.IND_ACTIVO = 1 WHERE PSFPA.ID_PLAN_SFPA =  ") + idPlanSfpa
 						+ " AND PSFPA.IND_ACTIVO = 1) AS PAGO",
