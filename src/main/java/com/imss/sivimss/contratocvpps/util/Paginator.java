@@ -28,7 +28,7 @@ public class Paginator {
 	@Autowired
 	private MyBatisConfig myBatisConfig;
 
-	public ResponseEntity<Object> paginarConsulta(String consultaSQL, int pagina, int elementos, String columna,
+	public Response<Object> paginarConsulta(String consultaSQL, int pagina, int elementos, String columna,
 			String ord) {
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 
@@ -57,13 +57,15 @@ public class Paginator {
 				Page<Map<String, Object>> objetoMapeado = new PageImpl<>(resp, pageable, paginasContadas);
 
 				session.commit();
-				return ResponseEntity.ok(objetoMapeado);
+				
+				
+				return new Response<>(false, HttpStatus.OK.value(), "Exito", objetoMapeado);
 
 			} catch (Exception e) {
 				session.rollback();
 				log.error(e.getMessage(), e);
 				log.info("==> rollback() ");
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor");
+				return new Response<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "52");
 			}
 		}
 	}

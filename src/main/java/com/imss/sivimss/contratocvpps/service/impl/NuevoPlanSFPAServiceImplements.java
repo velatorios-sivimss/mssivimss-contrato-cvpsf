@@ -98,7 +98,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 	}
 
 	@Override
-	public ResponseEntity<Object> busquedaPlanSFPA(Integer idPlanSFPA, Authentication authentication)
+	public Response<Object> busquedaPlanSFPA(Integer idPlanSFPA, Authentication authentication)
 			throws IOException {
 
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
@@ -119,7 +119,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					this.getClass().getPackage().toString(),
 					AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_CONSULTAR, AppConstantes.CONSULTA,
 					authentication);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor");
+			return new Response<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "52");
 		}
 
 	}

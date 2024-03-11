@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.imss.sivimss.contratocvpps.service.ConsultaPlanSFPAService;
+import com.imss.sivimss.contratocvpps.service.NuevoPlanSFPAService;
 import com.imss.sivimss.contratocvpps.util.DatosRequest;
 import com.imss.sivimss.contratocvpps.util.LogUtil;
 import com.imss.sivimss.contratocvpps.util.ProviderServiceRestTemplate;
@@ -38,6 +39,9 @@ public class ConsultaPlanSFPAController {
 	
 	@Autowired
 	private LogUtil logUtil;
+	
+	@Autowired
+	private NuevoPlanSFPAService planSfpaService;
 
 	private static final String RESILENCIA = " Resilencia  ";
 	private static final String CONSULTA = "consulta";
@@ -47,7 +51,8 @@ public class ConsultaPlanSFPAController {
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> consultaPlanSFPAService(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
-		Response<Object> response =  consultaPlanSFPAService.consultaPlanSFPA(request, authentication);
+		//Response<Object> response =  consultaPlanSFPAService.consultaPlanSFPA(request, authentication);
+		Response<Object> response =  planSfpaService.busquedaPlanSFPA(1, authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
