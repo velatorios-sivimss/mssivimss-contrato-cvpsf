@@ -179,4 +179,23 @@ public interface PlanSFPAMapper {
 	@Select(value = "SELECT DATE_ADD(CURRENT_DATE(), INTERVAL #{in.datos}  MONTH) as fechaParcialidad from dual ")
 	public Map<String, Object> fechasMensualidades(@Param("datos") PagosSFPA datos);
 
+	@Insert(value = "INSERT INTO SVC_CONTRATANTE  " +
+			" (  " +
+			" ID_PERSONA, " +
+			" CVE_MATRICULA, " +
+			" ID_DOMICILIO, " +
+			" FEC_ALTA, " +
+			" ID_USUARIO_ALTA, " +
+			" IND_ACTIVO) " +
+			" VALUES ( " +
+			" #{datos.idPersona}, " +
+			" #{datos.matricula}, " +
+			" #{datos.idDomicilio}, " +
+			" CURRENT_TIMESTAMP(), " +
+			" #{datos.idUsuario}, " +
+			" 1 " +
+			" )  ")
+	@Options(useGeneratedKeys = true, keyProperty = "datos.idContratante", keyColumn = "ID_CONTRATANTE")
+	public int agregarContratante(@Param("datos") PlanSFPA datos);
+
 }
