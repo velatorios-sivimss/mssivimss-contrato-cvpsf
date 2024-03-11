@@ -58,5 +58,7 @@ public class PlanSFPA {
     private String estatusPago;
     private String estado;
     private String noPago;
+    private String fechaInicio;
+    private String fechaFin;
 
 }
