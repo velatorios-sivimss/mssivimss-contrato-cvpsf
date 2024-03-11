@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.imss.sivimss.contratocvpps.service.ReportePagoAnticipadoService;
+import com.imss.sivimss.contratocvpps.service.NuevoPlanSFPAService;
 import com.imss.sivimss.contratocvpps.service.PlanSFPAService;
 import com.imss.sivimss.contratocvpps.util.DatosRequest;
 import com.imss.sivimss.contratocvpps.util.LogUtil;
@@ -34,6 +35,9 @@ public class PlanSFPAController {
 
 	@Autowired
 	private PlanSFPAService planSFPAService;
+
+	@Autowired
+	private NuevoPlanSFPAService planesSfpaService;
 	
 	@Autowired
 	private ReportePagoAnticipadoService reportePagoAnticipadoService;
