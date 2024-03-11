@@ -130,4 +130,26 @@ public interface PlanSFPAMapper {
 	@Options(useGeneratedKeys = true, keyProperty = "datos.idDomicilio", keyColumn = "ID_DOMICILIO")
 	public int agregarDomicilio(@Param("datos") PlanSFPA datos);
 
+	@Insert(value = "INSERT INTO  SVT_TITULAR_BENEFICIARIOS  " +
+			"(" +
+			" CVE_MATRICULA , " +
+			" REF_PERSONA ," +
+			" ID_PERSONA ," +
+			" ID_DOMICILIO ," +
+			" IND_ACTIVO , " +
+			" FEC_ALTA , " +
+			" ID_USUARIO_ALTA  ) " +
+			" VALUES  " +
+			" ( " +
+			" #{datos.matricula}, " +
+			" #{datos.persona}, " +
+			" #{datos.idPersona}, " +
+			" #{datos.idDomicilio}, " +
+			" 1, " +
+			"  CURRENT_TIMESTAMP() , " +
+			" #{datos.idUsuario},  " +
+			" )  ")
+	@Options(useGeneratedKeys = true, keyProperty = "datos.idTitularBeneficiario", keyColumn = "ID_TITULAR_BENEFICIARIOS")
+	public int agregarTitulaBeneficiario(@Param("datos") PlanSFPA datos);
+
 }

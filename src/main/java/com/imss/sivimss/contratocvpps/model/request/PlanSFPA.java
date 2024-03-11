@@ -62,5 +62,6 @@ public class PlanSFPA {
     private String fechaFin;
     private Integer idUsuario;
     private Integer idSexo;
+    private Integer idTitularBeneficiario;
 
 }
