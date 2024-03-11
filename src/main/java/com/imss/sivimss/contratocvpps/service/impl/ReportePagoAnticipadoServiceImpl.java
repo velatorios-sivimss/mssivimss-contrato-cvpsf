@@ -118,6 +118,7 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 			, List<ReportePagoAnticipadoReponse> reportePagoAnticipadoReponseFirma
 	        , List<ReportePagoAnticipadoReponse> reportePagoAnticipadoReponseCheck, List<ReportePagoAnticipadoReponse> reportePagoNomFibeso ) {
 		Map<String, Object> envioDatos = new HashMap<>();
+		envioDatos.put("numFolioPlanSFPA", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNumFolioPlanSFPA()));
 		envioDatos.put("nombreTitular", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNombreTitular()));
 		envioDatos.put("nacionalidadTitular", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNacionalidadTitular()));
 		envioDatos.put("rfcTitular", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getRfcTitular()));
@@ -253,3 +254,4 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 		}
 	}
 }
+
