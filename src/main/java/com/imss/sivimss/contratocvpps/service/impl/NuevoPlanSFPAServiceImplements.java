@@ -21,9 +21,11 @@ import com.google.gson.Gson;
 import com.imss.sivimss.contratocvpps.beans.BeanQuerys;
 import com.imss.sivimss.contratocvpps.configuration.MyBatisConfig;
 import com.imss.sivimss.contratocvpps.configuration.Mapper.Consultas;
+import com.imss.sivimss.contratocvpps.model.request.PlanSFPA;
 import com.imss.sivimss.contratocvpps.model.request.UsuarioDto;
 import com.imss.sivimss.contratocvpps.service.NuevoPlanSFPAService;
 import com.imss.sivimss.contratocvpps.util.AppConstantes;
+import com.imss.sivimss.contratocvpps.util.DatosRequest;
 import com.imss.sivimss.contratocvpps.util.LogUtil;
 import com.imss.sivimss.contratocvpps.util.PaginadoUtil;
 import com.imss.sivimss.contratocvpps.util.Paginator;
@@ -122,6 +124,47 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			return new Response<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "52");
 		}
 
+	}
+
+	@Override
+	public Response<Object> insertarPlanSFPA(DatosRequest datos, Authentication authentication) throws IOException {
+		Gson gson= new Gson();
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		String datosJson=datos.getDatos().get(AppConstantes.DATOS).toString();
+		PlanSFPA planSFPA= gson.fromJson(datosJson, PlanSFPA.class);
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+
+			//insertar en contratante
+			// sino existe insertar en persona y despues en domicilio y contratante
+			// si existe actualizar persona contratante y domicilio
+			
+			
+			// titular substituto
+			// si es el mismo solamente se agrega a 1 a columna IND_TITULAR_SUBSTITUTO, esto indica que el titular substituto es el mismo que el titular 
+			// sino se agrega la informacion en persona en caso de que no exista, si existe la persona se actualiza  y  se inserta en la tabla SVT_TITULAR_BENEFICIARIOS con la referencia de persona como titular substituto y su domiclio
+			
+			//beneficiario1 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la referencia de beneficiario 1 y su domicilio
+			
+			
+			//beneficiario2 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la referencia de beneficiario 2 y su domicilio
+			
+			
+			//plan sfpa
+			
+		
+			//parcialidades
+			
+			return null;
+
+		} catch (Exception e) {
+			log.info(ERROR, e.getCause().getMessage());
+
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(),
+					AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_CONSULTAR, AppConstantes.CONSULTA,
+					authentication);
+			return new Response<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "52");
+		}
 	}
 
 }
