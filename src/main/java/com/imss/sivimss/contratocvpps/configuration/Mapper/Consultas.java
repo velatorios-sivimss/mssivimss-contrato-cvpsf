@@ -3,10 +3,11 @@ package com.imss.sivimss.contratocvpps.configuration.Mapper;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @Repository
 public interface Consultas {
@@ -20,14 +21,59 @@ public interface Consultas {
 		}
 	}
 
+	public class PureSqlProviderPage {
+
+		public String sqlWithPagination(String sql, Pageable pageable) {
+			StringBuilder paginatedSql = new StringBuilder("SELECT *\r\n" + //
+					"FROM (" + sql);
+
+			// Agregar cláusula de ordenación si se proporciona
+			Sort sort = pageable.getSort();
+			if (sort != null && sort.isSorted()) {
+				paginatedSql.append(" ORDER BY ");
+				boolean first = true;
+				for (Sort.Order order : sort) {
+					if (!first) {
+						paginatedSql.append(", ");
+					}
+					paginatedSql.append(order.getProperty()).append(" ").append(order.getDirection());
+					first = false;
+				}
+			}
+
+			// Agregar cláusula de paginación
+			paginatedSql.append(") WHERE rnum >= ").append(pageable.getOffset() - pageable.getPageSize() + 1)
+					.append(" AND rnum <= ").append(pageable.getOffset());
+
+			return paginatedSql.toString();
+		}
+
+		public String countPages(String from, Pageable pageable) {
+			int pageSize = pageable.getPageSize();
+			return "SELECT CAST(CEIL(COUNT(*) / " + pageSize + ") AS INT) " +
+					"FROM ( " + from + " ) sc;";
+		}
+
+		public String count(String from) {
+			return "SELECT count(*) FROM (" + from + " ) sc";
+		}
+	}
+
 	@SelectProvider(type = PureSqlProvider.class, method = "sql")
 	public List<Map<String, Object>> selectNativeQuery(String sql);
 
-	@Update(value = ""
-			+ "UPDATE SVT_CONVENIO_PF  "
-			+ "SET  "
-			+ "ID_ESTATUS_CONVENIO = 4"
-			+ "WHERE ID_CONVENIO_PF=#{id}")
-	public void actualizarConvenio(@Param("id") Integer id);
+	/**
+	 * Arquetipo
+	 * 
+	 * Obtiene una [Pagina] de una query generica [SELECT]
+	 * 
+	 * @author Elias Garcia Lopez
+	 * @version 0.0.1
+	 */
+	@SelectProvider(type = PureSqlProviderPage.class, method = "sqlWithPagination")
+	public List<Map<String, Object>> selectNativeQueryPag(String sql, Pageable pageable);
+
+	@SelectProvider(type = PureSqlProviderPage.class, method = "count")
+	public Integer selectNativeQueryPagCuentaPaginas(String from, Pageable pageable);
 
 }

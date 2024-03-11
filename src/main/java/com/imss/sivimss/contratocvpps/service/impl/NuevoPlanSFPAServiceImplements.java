@@ -14,9 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
+import com.imss.sivimss.contratocvpps.beans.BeanQuerys;
 import com.imss.sivimss.contratocvpps.configuration.MyBatisConfig;
 import com.imss.sivimss.contratocvpps.configuration.Mapper.Consultas;
 import com.imss.sivimss.contratocvpps.model.request.UsuarioDto;
@@ -24,6 +26,7 @@ import com.imss.sivimss.contratocvpps.service.NuevoPlanSFPAService;
 import com.imss.sivimss.contratocvpps.util.AppConstantes;
 import com.imss.sivimss.contratocvpps.util.LogUtil;
 import com.imss.sivimss.contratocvpps.util.PaginadoUtil;
+import com.imss.sivimss.contratocvpps.util.Paginator;
 import com.imss.sivimss.contratocvpps.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.contratocvpps.util.Response;
 
@@ -52,6 +55,10 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 	private Gson gson = new Gson();
 
 	private UsuarioDto usuario;
+	@Autowired
+	private Paginator paginador;
+	@Autowired
+	private BeanQuerys queryBusquedas;
 
 	@Override
 	public Response<Object> detallePlanSFPA(Integer idPlanSFPA, Authentication authentication) throws IOException {
@@ -88,6 +95,33 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 
 		// return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO,
 		// convenioResponse);
+	}
+
+	@Override
+	public ResponseEntity<Object> busquedaPlanSFPA(Integer idPlanSFPA, Authentication authentication)
+			throws IOException {
+
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+
+			String query = queryBusquedas.busquedaPaginada();
+			int pagina = 1;
+			int elementos = 10;
+			String columna = " SPLSFPA.NUM_FOLIO_PLAN_SFPA";
+			String ordenamiento = "asc";
+			return paginador.paginarConsulta(query, pagina, elementos, columna, ordenamiento);
+
+		} catch (Exception e) {
+			log.info(ERROR, e.getCause().getMessage());
+
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(),
+					AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_CONSULTAR, AppConstantes.CONSULTA,
+					authentication);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor");
+		}
+
 	}
 
 }
