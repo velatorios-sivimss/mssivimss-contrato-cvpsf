@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.contratocvpps.configuration.Mapper.Consultas;
+import com.imss.sivimss.contratocvpps.configuration.Mapper.PlanSFPAMapper;
 
 @Service
 public class MyBatisConfig {
@@ -38,6 +39,7 @@ public class MyBatisConfig {
 
 		Configuration configuration = new Configuration(environment);
 		configuration.addMapper(Consultas.class);
+		configuration.addMapper(PlanSFPAMapper.class);
 
 		SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
 

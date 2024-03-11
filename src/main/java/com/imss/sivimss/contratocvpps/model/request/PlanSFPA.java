@@ -51,7 +51,7 @@ public class PlanSFPA {
     private String desEstado;
     private Integer idTitularSubstituto;
     private Integer idBeneficiario1;
-    private Integer beneficiario2;
+    private Integer idBeneficiario2;
     private String paquete;
     private String nombreCompleto;
     private String estatusPlan;
@@ -60,5 +60,7 @@ public class PlanSFPA {
     private String noPago;
     private String fechaInicio;
     private String fechaFin;
+    private Integer idUsuario;
+    private Integer idSexo;
 
 }
