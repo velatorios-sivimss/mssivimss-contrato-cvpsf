@@ -67,10 +67,33 @@ public class ConsultaConstantes {
 	
 	public static SelectQueryUtil detalleContratante () {
 		SelectQueryUtil queryUtil = new SelectQueryUtil();
-		queryUtil.select("P.ID_PERSONA AS idPersona","P.CVE_RFC AS rfc","P.CVE_CURP AS curp","P.CVE_NSS AS nss","P.NOM_PERSONA AS nomPersona","P.NOM_PRIMER_APELLIDO AS nomPersonaPaterno",
-				"P.NOM_SEGUNDO_APELLIDO AS nomPersonaMaterno","P.NUM_SEXO AS numSexo","P.REF_OTRO_SEXO AS desOtroSexo","P.FEC_NAC as fechaNacimiento","P.ID_PAIS AS idPais","P.ID_ESTADO AS idEstado","P.REF_TELEFONO AS desTelefono",
-				"P.REF_CORREO AS desCorreo","P.TIP_PERSONA AS tipoPersona","C.ID_CONTRATANTE AS idContratante","C.CVE_MATRICULA AS claveMatricula","D.REF_CALLE AS desCalle","D.NUM_EXTERIOR AS numExterior",
-				"D.NUM_INTERIOR AS numInterior","D.REF_CP AS DesCodigoPostal","D.REF_COLONIA AS desColonia","D.REF_MUNICIPIO AS desMunicipio","D.REF_ESTADO AS desEstado")
+		queryUtil.select(
+				"P.ID_PERSONA AS idPersona",
+				"IFNULL(P.CVE_RFC,'') AS rfc",
+				"IFNULL(P.CVE_CURP,'') AS curp",
+				"IFNULL(P.CVE_NSS,'') AS nss",
+				"P.NOM_PERSONA AS nomPersona",
+				"P.NOM_PRIMER_APELLIDO AS primerApellido",
+				"P.NOM_SEGUNDO_APELLIDO AS segundoApellido",
+				"IFNULL(P.NUM_SEXO,'') AS sexo",
+				"IFNULL(P.REF_OTRO_SEXO,'') AS otroSexo",
+				"P.FEC_NAC as fecNacimiento",
+				"IFNULL(P.ID_PAIS,'') AS idPais",
+				"IFNULL(P.ID_ESTADO,'') AS idEstado",
+				"P.REF_TELEFONO AS telefono",
+				"P.REF_TELEFONO_FIJO AS telefonoFijo",
+				"P.REF_CORREO AS correo",
+				"P.TIP_PERSONA AS tipoPersona",
+				"C.ID_CONTRATANTE AS idContratante",
+				"IFNULL(C.CVE_MATRICULA,'') AS matricula",
+				"D.ID_DOMICILIO AS idDomicilio",
+				"D.REF_CALLE AS desCalle",
+				"D.NUM_EXTERIOR AS numExterior",
+				"D.NUM_INTERIOR AS numInterior",
+				"D.REF_CP AS codigoPostal",
+				"D.REF_COLONIA AS desColonia",
+				"D.REF_MUNICIPIO AS desMunicipio",
+				"D.REF_ESTADO AS desEstado")
 		.from("SVC_PERSONA P")
 		.innerJoin("SVC_CONTRATANTE C", "P.ID_PERSONA = C.ID_PERSONA")
 		.innerJoin("SVT_DOMICILIO D", "C.ID_DOMICILIO = D.ID_DOMICILIO");
