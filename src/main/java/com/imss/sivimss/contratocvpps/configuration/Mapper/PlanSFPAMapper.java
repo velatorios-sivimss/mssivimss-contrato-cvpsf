@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import com.imss.sivimss.contratocvpps.model.request.PagosSFPA;
 import com.imss.sivimss.contratocvpps.model.request.PlanSFPA;
 
 public interface PlanSFPAMapper {
@@ -151,5 +152,31 @@ public interface PlanSFPAMapper {
 			" )  ")
 	@Options(useGeneratedKeys = true, keyProperty = "datos.idTitularBeneficiario", keyColumn = "ID_TITULAR_BENEFICIARIOS")
 	public int agregarTitulaBeneficiario(@Param("datos") PlanSFPA datos);
+
+	@Insert(value = "INSERT INTO  SVT_PAGO_SFPA  (" +
+			" ID_PLAN_SFPA , " +
+			" IMP_MONTO_MENSUAL ," +
+			" FEC_PARCIALIDAD , " +
+			" IND_ACTIVO , " +
+			" ID_USUARIO_ALTA ," +
+			" FEC_ALTA ,  " +
+			" ID_ESTATUS_PAGO " +
+			")" +
+			" VALUES  " +
+			" ( " +
+			" #{datos.idPlanSfpa}, " +
+			" #{datos.montoParcialidad}, " +
+			" #{datos.fechaParcialidad}, " +
+
+			" 1, " +
+			" #{datos.idUsuario},  " +
+			"  CURRENT_TIMESTAMP() , " +
+			"7" +
+			" )  ")
+	@Options(useGeneratedKeys = true, keyProperty = "datos.idTitularBeneficiario", keyColumn = "ID_PAGO_SFPA")
+	public int agregarParcialidades(@Param("datos") PagosSFPA datos);
+
+	@Select(value = "SELECT DATE_ADD(CURRENT_DATE(), INTERVAL #{in.datos}  MONTH) as fechaParcialidad from dual ")
+	public Map<String, Object> fechasMensualidades(@Param("datos") PagosSFPA datos);
 
 }

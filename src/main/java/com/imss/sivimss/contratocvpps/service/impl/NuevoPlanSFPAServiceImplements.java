@@ -1,6 +1,7 @@
 package com.imss.sivimss.contratocvpps.service.impl;
 
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,10 +18,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.imss.sivimss.contratocvpps.beans.BeanQuerys;
 import com.imss.sivimss.contratocvpps.configuration.MyBatisConfig;
 import com.imss.sivimss.contratocvpps.configuration.Mapper.Consultas;
+import com.imss.sivimss.contratocvpps.configuration.Mapper.PlanSFPAMapper;
+import com.imss.sivimss.contratocvpps.model.request.PagosSFPA;
 import com.imss.sivimss.contratocvpps.model.request.PlanSFPA;
 import com.imss.sivimss.contratocvpps.model.request.UsuarioDto;
 import com.imss.sivimss.contratocvpps.service.NuevoPlanSFPAService;
@@ -31,6 +37,11 @@ import com.imss.sivimss.contratocvpps.util.PaginadoUtil;
 import com.imss.sivimss.contratocvpps.util.Paginator;
 import com.imss.sivimss.contratocvpps.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.contratocvpps.util.Response;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
@@ -128,32 +139,33 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 
 	@Override
 	public Response<Object> insertarPlanSFPA(DatosRequest datos, Authentication authentication) throws IOException {
-		Gson gson= new Gson();
+		Gson gson = new Gson();
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
-		String datosJson=datos.getDatos().get(AppConstantes.DATOS).toString();
-		PlanSFPA planSFPA= gson.fromJson(datosJson, PlanSFPA.class);
+		String datosJson = datos.getDatos().get(AppConstantes.DATOS).toString();
+		PlanSFPA planSFPA = gson.fromJson(datosJson, PlanSFPA.class);
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 
-			//insertar en contratante
+			// insertar en contratante
 			// sino existe insertar en persona y despues en domicilio y contratante
 			// si existe actualizar persona contratante y domicilio
-			
-			
+
 			// titular substituto
-			// si es el mismo solamente se agrega a 1 a columna IND_TITULAR_SUBSTITUTO, esto indica que el titular substituto es el mismo que el titular 
-			// sino se agrega la informacion en persona en caso de que no exista, si existe la persona se actualiza  y  se inserta en la tabla SVT_TITULAR_BENEFICIARIOS con la referencia de persona como titular substituto y su domiclio
-			
-			//beneficiario1 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la referencia de beneficiario 1 y su domicilio
-			
-			
-			//beneficiario2 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la referencia de beneficiario 2 y su domicilio
-			
-			
-			//plan sfpa
-			
-		
-			//parcialidades
-			
+			// si es el mismo solamente se agrega a 1 a columna IND_TITULAR_SUBSTITUTO, esto
+			// indica que el titular substituto es el mismo que el titular
+			// sino se agrega la informacion en persona en caso de que no exista, si existe
+			// la persona se actualiza y se inserta en la tabla SVT_TITULAR_BENEFICIARIOS
+			// con la referencia de persona como titular substituto y su domiclio
+
+			// beneficiario1 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la
+			// referencia de beneficiario 1 y su domicilio
+
+			// beneficiario2 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la
+			// referencia de beneficiario 2 y su domicilio
+
+			// plan sfpa
+
+			// parcialidades
+
 			return null;
 
 		} catch (Exception e) {
@@ -165,6 +177,65 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					authentication);
 			return new Response<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "52");
 		}
+	}
+
+	// esto te lo explico cuando llegue a esa parte
+	private void insertaPArcialidades()
+			throws IOException {
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+
+			BigDecimal cantidadTotal = new BigDecimal("100.53");
+			int numeroParcialidades = 5;
+			List<BigDecimal> parcialidades = generarParcialidades(cantidadTotal, numeroParcialidades);
+			Integer idPlan = 2;// pasar el id plansfpa
+			Integer idUsuario = 1;// pasa el id usuario
+			PlanSFPAMapper mapperQuery = session.getMapper(PlanSFPAMapper.class);
+			for (int i = 0; i < parcialidades.size(); i++) {
+
+				ObjectMapper objMapper = new ObjectMapper();
+				Object personaAsociada;
+				String json;
+				JsonNode datosJson;
+				PagosSFPA datosPagoSFPA = new PagosSFPA();
+				datosPagoSFPA.setNoMes(i);
+				personaAsociada = mapperQuery.fechasMensualidades(datosPagoSFPA);
+				json = new ObjectMapper().writeValueAsString(personaAsociada);
+				datosJson = objMapper.readTree(json);
+				String fechaParcialidad = datosJson.get("fechaParcialidad").asText();
+				datosPagoSFPA.setFechaParcialidad(fechaParcialidad);
+				datosPagoSFPA.setMontoParcialidad(parcialidades.get(i).doubleValue());
+				datosPagoSFPA.setIdPlanSfpa(idPlan);
+				datosPagoSFPA.setIdUsuario(idUsuario);
+				System.out.println("insertando parcialiadad");
+				mapperQuery.agregarParcialidades(datosPagoSFPA);
+				System.out.println("parcialidad insertada");
+				System.out.printf("Parcialidad %d: %.2f%n", i + 1, parcialidades.get(i));
+			}
+
+		} catch (Exception e) {
+			log.info(ERROR, e.getCause().getMessage());
+
+		}
+	}
+
+	public static List<BigDecimal> generarParcialidades(BigDecimal cantidadTotal, int numeroParcialidades) {
+		// Redondeamos hacia arriba para asegurarnos de que no se pierdan centavos
+		BigDecimal parcialidad = cantidadTotal.divide(new BigDecimal(numeroParcialidades), 2, RoundingMode.UP);
+		List<BigDecimal> parcialidades = new ArrayList<>();
+
+		// Generar las primeras (numeroParcialidades - 1) parcialidades
+		for (int i = 0; i < numeroParcialidades - 1; i++) {
+			parcialidades.add(parcialidad);
+		}
+
+		// Calcular la ultima parcialidad sumando los centavos
+		BigDecimal sumaParcialidadesAnteriores = parcialidad.multiply(new BigDecimal(numeroParcialidades - 1));
+		BigDecimal centavosRestantes = cantidadTotal.subtract(sumaParcialidadesAnteriores);
+		parcialidades.add(centavosRestantes);
+
+		return parcialidades;
 	}
 
 }
