@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class BeanQuerys {
 
-	public String queryGetArticulos() {
+	public String busquedaPaginada() {
 		return "SELECT SPLSFPA.ID_PLAN_SFPA AS idPlanSfpa, " +
 				" SPLSFPA.NUM_FOLIO_PLAN_SFPA AS numFolio, " +
 				" CONCAT_WS(' ', SP.NOM_PERSONA, SP.NOM_PRIMER_APELLIDO, SP.NOM_SEGUNDO_APELLIDO) AS nombreCompleto, " +

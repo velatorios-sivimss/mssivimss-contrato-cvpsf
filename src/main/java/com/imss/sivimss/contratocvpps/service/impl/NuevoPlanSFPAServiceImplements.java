@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
+import com.imss.sivimss.contratocvpps.beans.BeanQuerys;
 import com.imss.sivimss.contratocvpps.configuration.MyBatisConfig;
 import com.imss.sivimss.contratocvpps.configuration.Mapper.Consultas;
 import com.imss.sivimss.contratocvpps.model.request.UsuarioDto;
@@ -56,6 +57,8 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 	private UsuarioDto usuario;
 	@Autowired
 	private Paginator paginador;
+	@Autowired
+	private BeanQuerys queryBusquedas;
 
 	@Override
 	public Response<Object> detallePlanSFPA(Integer idPlanSFPA, Authentication authentication) throws IOException {
@@ -102,10 +105,10 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 
-			String query = "";
+			String query = queryBusquedas.busquedaPaginada();
 			int pagina = 1;
 			int elementos = 10;
-			String columna = "";
+			String columna = " SPLSFPA.NUM_FOLIO_PLAN_SFPA";
 			String ordenamiento = "asc";
 			return paginador.paginarConsulta(query, pagina, elementos, columna, ordenamiento);
 
