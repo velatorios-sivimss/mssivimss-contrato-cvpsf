@@ -55,7 +55,7 @@ public class BeanQuerys {
 		}
 		if (datos.getNombreAfiliado() != null) {
 			sql += " AND CONCAT_WS(' ',SP.NOM_PERSONA,SP.NOM_PRIMER_APELLIDO,SP.NOM_SEGUNDO_APELLIDO ) LIKE '%"
-					+ datos.getNombreAfiliado() + "'%";
+					+ datos.getNombreAfiliado() + "%'";
 		}
 
 		if (datos.getIdEstatusPlanSfpa() != null) {
