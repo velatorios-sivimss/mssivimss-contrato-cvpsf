@@ -12,5 +12,8 @@ public class PagosSFPA {
     private String fechaParcialidad;
     private Integer idUsuario;
     private Integer noMes;
+    private Integer idPagoSFPA;
+    private Integer idEstatusPago;
+    
 
 }

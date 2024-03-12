@@ -166,17 +166,14 @@ public interface PlanSFPAMapper {
 			" ( " +
 			" #{datos.idPlanSfpa}, " +
 			" #{datos.montoParcialidad}, " +
-			" (SELECT DATE_ADD(CURRENT_DATE(), INTERVAL #{in.noMes}  MONTH) ), " +
+			" (SELECT DATE_ADD(CURRENT_DATE(), INTERVAL #{datos.noMes}  MONTH) ), " +
 			" 1, " +
 			" #{datos.idUsuario},  " +
 			"  CURRENT_TIMESTAMP() , " +
-			"7" +
+			" #{datos.idEstatusPago} " +
 			" )  ")
 	@Options(useGeneratedKeys = true, keyProperty = "datos.idPagoSFPA", keyColumn = "ID_PAGO_SFPA")
 	public int agregarParcialidades(@Param("datos") PagosSFPA datos);
-
-	@Select(value = "SELECT DATE_ADD(CURRENT_DATE(), INTERVAL #{in.noMes}  MONTH) as fechaParcialidad from dual ")
-	public Map<String, Object> fechasMensualidades(@Param("in") PagosSFPA datos);
 
 	@Insert(value = "INSERT INTO SVC_CONTRATANTE  " +
 			" (  " +
@@ -239,7 +236,7 @@ public interface PlanSFPAMapper {
 			+ "SET  "
 			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
 			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
-			" CVE_MATRICULA = #{in.rfc}  " +
+			" CVE_MATRICULA = #{in.matricula}  " +
 			" WHERE ID_CONTRATANTE = #{in.idContratante} " +
 			" AND ID_PERSONA = {in.idPersona}  ")
 	public int updateContratante(@Param("in") PlanSFPA persona);

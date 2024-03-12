@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -14,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -30,7 +32,10 @@ import com.imss.sivimss.contratocvpps.model.request.PagosSFPA;
 import com.imss.sivimss.contratocvpps.model.request.PlanRequest;
 import com.imss.sivimss.contratocvpps.model.request.PlanSFPA;
 import com.imss.sivimss.contratocvpps.model.request.UsuarioDto;
+import com.imss.sivimss.contratocvpps.model.response.PlanSFPAResponse;
+import com.imss.sivimss.contratocvpps.repository.PlanSFPARepository;
 import com.imss.sivimss.contratocvpps.service.NuevoPlanSFPAService;
+import com.imss.sivimss.contratocvpps.service.ReportePagoAnticipadoService;
 import com.imss.sivimss.contratocvpps.util.AppConstantes;
 import com.imss.sivimss.contratocvpps.util.DatosRequest;
 import com.imss.sivimss.contratocvpps.util.LogUtil;
@@ -75,6 +80,19 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 	private BeanQuerys queryBusquedas;
 	
 	private PlanSFPAMapper planSFPAMapper;
+	
+	private static final String ID_PLAN_SFPA = "idPlanSFPA";
+	
+	private Response<Object>response;
+	
+	@Value("${endpoints.ms-reportes}")
+	private String urlReportes;
+	
+	@Autowired
+	private ReportePagoAnticipadoService reportePagoAnticipadoService;
+	
+	@Autowired
+	private PlanSFPARepository planSFPARepository;
 
 	@Override
 	public Response<Object> detallePlanSFPA(Integer idPlanSFPA, Authentication authentication) throws IOException {
@@ -164,6 +182,10 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 				planSFPAMapper.agregarContratante(contratante);
 				plan.setIdTitular(contratante.getIdContratante());
 				
+			}else {
+				planSFPAMapper.updatePersona(contratante);
+				planSFPAMapper.updateDomicilio(contratante);
+				planSFPAMapper.updateContratante(contratante);
 			}
 			// si existe actualizar persona contratante y domicilio
 
@@ -174,14 +196,23 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			// sino se agrega la informacion en persona en caso de que no exista, si existe
 			// la persona se actualiza y se inserta en la tabla SVT_TITULAR_BENEFICIARIOS
 			// con la referencia de persona como titular substituto y su domiclio
-			if (titularSubstituto != null) {
-				if (plan.getIndTitularSubstituto() == 0
-						&& (titularSubstituto.getIdPersona() == null || titularSubstituto.getIdPersona() <= 0)) {
+			
+			if (plan.getIndTitularSubstituto() == 0) {
+				if ((titularSubstituto.getIdPersona() == null || titularSubstituto.getIdPersona() <= 0)) {
 					planSFPAMapper.agregarPersona(titularSubstituto);
+					planSFPAMapper.agregarDomicilio(titularSubstituto);
 					planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
 					plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
+				} else {
+					planSFPAMapper.updatePersona(titularSubstituto);
+					planSFPAMapper.agregarDomicilio(titularSubstituto);
+					planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
+					plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
+					
 				}
+
 			}
+			
 			// beneficiario1 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la
 			// referencia de beneficiario 1 y su domicilio
 			if (beneficiario1 != null) {
@@ -191,6 +222,11 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
 					plan.setIdBeneficiario1(beneficiario1.getIdTitularBeneficiario());
 
+				}else {
+					planSFPAMapper.updatePersona(beneficiario1);
+					planSFPAMapper.agregarDomicilio(beneficiario1);
+					planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
+					plan.setIdBeneficiario1(beneficiario1.getIdTitularBeneficiario());
 				}
 			}
 			// beneficiario2 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la
@@ -202,6 +238,11 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
 					plan.setIdBeneficiario2(beneficiario2.getIdTitularBeneficiario());
 
+				}else {
+					planSFPAMapper.updatePersona(beneficiario2);
+					planSFPAMapper.agregarDomicilio(beneficiario2);
+					planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
+					plan.setIdBeneficiario1(beneficiario2.getIdTitularBeneficiario());
 				}
 			}
 
@@ -217,28 +258,17 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			
 			PlanSFPAMapper mapperQuery = session.getMapper(PlanSFPAMapper.class);
 			for (int i = 0; i < parcialidades.size(); i++) {
-
-				ObjectMapper objMapper = new ObjectMapper();
-				Object personaAsociada;
-				String json;
-				JsonNode datosConsulta;
 				PagosSFPA datosPagoSFPA = new PagosSFPA();
 				datosPagoSFPA.setNoMes(i);
-				personaAsociada = mapperQuery.fechasMensualidades(datosPagoSFPA);
-				json = new ObjectMapper().writeValueAsString(personaAsociada);
-				datosConsulta = objMapper.readTree(json);
-				String fechaParcialidad = datosConsulta.get("fechaParcialidad").asText();
-				datosPagoSFPA.setFechaParcialidad(fechaParcialidad);
 				datosPagoSFPA.setMontoParcialidad(parcialidades.get(i).doubleValue());
 				datosPagoSFPA.setIdPlanSfpa(plan.getIdPlanSfpa());
 				datosPagoSFPA.setIdUsuario(usuario.getIdUsuario());
-				System.out.println("insertando parcialiadad");
-				mapperQuery.agregarParcialidades(datosPagoSFPA);
-				System.out.println("parcialidad insertada");
-				System.out.printf("Parcialidad %d: %.2f%n", i + 1, parcialidades.get(i));
+				datosPagoSFPA.setIdEstatusPago(i==0?8:7);
+				mapperQuery.agregarParcialidades(datosPagoSFPA);	
 			}
-			return null;
-
+			session.commit();
+			return new Response<>(false, HttpStatus.OK.value(), "Exito",plan);
+			
 		} catch (Exception e) {
 			log.info(ERROR, e.getCause().getMessage());
 
@@ -247,47 +277,6 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_CONSULTAR, AppConstantes.CONSULTA,
 					authentication);
 			return new Response<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "52");
-		}
-	}
-
-	// esto te lo explico cuando llegue a esa parte
-	private void insertaPArcialidades()
-			throws IOException {
-		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
-
-		try (SqlSession session = sqlSessionFactory.openSession()) {
-
-			BigDecimal cantidadTotal = new BigDecimal("100.53");
-			int numeroParcialidades = 5;
-			List<BigDecimal> parcialidades = generarParcialidades(cantidadTotal, numeroParcialidades);
-			Integer idPlan = 2;// pasar el id plansfpa
-			Integer idUsuario = 1;// pasa el id usuario
-			PlanSFPAMapper mapperQuery = session.getMapper(PlanSFPAMapper.class);
-			for (int i = 0; i < parcialidades.size(); i++) {
-
-				ObjectMapper objMapper = new ObjectMapper();
-				Object personaAsociada;
-				String json;
-				JsonNode datosJson;
-				PagosSFPA datosPagoSFPA = new PagosSFPA();
-				datosPagoSFPA.setNoMes(i);
-				personaAsociada = mapperQuery.fechasMensualidades(datosPagoSFPA);
-				json = new ObjectMapper().writeValueAsString(personaAsociada);
-				datosJson = objMapper.readTree(json);
-				String fechaParcialidad = datosJson.get("fechaParcialidad").asText();
-				datosPagoSFPA.setFechaParcialidad(fechaParcialidad);
-				datosPagoSFPA.setMontoParcialidad(parcialidades.get(i).doubleValue());
-				datosPagoSFPA.setIdPlanSfpa(idPlan);
-				datosPagoSFPA.setIdUsuario(idUsuario);
-				System.out.println("insertando parcialiadad");
-				mapperQuery.agregarParcialidades(datosPagoSFPA);
-				System.out.println("parcialidad insertada");
-				System.out.printf("Parcialidad %d: %.2f%n", i + 1, parcialidades.get(i));
-			}
-
-		} catch (Exception e) {
-			log.info(ERROR, e.getCause().getMessage());
-
 		}
 	}
 
