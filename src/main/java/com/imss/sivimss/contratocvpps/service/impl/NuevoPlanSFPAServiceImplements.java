@@ -361,6 +361,15 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 
 		try (SqlSession session = sqlSessionFactory.openSession()) {
+			
+			// actualizar contratante
+			// actualizar tablas contratante, domicilio
+			
+			// subsituto
+			//IND_TITULAR_SUBSTITUTO=0 validar
+			// si el id persona es null y el ID_TITULAR_SUBSTITUTO = null insertar en las tablas de 
+			// persona y SVT_TITULAR_BENEFICIARIOS y actualizar ID_TITULAR_SUBSTITUTO en el plan
+			// sino actualizar la tabla persona, domicilio 
 
 		
 			session.commit();
