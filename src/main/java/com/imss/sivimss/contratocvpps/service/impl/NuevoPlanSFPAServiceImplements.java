@@ -304,19 +304,36 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 		ObjectMapper mappe = new ObjectMapper();
 		JsonNode datos = mappe.readTree(request.getDatos().get(AppConstantes.DATOS)
                  .toString());
-         Integer idPlan = datos.get("idPlan").asInt();
+        Integer idPlan = datos.get("idPlan").asInt();
+        Object personaAsociada;
+        String json;
+        JsonNode datosJson;
 		PlanResponse planResponse = new PlanResponse();
 		try (SqlSession session = sqlSessionFactory.openSession()) {
+			planSFPAMapper = session.getMapper(PlanSFPAMapper.class);
+			personaAsociada = planSFPAMapper.datosPlan(idPlan);
+            json = new ObjectMapper().writeValueAsString(personaAsociada);
+            datosJson = mappe.readTree(json);
+            Integer indTitularSubstituto = datosJson.get("indTitularSubstituto").asInt();
+            Map<String, Object> plan = null;
+            Map<String, Object> contratante = null;
+            Map<String, Object> titularSubstituto = null;
+            Map<String, Object> beneficiario1 = null;
+            Map<String, Object> beneficiario2 = null;
 			
-			PlanSFPA contratante = null;
-			PlanSFPA titularSubstituto = null;
-			PlanSFPA beneficiario1 = null;
-			PlanSFPA beneficiario2 = null;
+			plan=planSFPAMapper.datosPlan(idPlan);
+            contratante=planSFPAMapper.datosContratante(idPlan);
+			if (indTitularSubstituto==0) {
+				titularSubstituto=planSFPAMapper.datosContratanteSustituto(idPlan);
+			}
+			
 		
-			session.commit();
+			beneficiario1=planSFPAMapper.datosBeneficiario1(idPlan);
+			beneficiario2=planSFPAMapper.datosBeneficiario2(idPlan);
+
 			
 			
-			planResponse.setIdPlan(idPlan);
+			planResponse.setPlan(plan);
 			planResponse.setContratante(contratante!=null?contratante:null);
 			planResponse.setTitularSubstituto(titularSubstituto!=null?titularSubstituto:null);
 			planResponse.setBeneficiario1(beneficiario1!=null?beneficiario1:null);

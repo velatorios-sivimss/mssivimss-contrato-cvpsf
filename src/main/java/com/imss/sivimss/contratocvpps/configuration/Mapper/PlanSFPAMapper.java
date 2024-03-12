@@ -253,7 +253,7 @@ public interface PlanSFPAMapper {
 			" IFNULL(SPC.NOM_PERSONA, '') AS nomPersona, " +
 			" IFNULL(SPC.NOM_PRIMER_APELLIDO, '') AS primerApellido, " +
 			" IFNULL(SPC.NOM_SEGUNDO_APELLIDO, '') AS segundoApellido, " +
-			" IFNULL(SPC.NUM_SEXO, '') AS idSexo, " +
+			" IFNULL(SPC.NUM_SEXO, 0) AS idSexo, " +
 			" IFNULL(SPC.REF_OTRO_SEXO, '') AS otroSexo, " +
 			" CASE WHEN SPC.NUM_SEXO = 1 THEN 'MUJER' WHEN SPC.NUM_SEXO = 2 THEN 'HOMBRE' ELSE IFNULL(SPC.REF_OTRO_SEXO, '') END AS sexo, "
 			+
@@ -263,8 +263,8 @@ public interface PlanSFPAMapper {
 			" CASE WHEN SPC.ID_PAIS = NULL " +
 			" OR SPC.ID_PAIS = 119 THEN 'MEXICANA' ELSE 'EXTRANJERA' END AS nacionalidad, " +
 			" IFNULL(SPC.ID_PAIS, 119) AS idPais, " +
-			" IFNULL(SPC.ID_ESTADO,'') AS idEstado, " +
-			" IFNULL(SC.ID_DOMICILIO, '') AS idDomicilio, " +
+			" IFNULL(SPC.ID_ESTADO,0) AS idEstado, " +
+			" IFNULL(SC.ID_DOMICILIO, 0) AS idDomicilio, " +
 			" IFNULL(SVD.REF_CALLE, '') AS desCalle, " +
 			" IFNULL(SVD.NUM_EXTERIOR, '') AS numExterior, " +
 			" IFNULL(SVD.NUM_INTERIOR, '') AS numInterior, " +
@@ -283,8 +283,8 @@ public interface PlanSFPAMapper {
 			" JOIN SVC_PERSONA SPC ON SC.ID_PERSONA = SPC.ID_PERSONA " +
 			" JOIN SVT_DOMICILIO SVD ON SC.ID_DOMICILIO = SVD.ID_DOMICILIO " +
 			"WHERE " +
-			" SPSA.ID_PLAN_SFPA = #{in.idPlanSfpa}")
-	public Map<String, Object> datosContratante(@Param("in") PlanSFPA datos);
+			" SPSA.ID_PLAN_SFPA = #{idPlan}")
+	public  Map<String, Object> datosContratante(@Param("idPlan") Integer datos);
 
 	@Select(value = "SELECT " +
 			" SPSA.ID_PLAN_SFPA AS idPlanSfpa, " +
@@ -297,7 +297,7 @@ public interface PlanSFPAMapper {
 			" IFNULL(SPC.NOM_PERSONA, '') AS nomPersona, " +
 			" IFNULL(SPC.NOM_PRIMER_APELLIDO, '') AS primerApellido, " +
 			" IFNULL(SPC.NOM_SEGUNDO_APELLIDO, '') AS segundoApellido, " +
-			" IFNULL(SPC.NUM_SEXO, '') AS idSexo, " +
+			" IFNULL(SPC.NUM_SEXO, 0) AS idSexo, " +
 			" IFNULL(SPC.REF_OTRO_SEXO, '') AS otroSexo, " +
 			" CASE WHEN SPC.NUM_SEXO = 1 THEN 'MUJER' WHEN SPC.NUM_SEXO = 2 THEN 'HOMBRE' ELSE IFNULL(SPC.REF_OTRO_SEXO, '') END AS sexo, "
 			+
@@ -307,13 +307,13 @@ public interface PlanSFPAMapper {
 			" CASE WHEN SPC.ID_PAIS = NULL " +
 			" OR SPC.ID_PAIS = 119 THEN 'MEXICANA' ELSE 'EXTRANJERA' END AS nacionalidad, " +
 			" IFNULL(SPC.ID_PAIS, 119) AS idPais, " +
-			" IFNULL(SPC.ID_ESTADO,'') AS idEstado, " +
-			" IFNULL(TB.ID_DOMICILIO, '') AS idDomicilio, " +
-			" IFNULL(SVD.REF_CALLE, '') AS deTBalle, " +
+			" IFNULL(SPC.ID_ESTADO,0) AS idEstado, " +
+			" IFNULL(TB.ID_DOMICILIO, 0) AS idDomicilio, " +
+			" IFNULL(SVD.REF_CALLE, '') AS desCalle, " +
 			" IFNULL(SVD.NUM_EXTERIOR, '') AS numExterior, " +
 			" IFNULL(SVD.NUM_INTERIOR, '') AS numInterior, " +
 			" IFNULL(SVD.REF_CP, '') AS codigoPostal, " +
-			" IFNULL(SVD.REF_COLONIA, '') AS deTBolonia, " +
+			" IFNULL(SVD.REF_COLONIA, '') AS desColonia, " +
 			" IFNULL(SVD.REF_MUNICIPIO, '') AS desMunicipio, " +
 			" IFNULL(SVD.REF_ESTADO, '') AS desEstado, " +
 			" CONCAT_WS( " +
@@ -324,8 +324,8 @@ public interface PlanSFPAMapper {
 			" JOIN SVT_TITULAR_BENEFICIARIOS TB ON TB.ID_TITULAR_BENEFICIARIOS = SPSA.IND_TITULAR_SUBSTITUTO " +
 			" JOIN SVC_PERSONA SPC ON TB.ID_PERSONA = SPC.ID_PERSONA " +
 			" LEFT JOIN SVT_DOMICILIO SVD ON TB.ID_DOMICILIO = SVD.ID_DOMICILIO " +
-			"WHERE SPSA.ID_PLAN_SFPA = #{in.idPlanSfpa}")
-	public Map<String, Object> datosContratanteSustituto(@Param("in") PlanSFPA datos);
+			"WHERE SPSA.ID_PLAN_SFPA = #{idPlan}")
+	public  Map<String, Object> datosContratanteSustituto(@Param("idPlan") Integer datos);
 
 	@Select(value = "SELECT " +
 			" SPSA.ID_PLAN_SFPA AS idPlanSfpa, " +
@@ -338,7 +338,7 @@ public interface PlanSFPAMapper {
 			" IFNULL(SPC.NOM_PERSONA, '') AS nomPersona, " +
 			" IFNULL(SPC.NOM_PRIMER_APELLIDO, '') AS primerApellido, " +
 			" IFNULL(SPC.NOM_SEGUNDO_APELLIDO, '') AS segundoApellido, " +
-			" IFNULL(SPC.NUM_SEXO, '') AS idSexo, " +
+			" IFNULL(SPC.NUM_SEXO, 0) AS idSexo, " +
 			" IFNULL(SPC.REF_OTRO_SEXO, '') AS otroSexo, " +
 			" CASE WHEN SPC.NUM_SEXO = 1 THEN 'MUJER' WHEN SPC.NUM_SEXO = 2 THEN 'HOMBRE' ELSE IFNULL(SPC.REF_OTRO_SEXO, '') END AS sexo, "
 			+
@@ -348,13 +348,13 @@ public interface PlanSFPAMapper {
 			" CASE WHEN SPC.ID_PAIS = NULL " +
 			" OR SPC.ID_PAIS = 119 THEN 'MEXICANA' ELSE 'EXTRANJERA' END AS nacionalidad, " +
 			" IFNULL(SPC.ID_PAIS, 119) AS idPais, " +
-			" IFNULL(SPC.ID_ESTADO,'') AS idEstado, " +
-			" IFNULL(TB.ID_DOMICILIO, '') AS idDomicilio, " +
-			" IFNULL(SVD.REF_CALLE, '') AS deTBalle, " +
+			" IFNULL(SPC.ID_ESTADO,0) AS idEstado, " +
+			" IFNULL(TB.ID_DOMICILIO, 0) AS idDomicilio, " +
+			" IFNULL(SVD.REF_CALLE, '') AS desCalle, " +
 			" IFNULL(SVD.NUM_EXTERIOR, '') AS numExterior, " +
 			" IFNULL(SVD.NUM_INTERIOR, '') AS numInterior, " +
 			" IFNULL(SVD.REF_CP, '') AS codigoPostal, " +
-			" IFNULL(SVD.REF_COLONIA, '') AS deTBolonia, " +
+			" IFNULL(SVD.REF_COLONIA, '') AS desColonia, " +
 			" IFNULL(SVD.REF_MUNICIPIO, '') AS desMunicipio, " +
 			" IFNULL(SVD.REF_ESTADO, '') AS desEstado, " +
 			" CONCAT_WS( " +
@@ -365,8 +365,8 @@ public interface PlanSFPAMapper {
 			" JOIN SVT_TITULAR_BENEFICIARIOS TB ON TB.ID_TITULAR_BENEFICIARIOS = SPSA.ID_BENEFICIARIO_1 " +
 			" JOIN SVC_PERSONA SPC ON TB.ID_PERSONA = SPC.ID_PERSONA " +
 			" LEFT JOIN SVT_DOMICILIO SVD ON TB.ID_DOMICILIO = SVD.ID_DOMICILIO " +
-			"WHERE SPSA.ID_PLAN_SFPA = #{in.idPlanSfpa}")
-	public Map<String, Object> datosBeneficiario1(@Param("in") PlanSFPA datos);
+			"WHERE SPSA.ID_PLAN_SFPA = #{idPlan}")
+	public  Map<String, Object> datosBeneficiario1(@Param("idPlan") Integer datos);
 
 	@Select(value = "SELECT " +
 			" SPSA.ID_PLAN_SFPA AS idPlanSfpa, " +
@@ -391,11 +391,11 @@ public interface PlanSFPAMapper {
 			" IFNULL(SPC.ID_PAIS, 119) AS idPais, " +
 			" IFNULL(SPC.ID_ESTADO,'') AS idEstado, " +
 			" IFNULL(TB.ID_DOMICILIO, '') AS idDomicilio, " +
-			" IFNULL(SVD.REF_CALLE, '') AS deTBalle, " +
+			" IFNULL(SVD.REF_CALLE, '') AS desCalle, " +
 			" IFNULL(SVD.NUM_EXTERIOR, '') AS numExterior, " +
 			" IFNULL(SVD.NUM_INTERIOR, '') AS numInterior, " +
 			" IFNULL(SVD.REF_CP, '') AS codigoPostal, " +
-			" IFNULL(SVD.REF_COLONIA, '') AS deTBolonia, " +
+			" IFNULL(SVD.REF_COLONIA, '') AS desColonia, " +
 			" IFNULL(SVD.REF_MUNICIPIO, '') AS desMunicipio, " +
 			" IFNULL(SVD.REF_ESTADO, '') AS desEstado, " +
 			" CONCAT_WS( " +
@@ -406,21 +406,28 @@ public interface PlanSFPAMapper {
 			" JOIN SVT_TITULAR_BENEFICIARIOS TB ON TB.ID_TITULAR_BENEFICIARIOS = SPSA.ID_BENEFICIARIO_2 " +
 			" JOIN SVC_PERSONA SPC ON TB.ID_PERSONA = SPC.ID_PERSONA " +
 			" LEFT JOIN SVT_DOMICILIO SVD ON TB.ID_DOMICILIO = SVD.ID_DOMICILIO " +
-			"WHERE SPSA.ID_PLAN_SFPA = #{in.idPlanSfpa}")
-	public Map<String, Object> datosBeneficiario2(@Param("in") PlanSFPA datos);
+			"WHERE SPSA.ID_PLAN_SFPA = #{idPlan}")
+	public  Map<String, Object> datosBeneficiario2(@Param("idPlan") Integer datos);
 
 	@Select(value = "SELECT " +
 			" SPSA.ID_PAQUETE AS idPaquete, " +
 			" SPSA.IND_TITULAR_SUBSTITUTO AS indTitularSubstituto, " +
 			" CASE WHEN COUNT(SPS.ID_PAGO_SFPA) = 0 " +
 			" THEN 0 " +
-			" ELSE 1 END AS pago " +
+			" ELSE 1 END AS pago, " +
+			" SPSA.IND_PROMOTOR	AS indPromotor," +
+			" IFNULL(SPSA.ID_PROMOTOR,0) AS idPromotor, " +
+			" SP.REF_PAQUETE_NOMBRE AS nombrePaquete, "+
+			" SPSA.IMP_PRECIO AS costoPaquete, "+
+			" IFNULL(CONCAT(SP2.NOM_PROMOTOR,' ',SP2.NOM_PAPELLIDO,'',SP2.NOM_SAPELLIDO),'') AS nombrePromotor "+
 			" FROM " +
 			" SVT_PLAN_SFPA SPSA " +
 			" INNER JOIN SVT_PAGO_SFPA SPS  ON " +
 			" SPSA.ID_PLAN_SFPA  = SPS.ID_PLAN_SFPA " +
+			" INNER JOIN SVT_PAQUETE SP ON SPSA.ID_PAQUETE = SP.ID_PAQUETE "+
+			" LEFT JOIN SVT_PROMOTOR SP2 ON SPSA.ID_PROMOTOR = SP2.ID_PROMOTOR "+
 			" WHERE " +
-			" SPSA.ID_PLAN_SFPA = #{in.idPlanSfpa} AND  SPS.ID_ESTATUS_PAGO = 5 ")
-	public Map<String, Object> datosPlan(@Param("in") PlanSFPA datos);
+			" SPSA.ID_PLAN_SFPA = #{idPlan} AND  SPS.ID_ESTATUS_PAGO = 5 ")
+	public  Map<String, Object> datosPlan(@Param("idPlan") Integer datos);
 
 }
