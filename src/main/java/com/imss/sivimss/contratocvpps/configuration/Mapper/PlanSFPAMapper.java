@@ -47,7 +47,7 @@ public interface PlanSFPAMapper {
 			"   WHERE STPM.ID_TIPO_PAGO_MENSUAL = 2 )," +
 			"  (SELECT IFNULL(MAX(SPSFPA.ID_PLAN_SFPA), 0) + 1" +
 			"   FROM SVT_PLAN_SFPA SPSFPA))" +
-			"  FROM DUAL)" +
+			"  FROM DUAL)," +
 			" 1," +
 			" #{datos.idTitular}, " +
 			" #{datos.idPaquete}, " +
@@ -55,7 +55,7 @@ public interface PlanSFPAMapper {
 			" #{datos.idTipoPagoMensual}," +
 			" #{datos.indTitularSubstituto}," +
 			" #{datos.indModificarTitularSubstituto}," +
-			" #{datos.indTitularSubstituto}," +
+			" #{datos.idTitularSubstituto}," +
 			" #{datos.idBeneficiario1}," +
 			" #{datos.idBeneficiario2}," +
 			" #{datos.indPromotor}," +
@@ -65,10 +65,10 @@ public interface PlanSFPAMapper {
 			" #{datos.idVelatorio}," +
 			" 1," +
 			" 1," +
-			" ${idUsuario}," +
+			" ${datos.idUsuario}," +
 			" CURRENT_TIMESTAMP())")
 	@Options(useGeneratedKeys = true, keyProperty = "datos.idPlanSfpa", keyColumn = "ID_PLAN_SFPA")
-	public int agregarConvenioPF(@Param("datos") PlanSFPA datos);
+	public int agregarContratoPFPA(@Param("datos") PlanSFPA datos);
 
 	@Insert(value = "INSERT INTO SVC_PERSONA  " +
 			"( " +
@@ -118,13 +118,13 @@ public interface PlanSFPAMapper {
 			" FEC_ALTA)  " +
 			" VALUES  " +
 			" ( " +
-			" #{datos.calle}, " +
-			" #{datos.noExterior}, " +
-			" #{datos.noInterior}, " +
-			" #{datos.cp}, " +
-			" #{datos.colonia}, " +
-			" #{datos.municipio}, " +
-			" #{datos.estado}, " +
+			" #{datos.desCalle}, " +
+			" #{datos.numExterior}, " +
+			" #{datos.numInterior}, " +
+			" #{datos.codigoPostal}, " +
+			" #{datos.desColonia}, " +
+			" #{datos.desMunicipio}, " +
+			" #{datos.desEstado}, " +
 			" #{datos.idUsuario}, " +
 			" CURRENT_TIMESTAMP() " +
 			" )  ")
@@ -148,7 +148,7 @@ public interface PlanSFPAMapper {
 			" #{datos.idDomicilio}, " +
 			" 1, " +
 			"  CURRENT_TIMESTAMP() , " +
-			" #{datos.idUsuario},  " +
+			" #{datos.idUsuario}  " +
 			" )  ")
 	@Options(useGeneratedKeys = true, keyProperty = "datos.idTitularBeneficiario", keyColumn = "ID_TITULAR_BENEFICIARIOS")
 	public int agregarTitulaBeneficiario(@Param("datos") PlanSFPA datos);

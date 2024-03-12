@@ -27,6 +27,7 @@ import com.imss.sivimss.contratocvpps.configuration.MyBatisConfig;
 import com.imss.sivimss.contratocvpps.configuration.Mapper.Consultas;
 import com.imss.sivimss.contratocvpps.configuration.Mapper.PlanSFPAMapper;
 import com.imss.sivimss.contratocvpps.model.request.PagosSFPA;
+import com.imss.sivimss.contratocvpps.model.request.PlanRequest;
 import com.imss.sivimss.contratocvpps.model.request.PlanSFPA;
 import com.imss.sivimss.contratocvpps.model.request.UsuarioDto;
 import com.imss.sivimss.contratocvpps.service.NuevoPlanSFPAService;
@@ -72,6 +73,8 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 	private Paginator paginador;
 	@Autowired
 	private BeanQuerys queryBusquedas;
+	
+	private PlanSFPAMapper planSFPAMapper;
 
 	@Override
 	public Response<Object> detallePlanSFPA(Integer idPlanSFPA, Authentication authentication) throws IOException {
@@ -139,31 +142,65 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 
 	@Override
 	public Response<Object> insertarPlanSFPA(DatosRequest datos, Authentication authentication) throws IOException {
-		Gson gson = new Gson();
+		
+		usuario = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 		String datosJson = datos.getDatos().get(AppConstantes.DATOS).toString();
-		PlanSFPA planSFPA = gson.fromJson(datosJson, PlanSFPA.class);
+		PlanRequest planSFPA = gson.fromJson(datosJson, PlanRequest.class);
 		try (SqlSession session = sqlSessionFactory.openSession()) {
+			planSFPAMapper=session.getMapper(PlanSFPAMapper.class);
+			PlanSFPA plan = planSFPA.getPlan();
+			PlanSFPA contratante= planSFPA.getContratante();
+			PlanSFPA titularSubstituto = planSFPA.getTitularSubstituto();
+			PlanSFPA beneficiario1 = planSFPA.getBeneficiario1();
+			PlanSFPA beneficiario2 = planSFPA.getBeneficiario2();
 
 			// insertar en contratante
+			
 			// sino existe insertar en persona y despues en domicilio y contratante
+			if (contratante.getIdPersona()==null || contratante.getIdPersona()<=0) {
+				planSFPAMapper.agregarPersona(contratante);
+				planSFPAMapper.agregarDomicilio(contratante);
+				planSFPAMapper.agregarContratante(contratante);
+				plan.setIdTitular(contratante.getIdContratante());
+				
+			}
 			// si existe actualizar persona contratante y domicilio
 
 			// titular substituto
 			// si es el mismo solamente se agrega a 1 a columna IND_TITULAR_SUBSTITUTO, esto
+		
 			// indica que el titular substituto es el mismo que el titular
 			// sino se agrega la informacion en persona en caso de que no exista, si existe
 			// la persona se actualiza y se inserta en la tabla SVT_TITULAR_BENEFICIARIOS
 			// con la referencia de persona como titular substituto y su domiclio
-
+			if (plan.getIndTitularSubstituto()==0 && (titularSubstituto.getIdPersona()==null || titularSubstituto.getIdPersona()<=0)) {
+					planSFPAMapper.agregarPersona(titularSubstituto);
+					planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
+					plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
+			}
 			// beneficiario1 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la
 			// referencia de beneficiario 1 y su domicilio
-
+			if (beneficiario1.getIdPersona()==null || beneficiario1.getIdPersona()<=0) {
+				planSFPAMapper.agregarPersona(beneficiario1);
+				planSFPAMapper.agregarDomicilio(beneficiario1);
+				planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
+				plan.setIdBeneficiario1(beneficiario1.getIdTitularBeneficiario());
+				
+			}
 			// beneficiario2 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la
 			// referencia de beneficiario 2 y su domicilio
-
+			if (beneficiario2.getIdPersona()==null || beneficiario2.getIdPersona()<=0) {
+				planSFPAMapper.agregarPersona(beneficiario2);
+				planSFPAMapper.agregarDomicilio(beneficiario2);
+				planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
+				plan.setIdBeneficiario2(beneficiario2.getIdTitularBeneficiario());
+				
+			}
 			// plan sfpa
-
+			plan.setIdVelatorio(usuario.getIdVelatorio());
+			plan.setIdUsuario(usuario.getIdUsuario());
+			planSFPAMapper.agregarContratoPFPA(plan);
 			// parcialidades
 
 			return null;
