@@ -52,7 +52,7 @@ public class ConsultaPlanSFPAController {
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> consultaPlanSFPAService(@RequestBody DatosRequest request,Authentication authentication) throws IOException {
 		//Response<Object> response =  consultaPlanSFPAService.consultaPlanSFPA(request, authentication);
-		Response<Object> response =  planSfpaService.busquedaPlanSFPA(1, authentication);
+		Response<Object> response =  planSfpaService.busquedaPlanSFPA(request, authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	

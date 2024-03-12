@@ -1,10 +1,10 @@
 package com.imss.sivimss.contratocvpps.service.impl;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -17,12 +17,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.imss.sivimss.contratocvpps.beans.BeanQuerys;
 import com.imss.sivimss.contratocvpps.configuration.MyBatisConfig;
@@ -31,8 +28,8 @@ import com.imss.sivimss.contratocvpps.configuration.Mapper.PlanSFPAMapper;
 import com.imss.sivimss.contratocvpps.model.request.PagosSFPA;
 import com.imss.sivimss.contratocvpps.model.request.PlanRequest;
 import com.imss.sivimss.contratocvpps.model.request.PlanSFPA;
+import com.imss.sivimss.contratocvpps.model.request.RequestFiltroPaginado;
 import com.imss.sivimss.contratocvpps.model.request.UsuarioDto;
-import com.imss.sivimss.contratocvpps.model.response.PlanSFPAResponse;
 import com.imss.sivimss.contratocvpps.repository.PlanSFPARepository;
 import com.imss.sivimss.contratocvpps.service.NuevoPlanSFPAService;
 import com.imss.sivimss.contratocvpps.service.ReportePagoAnticipadoService;
@@ -43,11 +40,6 @@ import com.imss.sivimss.contratocvpps.util.PaginadoUtil;
 import com.imss.sivimss.contratocvpps.util.Paginator;
 import com.imss.sivimss.contratocvpps.util.ProviderServiceRestTemplate;
 import com.imss.sivimss.contratocvpps.util.Response;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
@@ -132,19 +124,23 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 	}
 
 	@Override
-	public Response<Object> busquedaPlanSFPA(Integer idPlanSFPA, Authentication authentication)
+	public Response<Object> busquedaPlanSFPA(DatosRequest paginado, Authentication authentication)
 			throws IOException {
 
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 
-			String query = queryBusquedas.busquedaPaginada();
-			int pagina = 1;
-			int elementos = 10;
+			
+			RequestFiltroPaginado request = gson.fromJson(String.valueOf(paginado.getDatos().get(AppConstantes.DATOS)),
+					RequestFiltroPaginado.class);
+			Integer pagina = Integer.parseInt(paginado.getDatos().get("pagina").toString());
+			Integer tamanio = Integer.parseInt(paginado.getDatos().get("tamanio").toString());
+			String query = queryBusquedas.busquedaPaginada(request);
+
 			String columna = " SPLSFPA.NUM_FOLIO_PLAN_SFPA";
 			String ordenamiento = "asc";
-			return paginador.paginarConsulta(query, pagina, elementos, columna, ordenamiento);
+			return paginador.paginarConsulta(query, pagina, tamanio, columna, ordenamiento);
 
 		} catch (Exception e) {
 			log.info(ERROR, e.getCause().getMessage());

@@ -13,7 +13,7 @@ public interface NuevoPlanSFPAService {
 	public Response<Object> detallePlanSFPA(Integer idPlanSFPA, Authentication authentication)
 			throws IOException;
 
-	public Response<Object> busquedaPlanSFPA(Integer idPlanSFPA, Authentication authentication)
+	public Response<Object> busquedaPlanSFPA(DatosRequest paginado, Authentication authentication)
 			throws IOException;
 	
 	public Response<Object> insertarPlanSFPA(DatosRequest planSFPA, Authentication authentication)

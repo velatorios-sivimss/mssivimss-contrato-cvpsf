@@ -2,10 +2,12 @@ package com.imss.sivimss.contratocvpps.beans;
 
 import org.springframework.stereotype.Service;
 
+import com.imss.sivimss.contratocvpps.model.request.RequestFiltroPaginado;
+
 @Service
 public class BeanQuerys {
 
-	public String busquedaPaginada() {
+	public String busquedaPaginada(RequestFiltroPaginado paginado) {
 		return "SELECT SPLSFPA.ID_PLAN_SFPA AS idPlanSfpa, " +
 				" SPLSFPA.NUM_FOLIO_PLAN_SFPA AS numFolio, " +
 				" CONCAT_WS(' ', SP.NOM_PERSONA, SP.NOM_PRIMER_APELLIDO, SP.NOM_SEGUNDO_APELLIDO) AS nombreCompleto, " +
