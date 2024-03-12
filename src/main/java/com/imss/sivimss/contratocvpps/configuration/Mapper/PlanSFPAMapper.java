@@ -166,14 +166,13 @@ public interface PlanSFPAMapper {
 			" ( " +
 			" #{datos.idPlanSfpa}, " +
 			" #{datos.montoParcialidad}, " +
-			" #{datos.fechaParcialidad}, " +
-
+			" (SELECT DATE_ADD(CURRENT_DATE(), INTERVAL #{in.noMes}  MONTH) ), " +
 			" 1, " +
 			" #{datos.idUsuario},  " +
 			"  CURRENT_TIMESTAMP() , " +
 			"7" +
 			" )  ")
-	@Options(useGeneratedKeys = true, keyProperty = "datos.idTitularBeneficiario", keyColumn = "ID_PAGO_SFPA")
+	@Options(useGeneratedKeys = true, keyProperty = "datos.idPagoSFPA", keyColumn = "ID_PAGO_SFPA")
 	public int agregarParcialidades(@Param("datos") PagosSFPA datos);
 
 	@Select(value = "SELECT DATE_ADD(CURRENT_DATE(), INTERVAL #{in.noMes}  MONTH) as fechaParcialidad from dual ")
