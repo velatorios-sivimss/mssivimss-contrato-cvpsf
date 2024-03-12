@@ -198,4 +198,51 @@ public interface PlanSFPAMapper {
 	@Options(useGeneratedKeys = true, keyProperty = "datos.idContratante", keyColumn = "ID_CONTRATANTE")
 	public int agregarContratante(@Param("datos") PlanSFPA datos);
 
+	@Update(value = ""
+			+ "UPDATE SVT_DOMICILIO  "
+			+ "SET  "
+			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
+			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
+			" REF_CALLE = #{in.calle} , " +
+			" NUM_EXTERIOR= #{in.numExterior} , " +
+			" NUM_INTERIOR = #{in.numInterior} , " +
+			" REF_CP = #{in.codigoPostal} ,  " +
+			" REF_COLONIA = #{in.desColonia} , " +
+			" REF_MUNICIPIO = #{in.desMunicipio} ,  " +
+			" REF_ESTADO = #{in.desEstado}   "
+			+ " WHERE ID_DOMICILIO = #{in.idDomicilio} ")
+	public int updateDomicilio(@Param("in") PlanSFPA persona);
+
+	@Update(value = ""
+			+ "UPDATE SVC_PERSONA  "
+			+ "SET  "
+			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
+			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
+			" CVE_RFC = #{in.rfc} , " +
+			" CVE_CURP= #{in.curp} , " +
+			" CVE_NSS = #{in.nss} , " +
+			" NOM_PERSONA = #{in.nomPersona} ,  " +
+			" NOM_PRIMER_APELLIDO = #{in.primerApellido} , " +
+			" NOM_SEGUNDO_APELLIDO = #{in.segundoApellido} ,  " +
+			" NUM_SEXO = #{in.idSexo}   " +
+			" REF_OTRO_SEXO = #{in.otroSexo} , " +
+			" FEC_NAC= #{in.fecNacimiento} , " +
+			" ID_PAIS = #{in.idPais} , " +
+			" ID_ESTADO = #{in.idEstado} ,  " +
+			" REF_TELEFONO = #{in.telefono} , " +
+			" REF_TELEFONO_FIJO = #{in.telefonoFijo} ,  " +
+			" REF_CORREO = #{in.correo}   " +
+			" WHERE ID_DOMICILIO = #{in.idDomicilio} ")
+	public int updatePersona(@Param("in") PlanSFPA persona);
+
+	@Update(value = ""
+			+ "UPDATE SVC_CONTRATANTE  "
+			+ "SET  "
+			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
+			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
+			" CVE_MATRICULA = #{in.rfc}  " +
+			" WHERE ID_CONTRATANTE = #{in.idContratante} " +
+			" AND ID_PERSONA = {in.idPersona}  ")
+	public int updateContratante(@Param("in") PlanSFPA persona);
+
 }
