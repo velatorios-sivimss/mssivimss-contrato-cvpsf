@@ -272,6 +272,7 @@ public interface PlanSFPAMapper {
 			" IFNULL(SVD.REF_COLONIA, '') AS desColonia, " +
 			" IFNULL(SVD.REF_MUNICIPIO, '') AS desMunicipio, " +
 			" IFNULL(SVD.REF_ESTADO, '') AS desEstado, " +
+			" IFNULL(SPC.REF_CORREO, '') AS correo, " +
 			" CONCAT_WS( " +
 			"  ' ', SPC.NOM_PERSONA, SPC.NOM_PRIMER_APELLIDO, " +
 			"  SPC.NOM_SEGUNDO_APELLIDO " +
@@ -284,7 +285,7 @@ public interface PlanSFPAMapper {
 			" JOIN SVT_DOMICILIO SVD ON SC.ID_DOMICILIO = SVD.ID_DOMICILIO " +
 			"WHERE " +
 			" SPSA.ID_PLAN_SFPA = #{idPlan}")
-	public  Map<String, Object> datosContratante(@Param("idPlan") Integer datos);
+	public Map<String, Object> datosContratante(@Param("idPlan") Integer datos);
 
 	@Select(value = "SELECT " +
 			" SPSA.ID_PLAN_SFPA AS idPlanSfpa, " +
@@ -316,16 +317,18 @@ public interface PlanSFPAMapper {
 			" IFNULL(SVD.REF_COLONIA, '') AS desColonia, " +
 			" IFNULL(SVD.REF_MUNICIPIO, '') AS desMunicipio, " +
 			" IFNULL(SVD.REF_ESTADO, '') AS desEstado, " +
+			" IFNULL(SPC.REF_CORREO, '') AS correo, " +
 			" CONCAT_WS( " +
 			"  ' ', SPC.NOM_PERSONA, SPC.NOM_PRIMER_APELLIDO, " +
 			"  SPC.NOM_SEGUNDO_APELLIDO " +
 			" ) AS nombreCompleto " +
 			"FROM SVT_PLAN_SFPA SPSA " +
 			" JOIN SVT_TITULAR_BENEFICIARIOS TB ON TB.ID_TITULAR_BENEFICIARIOS = SPSA.IND_TITULAR_SUBSTITUTO " +
+			" AND  TB.IND_ACTIVO = 1 " +
 			" JOIN SVC_PERSONA SPC ON TB.ID_PERSONA = SPC.ID_PERSONA " +
 			" LEFT JOIN SVT_DOMICILIO SVD ON TB.ID_DOMICILIO = SVD.ID_DOMICILIO " +
 			"WHERE SPSA.ID_PLAN_SFPA = #{idPlan}")
-	public  Map<String, Object> datosContratanteSustituto(@Param("idPlan") Integer datos);
+	public Map<String, Object> datosContratanteSustituto(@Param("idPlan") Integer datos);
 
 	@Select(value = "SELECT " +
 			" SPSA.ID_PLAN_SFPA AS idPlanSfpa, " +
@@ -343,6 +346,7 @@ public interface PlanSFPAMapper {
 			" CASE WHEN SPC.NUM_SEXO = 1 THEN 'MUJER' WHEN SPC.NUM_SEXO = 2 THEN 'HOMBRE' ELSE IFNULL(SPC.REF_OTRO_SEXO, '') END AS sexo, "
 			+
 			" SPC.FEC_NAC AS fechaNac, " +
+			" IFNULL(SPC.REF_CORREO, '') AS correo, " +
 			" CASE WHEN SPC.ID_PAIS = NULL " +
 			" OR SPC.ID_PAIS = 119 THEN 1 ELSE 2 END AS idNacionalidad, " +
 			" CASE WHEN SPC.ID_PAIS = NULL " +
@@ -363,10 +367,11 @@ public interface PlanSFPAMapper {
 			" ) AS nombreCompleto " +
 			"FROM SVT_PLAN_SFPA SPSA " +
 			" JOIN SVT_TITULAR_BENEFICIARIOS TB ON TB.ID_TITULAR_BENEFICIARIOS = SPSA.ID_BENEFICIARIO_1 " +
+			" AND  TB.IND_ACTIVO = 1 " +
 			" JOIN SVC_PERSONA SPC ON TB.ID_PERSONA = SPC.ID_PERSONA " +
 			" LEFT JOIN SVT_DOMICILIO SVD ON TB.ID_DOMICILIO = SVD.ID_DOMICILIO " +
 			"WHERE SPSA.ID_PLAN_SFPA = #{idPlan}")
-	public  Map<String, Object> datosBeneficiario1(@Param("idPlan") Integer datos);
+	public Map<String, Object> datosBeneficiario1(@Param("idPlan") Integer datos);
 
 	@Select(value = "SELECT " +
 			" SPSA.ID_PLAN_SFPA AS idPlanSfpa, " +
@@ -398,16 +403,18 @@ public interface PlanSFPAMapper {
 			" IFNULL(SVD.REF_COLONIA, '') AS desColonia, " +
 			" IFNULL(SVD.REF_MUNICIPIO, '') AS desMunicipio, " +
 			" IFNULL(SVD.REF_ESTADO, '') AS desEstado, " +
+			" IFNULL(SPC.REF_CORREO, '') AS correo, " +
 			" CONCAT_WS( " +
 			"  ' ', SPC.NOM_PERSONA, SPC.NOM_PRIMER_APELLIDO, " +
 			"  SPC.NOM_SEGUNDO_APELLIDO " +
 			" ) AS nombreCompleto " +
 			"FROM SVT_PLAN_SFPA SPSA " +
 			" JOIN SVT_TITULAR_BENEFICIARIOS TB ON TB.ID_TITULAR_BENEFICIARIOS = SPSA.ID_BENEFICIARIO_2 " +
+			" AND  TB.IND_ACTIVO = 1 " +
 			" JOIN SVC_PERSONA SPC ON TB.ID_PERSONA = SPC.ID_PERSONA " +
 			" LEFT JOIN SVT_DOMICILIO SVD ON TB.ID_DOMICILIO = SVD.ID_DOMICILIO " +
 			"WHERE SPSA.ID_PLAN_SFPA = #{idPlan}")
-	public  Map<String, Object> datosBeneficiario2(@Param("idPlan") Integer datos);
+	public Map<String, Object> datosBeneficiario2(@Param("idPlan") Integer datos);
 
 	@Select(value = "SELECT " +
 			" SPSA.ID_PAQUETE AS idPaquete, " +
@@ -415,19 +422,51 @@ public interface PlanSFPAMapper {
 			" CASE WHEN COUNT(SPS.ID_PAGO_SFPA) = 0 " +
 			" THEN 0 " +
 			" ELSE 1 END AS pago, " +
-			" SPSA.IND_PROMOTOR	AS indPromotor," +
+			" SPSA.IND_PROMOTOR	AS indPromotor, " +
 			" IFNULL(SPSA.ID_PROMOTOR,0) AS idPromotor, " +
-			" SP.REF_PAQUETE_NOMBRE AS nombrePaquete, "+
-			" SPSA.IMP_PRECIO AS costoPaquete, "+
-			" IFNULL(CONCAT(SP2.NOM_PROMOTOR,' ',SP2.NOM_PAPELLIDO,'',SP2.NOM_SAPELLIDO),'') AS nombrePromotor "+
+			" SP.REF_PAQUETE_NOMBRE AS nombrePaquete, " +
+			" SPSA.IMP_PRECIO AS costoPaquete, " +
+			" IFNULL(CONCAT(SP2.NOM_PROMOTOR,' ',SP2.NOM_PAPELLIDO,'',SP2.NOM_SAPELLIDO),'') AS nombrePromotor " +
 			" FROM " +
 			" SVT_PLAN_SFPA SPSA " +
 			" INNER JOIN SVT_PAGO_SFPA SPS  ON " +
 			" SPSA.ID_PLAN_SFPA  = SPS.ID_PLAN_SFPA " +
-			" INNER JOIN SVT_PAQUETE SP ON SPSA.ID_PAQUETE = SP.ID_PAQUETE "+
-			" LEFT JOIN SVT_PROMOTOR SP2 ON SPSA.ID_PROMOTOR = SP2.ID_PROMOTOR "+
+			" INNER JOIN SVT_PAQUETE SP ON SPSA.ID_PAQUETE = SP.ID_PAQUETE " +
+			" LEFT JOIN SVT_PROMOTOR SP2 ON SPSA.ID_PROMOTOR = SP2.ID_PROMOTOR " +
 			" WHERE " +
 			" SPSA.ID_PLAN_SFPA = #{idPlan} AND  SPS.ID_ESTATUS_PAGO = 5 ")
-	public  Map<String, Object> datosPlan(@Param("idPlan") Integer datos);
+	public Map<String, Object> datosPlan(@Param("idPlan") Integer datos);
+
+	@Update(value = "UPDATE" +
+			" SVT_PAGO_SFPA" +
+			" SET" +
+			" IND_ACTIVO = 0," +
+			" FEC_ACTUALIZACION = CURRENT_TIMESTAMP()," +
+			" ID_USUARIO_MODIFICA = #{in.idUsuario}" +
+			"WHERE ID_PLAN_SFPA = #{in.idPlanSfpa}")
+	public int cancelaPagos(@Param("in") PlanSFPA persona);
+
+	@Update(value = "UPDATE" +
+			" SVT_TITULAR_BENEFICIARIOS  " +
+			" SET" +
+			" CVE_MATRICULA   = #{in.matricula}, " +
+			" ID_PERSONA   = #{in.idPersona}," +
+			" ID_DOMICILIO   = #{in.idDomicilio}," +
+			" IND_ACTIVO   = 1," +
+			" FEC_ACTUALIZACION   = CURRENT_TIMESTAMP(), " +
+			" ID_USUARIO_MODIFICA   = #{in.idUsuario} " +
+			" WHERE" +
+			" ID_TITULAR_BENEFICIARIOS   = #{in.idTitularBeneficiario}")
+	public int actualizaTitulaBeneficiarioPersonaDomicilio(@Param("in") PlanSFPA persona);
+
+	@Update(value = "UPDATE" +
+			" SVT_TITULAR_BENEFICIARIOS  " +
+			" SET" +
+			" IND_ACTIVO   = 0," +
+			" FEC_ACTUALIZACION   = CURRENT_TIMESTAMP(), " +
+			" ID_USUARIO_MODIFICA   = #{in.idUsuario} " +
+			" WHERE" +
+			" ID_TITULAR_BENEFICIARIOS   = #{in.idTitularBeneficiario}")
+	public int abajaTitulaBeneficiario(@Param("in") PlanSFPA persona);
 
 }
