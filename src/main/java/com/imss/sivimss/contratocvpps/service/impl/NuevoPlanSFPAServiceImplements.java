@@ -70,19 +70,19 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 	private Paginator paginador;
 	@Autowired
 	private BeanQuerys queryBusquedas;
-	
+
 	private PlanSFPAMapper planSFPAMapper;
-	
+
 	private static final String ID_PLAN_SFPA = "idPlanSFPA";
-	
-	private Response<Object>response;
-	
+
+	private Response<Object> response;
+
 	@Value("${endpoints.ms-reportes}")
 	private String urlReportes;
-	
+
 	@Autowired
 	private ReportePagoAnticipadoService reportePagoAnticipadoService;
-	
+
 	@Autowired
 	private PlanSFPARepository planSFPARepository;
 
@@ -131,16 +131,14 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 
-			
 			RequestFiltroPaginado request = gson.fromJson(String.valueOf(paginado.getDatos().get(AppConstantes.DATOS)),
 					RequestFiltroPaginado.class);
-			Integer pagina = Integer.parseInt(paginado.getDatos().get("pagina").toString());
-			Integer tamanio = Integer.parseInt(paginado.getDatos().get("tamanio").toString());
+
 			String query = queryBusquedas.busquedaPaginada(request);
 
 			String columna = " SPLSFPA.NUM_FOLIO_PLAN_SFPA";
 			String ordenamiento = "asc";
-			return paginador.paginarConsulta(query, pagina, tamanio, columna, ordenamiento);
+			return paginador.paginarConsulta(query, request.getPagina(), request.getTamanio(), columna, ordenamiento);
 
 		} catch (Exception e) {
 			log.info(ERROR, e.getCause().getMessage());
@@ -156,29 +154,29 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 
 	@Override
 	public Response<Object> insertarPlanSFPA(DatosRequest datos, Authentication authentication) throws IOException {
-		
+
 		usuario = gson.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 		String datosJson = datos.getDatos().get(AppConstantes.DATOS).toString();
 		PlanRequest planSFPA = gson.fromJson(datosJson, PlanRequest.class);
 		try (SqlSession session = sqlSessionFactory.openSession()) {
-			planSFPAMapper=session.getMapper(PlanSFPAMapper.class);
+			planSFPAMapper = session.getMapper(PlanSFPAMapper.class);
 			PlanSFPA plan = planSFPA.getPlan();
-			PlanSFPA contratante= planSFPA.getContratante();
+			PlanSFPA contratante = planSFPA.getContratante();
 			PlanSFPA titularSubstituto = planSFPA.getTitularSubstituto();
 			PlanSFPA beneficiario1 = planSFPA.getBeneficiario1();
 			PlanSFPA beneficiario2 = planSFPA.getBeneficiario2();
 
 			// insertar en contratante
-			
+
 			// sino existe insertar en persona y despues en domicilio y contratante
-			if (contratante.getIdPersona()==null || contratante.getIdPersona()<=0) {
+			if (contratante.getIdPersona() == null || contratante.getIdPersona() <= 0) {
 				planSFPAMapper.agregarPersona(contratante);
 				planSFPAMapper.agregarDomicilio(contratante);
 				planSFPAMapper.agregarContratante(contratante);
 				plan.setIdTitular(contratante.getIdContratante());
-				
-			}else {
+
+			} else {
 				planSFPAMapper.updatePersona(contratante);
 				planSFPAMapper.updateDomicilio(contratante);
 				planSFPAMapper.updateContratante(contratante);
@@ -187,12 +185,12 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 
 			// titular substituto
 			// si es el mismo solamente se agrega a 1 a columna IND_TITULAR_SUBSTITUTO, esto
-		
+
 			// indica que el titular substituto es el mismo que el titular
 			// sino se agrega la informacion en persona en caso de que no exista, si existe
 			// la persona se actualiza y se inserta en la tabla SVT_TITULAR_BENEFICIARIOS
 			// con la referencia de persona como titular substituto y su domiclio
-			
+
 			if (plan.getIndTitularSubstituto() == 0) {
 				if ((titularSubstituto.getIdPersona() == null || titularSubstituto.getIdPersona() <= 0)) {
 					planSFPAMapper.agregarPersona(titularSubstituto);
@@ -204,11 +202,11 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					planSFPAMapper.agregarDomicilio(titularSubstituto);
 					planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
 					plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
-					
+
 				}
 
 			}
-			
+
 			// beneficiario1 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la
 			// referencia de beneficiario 1 y su domicilio
 			if (beneficiario1 != null) {
@@ -218,7 +216,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
 					plan.setIdBeneficiario1(beneficiario1.getIdTitularBeneficiario());
 
-				}else {
+				} else {
 					planSFPAMapper.updatePersona(beneficiario1);
 					planSFPAMapper.agregarDomicilio(beneficiario1);
 					planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
@@ -234,7 +232,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
 					plan.setIdBeneficiario2(beneficiario2.getIdTitularBeneficiario());
 
-				}else {
+				} else {
 					planSFPAMapper.updatePersona(beneficiario2);
 					planSFPAMapper.agregarDomicilio(beneficiario2);
 					planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
@@ -247,11 +245,11 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			plan.setIdUsuario(usuario.getIdUsuario());
 			planSFPAMapper.agregarContratoPFPA(plan);
 			// parcialidades
-			
+
 			BigDecimal cantidadTotal = new BigDecimal(plan.getMonPrecio());
 			int numeroParcialidades = plan.getPagoMensual();
 			List<BigDecimal> parcialidades = generarParcialidades(cantidadTotal, numeroParcialidades);
-			
+
 			PlanSFPAMapper mapperQuery = session.getMapper(PlanSFPAMapper.class);
 			for (int i = 0; i < parcialidades.size(); i++) {
 				PagosSFPA datosPagoSFPA = new PagosSFPA();
@@ -259,12 +257,12 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 				datosPagoSFPA.setMontoParcialidad(parcialidades.get(i).doubleValue());
 				datosPagoSFPA.setIdPlanSfpa(plan.getIdPlanSfpa());
 				datosPagoSFPA.setIdUsuario(usuario.getIdUsuario());
-				datosPagoSFPA.setIdEstatusPago(i==0?8:7);
-				mapperQuery.agregarParcialidades(datosPagoSFPA);	
+				datosPagoSFPA.setIdEstatusPago(i == 0 ? 8 : 7);
+				mapperQuery.agregarParcialidades(datosPagoSFPA);
 			}
 			session.commit();
-			return new Response<>(false, HttpStatus.OK.value(), "Exito",plan);
-			
+			return new Response<>(false, HttpStatus.OK.value(), "Exito", plan);
+
 		} catch (Exception e) {
 			log.info(ERROR, e.getCause().getMessage());
 
@@ -293,7 +291,5 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 
 		return parcialidades;
 	}
-	
-	
 
 }
