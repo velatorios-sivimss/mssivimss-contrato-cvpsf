@@ -24,8 +24,7 @@ public interface Consultas {
 	public class PureSqlProviderPage {
 
 		public String sqlWithPagination(String sql, Pageable pageable) {
-			StringBuilder paginatedSql = new StringBuilder("SELECT *\r\n" + //
-					"FROM (" + sql);
+			StringBuilder paginatedSql = new StringBuilder(sql);
 
 			// Agregar cláusula de ordenación si se proporciona
 			Sort sort = pageable.getSort();
@@ -42,8 +41,8 @@ public interface Consultas {
 			}
 
 			// Agregar cláusula de paginación
-			paginatedSql.append(") WHERE rnum >= ").append(pageable.getOffset() - pageable.getPageSize() + 1)
-					.append(" AND rnum <= ").append(pageable.getOffset());
+			paginatedSql.append(" LIMIT ").append(pageable.getPageSize())
+					.append(" OFFSET ").append(pageable.getOffset());
 
 			return paginatedSql.toString();
 		}
@@ -55,21 +54,13 @@ public interface Consultas {
 		}
 
 		public String count(String from) {
-			return "SELECT count(*) FROM (" + from + " ) sc";
+			return "SELECT count(*) FROM (" + from + " ) sc;";
 		}
 	}
 
 	@SelectProvider(type = PureSqlProvider.class, method = "sql")
 	public List<Map<String, Object>> selectNativeQuery(String sql);
 
-	/**
-	 * Arquetipo
-	 * 
-	 * Obtiene una [Pagina] de una query generica [SELECT]
-	 * 
-	 * @author Elias Garcia Lopez
-	 * @version 0.0.1
-	 */
 	@SelectProvider(type = PureSqlProviderPage.class, method = "sqlWithPagination")
 	public List<Map<String, Object>> selectNativeQueryPag(String sql, Pageable pageable);
 
