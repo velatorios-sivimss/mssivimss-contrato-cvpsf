@@ -134,12 +134,13 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			RequestFiltroPaginado request = gson.fromJson(String.valueOf(paginado.getDatos().get(AppConstantes.DATOS)),
 					RequestFiltroPaginado.class);
 
+			Integer pagina = Integer.parseInt(paginado.getDatos().get("pagina").toString());
+			Integer tamanio = Integer.parseInt(paginado.getDatos().get("tamanio").toString());
 			String query = queryBusquedas.busquedaPaginada(request);
-			log.info("query {}", query);
-
+	        log.info("query {}", query);
 			String columna = " SPLSFPA.NUM_FOLIO_PLAN_SFPA";
 			String ordenamiento = "asc";
-			return paginador.paginarConsulta(query, request.getPagina(), request.getTamanio(), columna, ordenamiento);
+			return paginador.paginarConsulta(query, pagina, tamanio, columna, ordenamiento);
 
 		} catch (Exception e) {
 			log.info(ERROR, e.getCause().getMessage());

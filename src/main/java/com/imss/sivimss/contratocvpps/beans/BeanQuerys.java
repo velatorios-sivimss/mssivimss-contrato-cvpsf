@@ -72,7 +72,7 @@ public class BeanQuerys {
 			fechas = "  AND SPLSFPA.FEC_INGRESO <= '" + datos.getFechaFin();
 		}
 
-		sql += fechas;
+		sql += fechas+" ";
 
 		return sql;
 
