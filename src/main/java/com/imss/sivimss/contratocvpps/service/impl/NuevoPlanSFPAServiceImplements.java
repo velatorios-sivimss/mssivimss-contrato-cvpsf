@@ -135,6 +135,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					RequestFiltroPaginado.class);
 
 			String query = queryBusquedas.busquedaPaginada(request);
+			log.info("query {}", query);
 
 			String columna = " SPLSFPA.NUM_FOLIO_PLAN_SFPA";
 			String ordenamiento = "asc";

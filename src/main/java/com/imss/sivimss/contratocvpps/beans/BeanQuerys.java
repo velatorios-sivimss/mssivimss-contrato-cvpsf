@@ -54,7 +54,7 @@ public class BeanQuerys {
 			sql += " AND SP.CVE_RFC = '" + datos.getCurp() + "'";
 		}
 		if (datos.getNombreAfiliado() != null) {
-			sql += "AND CONCAT_WS(' ',SP.NOM_PERSONA,SP.NOM_PRIMER_APELLIDO,SP.NOM_SEGUNDO_APELLIDO ) LIKE '%"
+			sql += " AND CONCAT_WS(' ',SP.NOM_PERSONA,SP.NOM_PRIMER_APELLIDO,SP.NOM_SEGUNDO_APELLIDO ) LIKE '%"
 					+ datos.getNombreAfiliado() + "'%";
 		}
 
