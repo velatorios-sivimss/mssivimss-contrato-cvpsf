@@ -42,7 +42,7 @@ public class BeanQuerys {
 			sql += " AND SPLSFPA.ID_VELATORIO = " + datos.getIdVelatorio();
 		}
 
-		if (datos.getCurp() != null) {
+		if (datos.getNumFolioPlanSfpa() != null) {
 			sql += " AND SPLSFPA.NUM_FOLIO_PLAN_SFPA LIKE '%" + datos.getNumFolioPlanSfpa() + "%' ";
 		}
 
@@ -72,7 +72,7 @@ public class BeanQuerys {
 			fechas = "  AND SPLSFPA.FEC_INGRESO <= '" + datos.getFechaFin();
 		}
 
-		sql += fechas+" ";
+		sql += fechas + " ";
 
 		return sql;
 
