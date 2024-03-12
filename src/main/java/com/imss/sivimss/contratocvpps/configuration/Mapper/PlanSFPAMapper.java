@@ -409,4 +409,18 @@ public interface PlanSFPAMapper {
 			"WHERE SPSA.ID_PLAN_SFPA = #{in.idPlanSfpa}")
 	public Map<String, Object> datosBeneficiario2(@Param("in") PlanSFPA datos);
 
+	@Select(value = "SELECT " +
+			" SPSA.ID_PAQUETE AS idPaquete, " +
+			" SPSA.IND_TITULAR_SUBSTITUTO AS indTitularSubstituto, " +
+			" CASE WHEN COUNT(SPS.ID_PAGO_SFPA) = 0 " +
+			" THEN 0 " +
+			" ELSE 1 END AS pago " +
+			" FROM " +
+			" SVT_PLAN_SFPA SPSA " +
+			" INNER JOIN SVT_PAGO_SFPA SPS  ON " +
+			" SPSA.ID_PLAN_SFPA  = SPS.ID_PLAN_SFPA " +
+			" WHERE " +
+			" SPSA.ID_PLAN_SFPA = #{in.idPlanSfpa} AND  SPS.ID_ESTATUS_PAGO = 5 ")
+	public Map<String, Object> datosPlan(@Param("in") PlanSFPA datos);
+
 }
