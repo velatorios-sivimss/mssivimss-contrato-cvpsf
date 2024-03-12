@@ -263,7 +263,7 @@ public interface PlanSFPAMapper {
 			" CASE WHEN SPC.ID_PAIS = NULL " +
 			" OR SPC.ID_PAIS = 119 THEN 'MEXICANA' ELSE 'EXTRANJERA' END AS nacionalidad, " +
 			" IFNULL(SPC.ID_PAIS, 119) AS idPais, " +
-			" SPC.ID_ESTADO AS idEstado, " +
+			" IFNULL(SPC.ID_ESTADO,'') AS idEstado, " +
 			" IFNULL(SC.ID_DOMICILIO, '') AS idDomicilio, " +
 			" IFNULL(SVD.REF_CALLE, '') AS desCalle, " +
 			" IFNULL(SVD.NUM_EXTERIOR, '') AS numExterior, " +
@@ -285,5 +285,128 @@ public interface PlanSFPAMapper {
 			"WHERE " +
 			" SPSA.ID_PLAN_SFPA = #{in.idPlanSfpa}")
 	public Map<String, Object> datosContratante(@Param("in") PlanSFPA datos);
+
+	@Select(value = "SELECT " +
+			" SPSA.ID_PLAN_SFPA AS idPlanSfpa, " +
+			" SPC.ID_PERSONA AS idPersona, " +
+			" TB.ID_TITULAR_BENEFICIARIOS AS idTitularBeneficiario, " +
+			" IFNULL(TB.CVE_MATRICULA, '') AS matricula, " +
+			" IFNULL(SPC.CVE_CURP, '') AS curp, " +
+			" IFNULL(SPC.CVE_NSS, '') AS nss, " +
+			" IFNULL(SPC.CVE_RFC, '') AS rfc, " +
+			" IFNULL(SPC.NOM_PERSONA, '') AS nomPersona, " +
+			" IFNULL(SPC.NOM_PRIMER_APELLIDO, '') AS primerApellido, " +
+			" IFNULL(SPC.NOM_SEGUNDO_APELLIDO, '') AS segundoApellido, " +
+			" IFNULL(SPC.NUM_SEXO, '') AS idSexo, " +
+			" IFNULL(SPC.REF_OTRO_SEXO, '') AS otroSexo, " +
+			" CASE WHEN SPC.NUM_SEXO = 1 THEN 'MUJER' WHEN SPC.NUM_SEXO = 2 THEN 'HOMBRE' ELSE IFNULL(SPC.REF_OTRO_SEXO, '') END AS sexo, "
+			+
+			" SPC.FEC_NAC AS fechaNac, " +
+			" CASE WHEN SPC.ID_PAIS = NULL " +
+			" OR SPC.ID_PAIS = 119 THEN 1 ELSE 2 END AS idNacionalidad, " +
+			" CASE WHEN SPC.ID_PAIS = NULL " +
+			" OR SPC.ID_PAIS = 119 THEN 'MEXICANA' ELSE 'EXTRANJERA' END AS nacionalidad, " +
+			" IFNULL(SPC.ID_PAIS, 119) AS idPais, " +
+			" IFNULL(SPC.ID_ESTADO,'') AS idEstado, " +
+			" IFNULL(TB.ID_DOMICILIO, '') AS idDomicilio, " +
+			" IFNULL(SVD.REF_CALLE, '') AS deTBalle, " +
+			" IFNULL(SVD.NUM_EXTERIOR, '') AS numExterior, " +
+			" IFNULL(SVD.NUM_INTERIOR, '') AS numInterior, " +
+			" IFNULL(SVD.REF_CP, '') AS codigoPostal, " +
+			" IFNULL(SVD.REF_COLONIA, '') AS deTBolonia, " +
+			" IFNULL(SVD.REF_MUNICIPIO, '') AS desMunicipio, " +
+			" IFNULL(SVD.REF_ESTADO, '') AS desEstado, " +
+			" CONCAT_WS( " +
+			"  ' ', SPC.NOM_PERSONA, SPC.NOM_PRIMER_APELLIDO, " +
+			"  SPC.NOM_SEGUNDO_APELLIDO " +
+			" ) AS nombreCompleto " +
+			"FROM SVT_PLAN_SFPA SPSA " +
+			" JOIN SVT_TITULAR_BENEFICIARIOS TB ON TB.ID_TITULAR_BENEFICIARIOS = SPSA.IND_TITULAR_SUBSTITUTO " +
+			" JOIN SVC_PERSONA SPC ON TB.ID_PERSONA = SPC.ID_PERSONA " +
+			" LEFT JOIN SVT_DOMICILIO SVD ON TB.ID_DOMICILIO = SVD.ID_DOMICILIO " +
+			"WHERE SPSA.ID_PLAN_SFPA = #{in.idPlanSfpa}")
+	public Map<String, Object> datosContratanteSustituto(@Param("in") PlanSFPA datos);
+
+	@Select(value = "SELECT " +
+			" SPSA.ID_PLAN_SFPA AS idPlanSfpa, " +
+			" SPC.ID_PERSONA AS idPersona, " +
+			" TB.ID_TITULAR_BENEFICIARIOS AS idTitularBeneficiario, " +
+			" IFNULL(TB.CVE_MATRICULA, '') AS matricula, " +
+			" IFNULL(SPC.CVE_CURP, '') AS curp, " +
+			" IFNULL(SPC.CVE_NSS, '') AS nss, " +
+			" IFNULL(SPC.CVE_RFC, '') AS rfc, " +
+			" IFNULL(SPC.NOM_PERSONA, '') AS nomPersona, " +
+			" IFNULL(SPC.NOM_PRIMER_APELLIDO, '') AS primerApellido, " +
+			" IFNULL(SPC.NOM_SEGUNDO_APELLIDO, '') AS segundoApellido, " +
+			" IFNULL(SPC.NUM_SEXO, '') AS idSexo, " +
+			" IFNULL(SPC.REF_OTRO_SEXO, '') AS otroSexo, " +
+			" CASE WHEN SPC.NUM_SEXO = 1 THEN 'MUJER' WHEN SPC.NUM_SEXO = 2 THEN 'HOMBRE' ELSE IFNULL(SPC.REF_OTRO_SEXO, '') END AS sexo, "
+			+
+			" SPC.FEC_NAC AS fechaNac, " +
+			" CASE WHEN SPC.ID_PAIS = NULL " +
+			" OR SPC.ID_PAIS = 119 THEN 1 ELSE 2 END AS idNacionalidad, " +
+			" CASE WHEN SPC.ID_PAIS = NULL " +
+			" OR SPC.ID_PAIS = 119 THEN 'MEXICANA' ELSE 'EXTRANJERA' END AS nacionalidad, " +
+			" IFNULL(SPC.ID_PAIS, 119) AS idPais, " +
+			" IFNULL(SPC.ID_ESTADO,'') AS idEstado, " +
+			" IFNULL(TB.ID_DOMICILIO, '') AS idDomicilio, " +
+			" IFNULL(SVD.REF_CALLE, '') AS deTBalle, " +
+			" IFNULL(SVD.NUM_EXTERIOR, '') AS numExterior, " +
+			" IFNULL(SVD.NUM_INTERIOR, '') AS numInterior, " +
+			" IFNULL(SVD.REF_CP, '') AS codigoPostal, " +
+			" IFNULL(SVD.REF_COLONIA, '') AS deTBolonia, " +
+			" IFNULL(SVD.REF_MUNICIPIO, '') AS desMunicipio, " +
+			" IFNULL(SVD.REF_ESTADO, '') AS desEstado, " +
+			" CONCAT_WS( " +
+			"  ' ', SPC.NOM_PERSONA, SPC.NOM_PRIMER_APELLIDO, " +
+			"  SPC.NOM_SEGUNDO_APELLIDO " +
+			" ) AS nombreCompleto " +
+			"FROM SVT_PLAN_SFPA SPSA " +
+			" JOIN SVT_TITULAR_BENEFICIARIOS TB ON TB.ID_TITULAR_BENEFICIARIOS = SPSA.ID_BENEFICIARIO_1 " +
+			" JOIN SVC_PERSONA SPC ON TB.ID_PERSONA = SPC.ID_PERSONA " +
+			" LEFT JOIN SVT_DOMICILIO SVD ON TB.ID_DOMICILIO = SVD.ID_DOMICILIO " +
+			"WHERE SPSA.ID_PLAN_SFPA = #{in.idPlanSfpa}")
+	public Map<String, Object> datosBeneficiario1(@Param("in") PlanSFPA datos);
+
+	@Select(value = "SELECT " +
+			" SPSA.ID_PLAN_SFPA AS idPlanSfpa, " +
+			" SPC.ID_PERSONA AS idPersona, " +
+			" TB.ID_TITULAR_BENEFICIARIOS AS idTitularBeneficiario, " +
+			" IFNULL(TB.CVE_MATRICULA, '') AS matricula, " +
+			" IFNULL(SPC.CVE_CURP, '') AS curp, " +
+			" IFNULL(SPC.CVE_NSS, '') AS nss, " +
+			" IFNULL(SPC.CVE_RFC, '') AS rfc, " +
+			" IFNULL(SPC.NOM_PERSONA, '') AS nomPersona, " +
+			" IFNULL(SPC.NOM_PRIMER_APELLIDO, '') AS primerApellido, " +
+			" IFNULL(SPC.NOM_SEGUNDO_APELLIDO, '') AS segundoApellido, " +
+			" IFNULL(SPC.NUM_SEXO, '') AS idSexo, " +
+			" IFNULL(SPC.REF_OTRO_SEXO, '') AS otroSexo, " +
+			" CASE WHEN SPC.NUM_SEXO = 1 THEN 'MUJER' WHEN SPC.NUM_SEXO = 2 THEN 'HOMBRE' ELSE IFNULL(SPC.REF_OTRO_SEXO, '') END AS sexo, "
+			+
+			" SPC.FEC_NAC AS fechaNac, " +
+			" CASE WHEN SPC.ID_PAIS = NULL " +
+			" OR SPC.ID_PAIS = 119 THEN 1 ELSE 2 END AS idNacionalidad, " +
+			" CASE WHEN SPC.ID_PAIS = NULL " +
+			" OR SPC.ID_PAIS = 119 THEN 'MEXICANA' ELSE 'EXTRANJERA' END AS nacionalidad, " +
+			" IFNULL(SPC.ID_PAIS, 119) AS idPais, " +
+			" IFNULL(SPC.ID_ESTADO,'') AS idEstado, " +
+			" IFNULL(TB.ID_DOMICILIO, '') AS idDomicilio, " +
+			" IFNULL(SVD.REF_CALLE, '') AS deTBalle, " +
+			" IFNULL(SVD.NUM_EXTERIOR, '') AS numExterior, " +
+			" IFNULL(SVD.NUM_INTERIOR, '') AS numInterior, " +
+			" IFNULL(SVD.REF_CP, '') AS codigoPostal, " +
+			" IFNULL(SVD.REF_COLONIA, '') AS deTBolonia, " +
+			" IFNULL(SVD.REF_MUNICIPIO, '') AS desMunicipio, " +
+			" IFNULL(SVD.REF_ESTADO, '') AS desEstado, " +
+			" CONCAT_WS( " +
+			"  ' ', SPC.NOM_PERSONA, SPC.NOM_PRIMER_APELLIDO, " +
+			"  SPC.NOM_SEGUNDO_APELLIDO " +
+			" ) AS nombreCompleto " +
+			"FROM SVT_PLAN_SFPA SPSA " +
+			" JOIN SVT_TITULAR_BENEFICIARIOS TB ON TB.ID_TITULAR_BENEFICIARIOS = SPSA.ID_BENEFICIARIO_2 " +
+			" JOIN SVC_PERSONA SPC ON TB.ID_PERSONA = SPC.ID_PERSONA " +
+			" LEFT JOIN SVT_DOMICILIO SVD ON TB.ID_DOMICILIO = SVD.ID_DOMICILIO " +
+			"WHERE SPSA.ID_PLAN_SFPA = #{in.idPlanSfpa}")
+	public Map<String, Object> datosBeneficiario2(@Param("in") PlanSFPA datos);
 
 }
