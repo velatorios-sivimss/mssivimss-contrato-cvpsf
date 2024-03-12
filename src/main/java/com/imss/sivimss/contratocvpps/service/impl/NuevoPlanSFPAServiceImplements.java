@@ -20,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.imss.sivimss.contratocvpps.beans.BeanQuerys;
 import com.imss.sivimss.contratocvpps.configuration.MyBatisConfig;
@@ -30,6 +32,7 @@ import com.imss.sivimss.contratocvpps.model.request.PlanRequest;
 import com.imss.sivimss.contratocvpps.model.request.PlanSFPA;
 import com.imss.sivimss.contratocvpps.model.request.RequestFiltroPaginado;
 import com.imss.sivimss.contratocvpps.model.request.UsuarioDto;
+import com.imss.sivimss.contratocvpps.model.response.PlanResponse;
 import com.imss.sivimss.contratocvpps.repository.PlanSFPARepository;
 import com.imss.sivimss.contratocvpps.service.NuevoPlanSFPAService;
 import com.imss.sivimss.contratocvpps.service.ReportePagoAnticipadoService;
@@ -292,6 +295,69 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 		parcialidades.add(centavosRestantes);
 
 		return parcialidades;
+	}
+
+	@Override
+	public Response<Object> busquedaDetallePlanSFPA(DatosRequest request, Authentication authentication)
+			throws IOException {
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		ObjectMapper mappe = new ObjectMapper();
+		JsonNode datos = mappe.readTree(request.getDatos().get(AppConstantes.DATOS)
+                 .toString());
+         Integer idPlan = datos.get("idPlan").asInt();
+		PlanResponse planResponse = new PlanResponse();
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+			
+			PlanSFPA contratante = null;
+			PlanSFPA titularSubstituto = null;
+			PlanSFPA beneficiario1 = null;
+			PlanSFPA beneficiario2 = null;
+		
+			session.commit();
+			
+			
+			planResponse.setIdPlan(idPlan);
+			planResponse.setContratante(contratante!=null?contratante:null);
+			planResponse.setTitularSubstituto(titularSubstituto!=null?titularSubstituto:null);
+			planResponse.setBeneficiario1(beneficiario1!=null?beneficiario1:null);
+			planResponse.setBeneficiario2(beneficiario2!=null?beneficiario2:null);
+
+			
+			
+			return new Response<>(false, HttpStatus.OK.value(), "Exito",planResponse);
+
+		} catch (Exception e) {
+			log.info(ERROR, e.getCause().getMessage());
+
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(),
+					AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_CONSULTAR, AppConstantes.CONSULTA,
+					authentication);
+			return new Response<>(true, HttpStatus.INTERNAL_SERVER_ERROR.value(), "52");
+		}
+
+	}
+
+	@Override
+	public Response<Object> actualizarPlanSFPA(DatosRequest planSFPA, Authentication authentication)
+			throws IOException {
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+
+		
+			session.commit();
+			return null;
+
+		} catch (Exception e) {
+			log.info(ERROR, e.getCause().getMessage());
+
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(),
+					AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_CONSULTAR, AppConstantes.CONSULTA,
+					authentication);
+			return new Response<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "52");
+		}
 	}
 
 }
