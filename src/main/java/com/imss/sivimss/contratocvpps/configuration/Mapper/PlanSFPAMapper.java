@@ -38,16 +38,16 @@ public interface PlanSFPAMapper {
 			" (SELECT CONCAT_WS('-', " +
 			"  (SELECT SUBSTRING(UPPER(SV.DES_VELATORIO), 1, 3)" +
 			"   FROM SVC_VELATORIO SV" +
-			"   WHERE SV.ID_VELATORIO = 1 )," +
+			"   WHERE SV.ID_VELATORIO = #{datos.idVelatorio} )," +
 			"  (SELECT SUBSTRING(UPPER(SP.REF_PAQUETE_NOMBRE), 1, 3)" +
 			"   FROM SVT_PAQUETE SP" +
-			"   WHERE SP.ID_PAQUETE = 1 )," +
+			"   WHERE SP.ID_PAQUETE = #{datos.idPaquete})," +
 			"  (SELECT STPM.DES_TIPO_PAGO_MENSUAL" +
 			"   FROM SVC_TIPO_PAGO_MENSUAL STPM" +
-			"   WHERE STPM.ID_TIPO_PAGO_MENSUAL = 2 )," +
+			"   WHERE STPM.ID_TIPO_PAGO_MENSUAL = #{datos.idTipoPagoMensual} )," +
 			"  (SELECT IFNULL(MAX(SPSFPA.ID_PLAN_SFPA), 0) + 1" +
-			"   FROM SVT_PLAN_SFPA SPSFPA))" +
-			"  FROM DUAL)" +
+			"   FROM SVT_PLAN_SFPA SPSFPA)) AS dato" +
+			"  FROM DUAL)," +
 			" 1," +
 			" #{datos.idTitular}, " +
 			" #{datos.idPaquete}, " +
@@ -55,7 +55,7 @@ public interface PlanSFPAMapper {
 			" #{datos.idTipoPagoMensual}," +
 			" #{datos.indTitularSubstituto}," +
 			" #{datos.indModificarTitularSubstituto}," +
-			" #{datos.indTitularSubstituto}," +
+			" #{datos.idTitularSubstituto}," +
 			" #{datos.idBeneficiario1}," +
 			" #{datos.idBeneficiario2}," +
 			" #{datos.indPromotor}," +
@@ -65,10 +65,10 @@ public interface PlanSFPAMapper {
 			" #{datos.idVelatorio}," +
 			" 1," +
 			" 1," +
-			" ${idUsuario}," +
+			" ${datos.idUsuario}," +
 			" CURRENT_TIMESTAMP())")
 	@Options(useGeneratedKeys = true, keyProperty = "datos.idPlanSfpa", keyColumn = "ID_PLAN_SFPA")
-	public int agregarConvenioPF(@Param("datos") PlanSFPA datos);
+	public int agregarContratoPFPA(@Param("datos") PlanSFPA datos);
 
 	@Insert(value = "INSERT INTO SVC_PERSONA  " +
 			"( " +
@@ -118,13 +118,13 @@ public interface PlanSFPAMapper {
 			" FEC_ALTA)  " +
 			" VALUES  " +
 			" ( " +
-			" #{datos.calle}, " +
-			" #{datos.noExterior}, " +
-			" #{datos.noInterior}, " +
-			" #{datos.cp}, " +
-			" #{datos.colonia}, " +
-			" #{datos.municipio}, " +
-			" #{datos.estado}, " +
+			" #{datos.desCalle}, " +
+			" #{datos.numExterior}, " +
+			" #{datos.numInterior}, " +
+			" #{datos.codigoPostal}, " +
+			" #{datos.desColonia}, " +
+			" #{datos.desMunicipio}, " +
+			" #{datos.desEstado}, " +
 			" #{datos.idUsuario}, " +
 			" CURRENT_TIMESTAMP() " +
 			" )  ")
@@ -148,7 +148,7 @@ public interface PlanSFPAMapper {
 			" #{datos.idDomicilio}, " +
 			" 1, " +
 			"  CURRENT_TIMESTAMP() , " +
-			" #{datos.idUsuario},  " +
+			" #{datos.idUsuario}  " +
 			" )  ")
 	@Options(useGeneratedKeys = true, keyProperty = "datos.idTitularBeneficiario", keyColumn = "ID_TITULAR_BENEFICIARIOS")
 	public int agregarTitulaBeneficiario(@Param("datos") PlanSFPA datos);
@@ -197,5 +197,52 @@ public interface PlanSFPAMapper {
 			" )  ")
 	@Options(useGeneratedKeys = true, keyProperty = "datos.idContratante", keyColumn = "ID_CONTRATANTE")
 	public int agregarContratante(@Param("datos") PlanSFPA datos);
+
+	@Update(value = ""
+			+ "UPDATE SVT_DOMICILIO  "
+			+ "SET  "
+			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
+			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
+			" REF_CALLE = #{in.calle} , " +
+			" NUM_EXTERIOR= #{in.numExterior} , " +
+			" NUM_INTERIOR = #{in.numInterior} , " +
+			" REF_CP = #{in.codigoPostal} ,  " +
+			" REF_COLONIA = #{in.desColonia} , " +
+			" REF_MUNICIPIO = #{in.desMunicipio} ,  " +
+			" REF_ESTADO = #{in.desEstado}   "
+			+ " WHERE ID_DOMICILIO = #{in.idDomicilio} ")
+	public int updateDomicilio(@Param("in") PlanSFPA persona);
+
+	@Update(value = ""
+			+ "UPDATE SVC_PERSONA  "
+			+ "SET  "
+			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
+			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
+			" CVE_RFC = #{in.rfc} , " +
+			" CVE_CURP= #{in.curp} , " +
+			" CVE_NSS = #{in.nss} , " +
+			" NOM_PERSONA = #{in.nomPersona} ,  " +
+			" NOM_PRIMER_APELLIDO = #{in.primerApellido} , " +
+			" NOM_SEGUNDO_APELLIDO = #{in.segundoApellido} ,  " +
+			" NUM_SEXO = #{in.idSexo}   " +
+			" REF_OTRO_SEXO = #{in.otroSexo} , " +
+			" FEC_NAC= #{in.fecNacimiento} , " +
+			" ID_PAIS = #{in.idPais} , " +
+			" ID_ESTADO = #{in.idEstado} ,  " +
+			" REF_TELEFONO = #{in.telefono} , " +
+			" REF_TELEFONO_FIJO = #{in.telefonoFijo} ,  " +
+			" REF_CORREO = #{in.correo}   " +
+			" WHERE ID_DOMICILIO = #{in.idDomicilio} ")
+	public int updatePersona(@Param("in") PlanSFPA persona);
+
+	@Update(value = ""
+			+ "UPDATE SVC_CONTRATANTE  "
+			+ "SET  "
+			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
+			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
+			" CVE_MATRICULA = #{in.rfc}  " +
+			" WHERE ID_CONTRATANTE = #{in.idContratante} " +
+			" AND ID_PERSONA = {in.idPersona}  ")
+	public int updateContratante(@Param("in") PlanSFPA persona);
 
 }
