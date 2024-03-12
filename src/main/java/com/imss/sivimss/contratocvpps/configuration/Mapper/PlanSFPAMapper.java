@@ -176,8 +176,8 @@ public interface PlanSFPAMapper {
 	@Options(useGeneratedKeys = true, keyProperty = "datos.idTitularBeneficiario", keyColumn = "ID_PAGO_SFPA")
 	public int agregarParcialidades(@Param("datos") PagosSFPA datos);
 
-	@Select(value = "SELECT DATE_ADD(CURRENT_DATE(), INTERVAL #{in.datos}  MONTH) as fechaParcialidad from dual ")
-	public Map<String, Object> fechasMensualidades(@Param("datos") PagosSFPA datos);
+	@Select(value = "SELECT DATE_ADD(CURRENT_DATE(), INTERVAL #{in.noMes}  MONTH) as fechaParcialidad from dual ")
+	public Map<String, Object> fechasMensualidades(@Param("in") PagosSFPA datos);
 
 	@Insert(value = "INSERT INTO SVC_CONTRATANTE  " +
 			" (  " +

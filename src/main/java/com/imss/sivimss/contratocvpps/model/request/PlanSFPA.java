@@ -63,5 +63,6 @@ public class PlanSFPA {
     private Integer idUsuario;
     private Integer idSexo;
     private Integer idTitularBeneficiario;
+    private Integer pagoMensual;
 
 }

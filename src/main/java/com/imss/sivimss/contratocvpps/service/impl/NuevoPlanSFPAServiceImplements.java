@@ -174,35 +174,69 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			// sino se agrega la informacion en persona en caso de que no exista, si existe
 			// la persona se actualiza y se inserta en la tabla SVT_TITULAR_BENEFICIARIOS
 			// con la referencia de persona como titular substituto y su domiclio
-			if (plan.getIndTitularSubstituto()==0 && (titularSubstituto.getIdPersona()==null || titularSubstituto.getIdPersona()<=0)) {
+			if (titularSubstituto != null) {
+				if (plan.getIndTitularSubstituto() == 0
+						&& (titularSubstituto.getIdPersona() == null || titularSubstituto.getIdPersona() <= 0)) {
 					planSFPAMapper.agregarPersona(titularSubstituto);
 					planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
 					plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
+				}
 			}
 			// beneficiario1 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la
 			// referencia de beneficiario 1 y su domicilio
-			if (beneficiario1.getIdPersona()==null || beneficiario1.getIdPersona()<=0) {
-				planSFPAMapper.agregarPersona(beneficiario1);
-				planSFPAMapper.agregarDomicilio(beneficiario1);
-				planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
-				plan.setIdBeneficiario1(beneficiario1.getIdTitularBeneficiario());
-				
+			if (beneficiario1 != null) {
+				if (beneficiario1.getIdPersona() == null || beneficiario1.getIdPersona() <= 0) {
+					planSFPAMapper.agregarPersona(beneficiario1);
+					planSFPAMapper.agregarDomicilio(beneficiario1);
+					planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
+					plan.setIdBeneficiario1(beneficiario1.getIdTitularBeneficiario());
+
+				}
 			}
 			// beneficiario2 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la
 			// referencia de beneficiario 2 y su domicilio
-			if (beneficiario2.getIdPersona()==null || beneficiario2.getIdPersona()<=0) {
-				planSFPAMapper.agregarPersona(beneficiario2);
-				planSFPAMapper.agregarDomicilio(beneficiario2);
-				planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
-				plan.setIdBeneficiario2(beneficiario2.getIdTitularBeneficiario());
-				
+			if (beneficiario2 != null) {
+				if (beneficiario2.getIdPersona() == null || beneficiario2.getIdPersona() <= 0) {
+					planSFPAMapper.agregarPersona(beneficiario2);
+					planSFPAMapper.agregarDomicilio(beneficiario2);
+					planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
+					plan.setIdBeneficiario2(beneficiario2.getIdTitularBeneficiario());
+
+				}
 			}
+
 			// plan sfpa
 			plan.setIdVelatorio(usuario.getIdVelatorio());
 			plan.setIdUsuario(usuario.getIdUsuario());
 			planSFPAMapper.agregarContratoPFPA(plan);
 			// parcialidades
+			
+			BigDecimal cantidadTotal = new BigDecimal(plan.getMonPrecio());
+			int numeroParcialidades = plan.getPagoMensual();
+			List<BigDecimal> parcialidades = generarParcialidades(cantidadTotal, numeroParcialidades);
+			
+			PlanSFPAMapper mapperQuery = session.getMapper(PlanSFPAMapper.class);
+			for (int i = 0; i < parcialidades.size(); i++) {
 
+				ObjectMapper objMapper = new ObjectMapper();
+				Object personaAsociada;
+				String json;
+				JsonNode datosConsulta;
+				PagosSFPA datosPagoSFPA = new PagosSFPA();
+				datosPagoSFPA.setNoMes(i);
+				personaAsociada = mapperQuery.fechasMensualidades(datosPagoSFPA);
+				json = new ObjectMapper().writeValueAsString(personaAsociada);
+				datosConsulta = objMapper.readTree(json);
+				String fechaParcialidad = datosConsulta.get("fechaParcialidad").asText();
+				datosPagoSFPA.setFechaParcialidad(fechaParcialidad);
+				datosPagoSFPA.setMontoParcialidad(parcialidades.get(i).doubleValue());
+				datosPagoSFPA.setIdPlanSfpa(plan.getIdPlanSfpa());
+				datosPagoSFPA.setIdUsuario(usuario.getIdUsuario());
+				System.out.println("insertando parcialiadad");
+				mapperQuery.agregarParcialidades(datosPagoSFPA);
+				System.out.println("parcialidad insertada");
+				System.out.printf("Parcialidad %d: %.2f%n", i + 1, parcialidades.get(i));
+			}
 			return null;
 
 		} catch (Exception e) {
@@ -274,5 +308,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 
 		return parcialidades;
 	}
+	
+	
 
 }
