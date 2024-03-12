@@ -467,6 +467,68 @@ public interface PlanSFPAMapper {
 			" ID_USUARIO_MODIFICA   = #{in.idUsuario} " +
 			" WHERE" +
 			" ID_TITULAR_BENEFICIARIOS   = #{in.idTitularBeneficiario}")
-	public int abajaTitulaBeneficiario(@Param("in") PlanSFPA persona);
+	public int bajaTitulaBeneficiario(@Param("in") PlanSFPA persona);
+
+	@Update(value = ""
+			+ "UPDATE SVT_DOMICILIO  "
+			+ "SET  "
+			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
+			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
+			" REF_CALLE = #{in.calle} , " +
+			" NUM_EXTERIOR= #{in.numExterior} , " +
+			" NUM_INTERIOR = #{in.numInterior} , " +
+			" REF_COLONIA = #{in.desColonia} , " +
+			" REF_MUNICIPIO = #{in.desMunicipio} ,  " +
+			" REF_ESTADO = #{in.desEstado}   "
+			+ " WHERE ID_DOMICILIO = #{in.idDomicilio} ")
+	public int actulizaDomicilioContratante(@Param("in") PlanSFPA persona);
+
+	@Update(value = ""
+			+ "UPDATE SVC_PERSONA  "
+			+ "SET  "
+			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
+			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
+			" REF_TELEFONO = #{in.telefono} , " +
+			" REF_TELEFONO_FIJO = #{in.telefonoFijo} ,  " +
+			" REF_CORREO = #{in.correo}   " +
+			" WHERE ID_DOMICILIO = #{in.idDomicilio} ")
+	public int actulizaPersonaContratante(@Param("in") PlanSFPA persona);
+
+	@Update(value = ""
+			+ "UPDATE SVT_PLAN_SFPA  "
+			+ "SET  "
+			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
+			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
+			" ID_TITULAR_SUBSTITUTO  = #{in.telefono} , " +
+			" IND_TITULAR_SUBSTITUTO = #{in.telefonoFijo} ,  " +
+			" WHERE ID_PLAN_SFPA = #{in.indTitularSubstituto} ")
+	public int actulizaTitularSustitutoPlan(@Param("in") PlanSFPA persona);
+
+	@Update(value = ""
+			+ "UPDATE SVT_PLAN_SFPA  "
+			+ "SET  "
+			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
+			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
+			" ID_TITULAR_SUBSTITUTO  = #{in.telefono} , " +
+			" IND_TITULAR_SUBSTITUTO = #{in.telefonoFijo} ,  " +
+			" WHERE ID_PLAN_SFPA = #{in.idTitularBeneficiario} ")
+	public int actulizaBeneficiario1Plan(@Param("in") PlanSFPA persona);
+
+	@Update(value = ""
+			+ "UPDATE SVT_PLAN_SFPA  "
+			+ "SET  "
+			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
+			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
+			" ID_BENEFICIARIO_2  = #{in.telefono}  " +
+			" WHERE ID_PLAN_SFPA = #{in.idTitularBeneficiario} ")
+	public int actulizaBeneficiario2Plan(@Param("in") PlanSFPA persona);
+
+	@Select(value = "SELECT * FROM  SVC_PERSONA " +
+			" WHERE CVE_CURP = #{in.curp}")
+	public Map<String, Object> buscaCurp(@Param("idPlan") Integer datos);
+
+	@Select(value = "SELECT * FROM  SVC_PERSONA " +
+			" WHERE CVE_RFC = #{in.rfc}")
+	public Map<String, Object> buscaRFC(@Param("idPlan") Integer datos);
 
 }
