@@ -585,7 +585,7 @@ public interface PlanSFPAMapper {
 
 	@Insert(value = " INSERT INTO SVT_USUARIOS ( ID_PERSONA,ID_OFICINA,ID_ROL,IND_ACTIVO,CVE_CONTRASENIA,CVE_USUARIO,FEC_ALTA,IND_CONTRATANTE) values ("
 			+
-			" #{in.idPersona} " +
+			" #{in.idPersona} ," +
 			" 3," +
 			" 150," +
 			" 1," +
