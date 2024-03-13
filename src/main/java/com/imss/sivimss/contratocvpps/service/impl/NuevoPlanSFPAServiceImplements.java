@@ -757,6 +757,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					mapperQuery.agregarParcialidades(datosPagoSFPA);
 				}
 			}
+			planSFPAMapper.actualizaDatosPlan(plan);
 			session.commit();
 			return new Response<>(false, HttpStatus.OK.value(), "Exito",plan);
 		} catch (Exception e) {
