@@ -573,4 +573,14 @@ public interface PlanSFPAMapper {
 			" WHERE ID_PLAN_SFPA = #{in.idPlanSfpa} ")
 	public int actualizaDatosPlan(@Param("in") PlanSFPA persona);
 
+	@Select(value = "SELECT " +
+			" SU.ID_PERSONA AS idPersona " +
+			" FROM" +
+			" SVT_USUARIOS SU" +
+			" JOIN SVC_PERSONA SP ON SP.ID_PERSONA = SU.ID_PERSONA " +
+			" JOIN SVC_CONTRATANTE SC ON SP.ID_PERSONA = SC.ID_PERSONA " +
+			" WHERE" +
+			" SC.ID_PERSONA = #{in.idPersona} ")
+	public PlanSFPA buscarUsuario(@Param("in") PlanSFPA datos);
+
 }
