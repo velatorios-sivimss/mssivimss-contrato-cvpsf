@@ -583,15 +583,16 @@ public interface PlanSFPAMapper {
 			" SC.ID_PERSONA = #{in.idPersona} ")
 	public PlanSFPA buscarUsuario(@Param("in") PlanSFPA datos);
 
-	@Insert(value = " INSERT INTO SVT_USUARIOS values (" +
-			" ID_PERSONA =  #{in.idPersona} " +
-			" ID_OFICINA = 3," +
-			" ID_ROL =  150," +
-			" IND_ACTIVO =  1," +
-			" CVE_CONTRASENIA = #{in.contrasenia} ," +
-			" CVE_USUARIO = #{in.usuario} ," +
-			" FEC_ALTA =  CURRENT_DATE()," +
-			" IND_CONTRATANTE =  1)")
+	@Insert(value = " INSERT INTO SVT_USUARIOS ( ID_PERSONA,ID_OFICINA,ID_ROL,IND_ACTIVO,CVE_CONTRASENIA,CVE_USUARIO,FEC_ALTA,IND_CONTRATANTE) values ("
+			+
+			" #{in.idPersona} " +
+			" 3," +
+			" 150," +
+			" 1," +
+			" #{in.contrasenia} ," +
+			" #{in.usuario} ," +
+			" CURRENT_DATE()," +
+			" 1)")
 	@Options(useGeneratedKeys = true, keyProperty = "datos.idUsuario", keyColumn = "ID_USUARIO")
 	public int agregarUsuario(@Param("in") PlanSFPA datos);
 
