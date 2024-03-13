@@ -560,4 +560,17 @@ public interface PlanSFPAMapper {
 			" WHERE ID_TITULAR_BENEFICIARIOS = #{in.idTitularBeneficiario} ")
 	public int actulizaMatricula(@Param("in") PlanSFPA persona);
 
+	@Update(value = ""
+			+ "UPDATE SVT_PLAN_SFPA  "
+			+ "SET  " +
+			" FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), " +
+			" ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
+			" ID_TIPO_PAGO_MENSUAL = #{in.idTipoPagoMensual} " +
+			" ID_PAQUETE = #{in.idPaquete}, " +
+			" IMP_PRECIO = #{in.monPrecio}, " +
+			" IND_PROMOTOR = #{in.indPromotor}, " +
+			" ID_PROMOTOR = #{in.idPromotor} " +
+			" WHERE ID_TITULAR_BENEFICIARIOS = #{in.idTitularBeneficiario} ")
+	public int actualizaDatosPlan(@Param("in") PlanSFPA persona);
+
 }
