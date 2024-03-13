@@ -220,7 +220,7 @@ public interface PlanSFPAMapper {
 			" NOM_PERSONA = #{in.nomPersona} ,  " +
 			" NOM_PRIMER_APELLIDO = #{in.primerApellido} , " +
 			" NOM_SEGUNDO_APELLIDO = #{in.segundoApellido} ,  " +
-			" NUM_SEXO = #{in.idSexo}   " +
+			" NUM_SEXO = #{in.idSexo} ,   " +
 			" REF_OTRO_SEXO = #{in.otroSexo} , " +
 			" FEC_NAC= #{in.fecNacimiento} , " +
 			" ID_PAIS = #{in.idPais} , " +
@@ -228,7 +228,7 @@ public interface PlanSFPAMapper {
 			" REF_TELEFONO = #{in.telefono} , " +
 			" REF_TELEFONO_FIJO = #{in.telefonoFijo} ,  " +
 			" REF_CORREO = #{in.correo}   " +
-			" WHERE ID_DOMICILIO = #{in.idDomicilio} ")
+			" WHERE ID_PERSONA = #{in.idPersona} ")
 	public int updatePersona(@Param("in") PlanSFPA persona);
 
 	@Update(value = ""
@@ -236,9 +236,10 @@ public interface PlanSFPAMapper {
 			+ "SET  "
 			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
 			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
-			" CVE_MATRICULA = #{in.matricula}  " +
+			" CVE_MATRICULA = #{in.matricula},  " +
+			" ID_DOMICILIO = #{in.idDomicilio}  " +
 			" WHERE ID_CONTRATANTE = #{in.idContratante} " +
-			" AND ID_PERSONA = {in.idPersona}  ")
+			" AND ID_PERSONA = #{in.idPersona}  ")
 	public int updateContratante(@Param("in") PlanSFPA persona);
 
 	@Select(value = "SELECT " +
@@ -523,12 +524,12 @@ public interface PlanSFPAMapper {
 			" WHERE ID_PLAN_SFPA = #{in.idTitularBeneficiario} ")
 	public int actulizaBeneficiario2Plan(@Param("in") PlanSFPA persona);
 
-	@Select(value = "SELECT * FROM  SVC_PERSONA " +
-			" WHERE CVE_CURP = #{in.curp}")
-	public Map<String, Object> buscaCurp(@Param("idPlan") Integer datos);
+	@Select(value = "SELECT ID_PERSONA AS idPersona FROM  SVC_PERSONA " +
+			" WHERE CVE_CURP = #{curp} LIMIT 1 ")
+	public Map<String, Object> buscaCurp(@Param("curp") String curp);
 
-	@Select(value = "SELECT * FROM  SVC_PERSONA " +
-			" WHERE CVE_RFC = #{in.rfc}")
-	public Map<String, Object> buscaRFC(@Param("idPlan") Integer datos);
+	@Select(value = "SELECT ID_PERSONA AS idPersona FROM  SVC_PERSONA " +
+			" WHERE CVE_RFC = #{rfc} LIMIT 1 " )
+	public Map<String, Object> buscaRFC(@Param("rfc") String rfc);
 
 }

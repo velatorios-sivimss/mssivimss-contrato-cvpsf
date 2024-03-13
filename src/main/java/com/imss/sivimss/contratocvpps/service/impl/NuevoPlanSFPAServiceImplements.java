@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -171,15 +172,36 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			PlanSFPA titularSubstituto = planSFPA.getTitularSubstituto();
 			PlanSFPA beneficiario1 = planSFPA.getBeneficiario1();
 			PlanSFPA beneficiario2 = planSFPA.getBeneficiario2();
-
 			// insertar en contratante
 
+			Integer idPersonaCurp=null;
+			Integer idPersonaRfc;
+			
 			// sino existe insertar en persona y despues en domicilio y contratante
 			if (contratante.getIdPersona() == null || contratante.getIdPersona() <= 0) {
+				idPersonaCurp=this.buscarCurpRfc(titularSubstituto.getCurp(),1,session);
+				idPersonaRfc=this.buscarCurpRfc(titularSubstituto.getRfc(),2,session);
+				if (idPersonaCurp!=null || idPersonaRfc!=null ) {
+					if (idPersonaCurp!=null) {
+						contratante.setIdPersona(idPersonaCurp);
+						contratante.setIdUsuario(usuario.getIdUsuario());
+						planSFPAMapper.updatePersona(contratante);
+					} else {
+						contratante.setIdPersona(idPersonaRfc);
+						contratante.setIdUsuario(usuario.getIdUsuario());
+						planSFPAMapper.updatePersona(contratante);
+					}
+					planSFPAMapper.agregarDomicilio(contratante);
+					planSFPAMapper.updateContratante(contratante);
+					plan.setIdTitular(contratante.getIdContratante());
+				}
+				else {
+				
 				planSFPAMapper.agregarPersona(contratante);
 				planSFPAMapper.agregarDomicilio(contratante);
 				planSFPAMapper.agregarContratante(contratante);
 				plan.setIdTitular(contratante.getIdContratante());
+				}
 
 			} else {
 				planSFPAMapper.updatePersona(contratante);
@@ -197,11 +219,29 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			// con la referencia de persona como titular substituto y su domiclio
 
 			if (plan.getIndTitularSubstituto() == 0) {
+				
 				if ((titularSubstituto.getIdPersona() == null || titularSubstituto.getIdPersona() <= 0)) {
-					planSFPAMapper.agregarPersona(titularSubstituto);
-					planSFPAMapper.agregarDomicilio(titularSubstituto);
-					planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
-					plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
+					idPersonaCurp=this.buscarCurpRfc(titularSubstituto.getCurp(),1,session);
+					idPersonaRfc=this.buscarCurpRfc(titularSubstituto.getRfc(),2,session);
+					if (idPersonaCurp!=null || idPersonaRfc!=null ) {
+						if (idPersonaCurp!=null) {
+							titularSubstituto.setIdPersona(idPersonaCurp);
+							titularSubstituto.setIdUsuario(usuario.getIdUsuario());
+							planSFPAMapper.updatePersona(titularSubstituto);
+						} else {
+							titularSubstituto.setIdPersona(idPersonaRfc);
+							titularSubstituto.setIdUsuario(usuario.getIdUsuario());
+							planSFPAMapper.updatePersona(titularSubstituto);
+						}
+							planSFPAMapper.agregarDomicilio(titularSubstituto);
+							planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
+							plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
+					}else {
+						planSFPAMapper.agregarPersona(titularSubstituto);
+						planSFPAMapper.agregarDomicilio(titularSubstituto);
+						planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
+						plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
+					}
 				} else {
 					planSFPAMapper.updatePersona(titularSubstituto);
 					planSFPAMapper.agregarDomicilio(titularSubstituto);
@@ -216,10 +256,27 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			// referencia de beneficiario 1 y su domicilio
 			if (beneficiario1 != null) {
 				if (beneficiario1.getIdPersona() == null || beneficiario1.getIdPersona() <= 0) {
-					planSFPAMapper.agregarPersona(beneficiario1);
-					planSFPAMapper.agregarDomicilio(beneficiario1);
-					planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
-					plan.setIdBeneficiario1(beneficiario1.getIdTitularBeneficiario());
+					idPersonaCurp=this.buscarCurpRfc(beneficiario1.getCurp(),1,session);
+					idPersonaRfc=this.buscarCurpRfc(beneficiario1.getRfc(),2,session);
+					if (idPersonaCurp!=null || idPersonaRfc!=null ) {
+						if (idPersonaCurp!=null) {
+							beneficiario1.setIdPersona(idPersonaCurp);
+							beneficiario1.setIdUsuario(usuario.getIdUsuario());
+							planSFPAMapper.updatePersona(beneficiario1);
+						} else {
+							beneficiario1.setIdPersona(idPersonaRfc);
+							beneficiario1.setIdUsuario(usuario.getIdUsuario());
+							planSFPAMapper.updatePersona(beneficiario1);
+						}
+						planSFPAMapper.agregarDomicilio(beneficiario1);
+						planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
+						plan.setIdBeneficiario1(beneficiario1.getIdTitularBeneficiario());
+					}else {
+						planSFPAMapper.agregarPersona(beneficiario1);
+						planSFPAMapper.agregarDomicilio(beneficiario1);
+						planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
+						plan.setIdBeneficiario1(beneficiario1.getIdTitularBeneficiario());
+					}
 
 				} else {
 					planSFPAMapper.updatePersona(beneficiario1);
@@ -232,16 +289,33 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			// referencia de beneficiario 2 y su domicilio
 			if (beneficiario2 != null) {
 				if (beneficiario2.getIdPersona() == null || beneficiario2.getIdPersona() <= 0) {
-					planSFPAMapper.agregarPersona(beneficiario2);
-					planSFPAMapper.agregarDomicilio(beneficiario2);
-					planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
-					plan.setIdBeneficiario2(beneficiario2.getIdTitularBeneficiario());
+					idPersonaCurp=this.buscarCurpRfc(beneficiario2.getCurp(),1,session);
+					idPersonaRfc=this.buscarCurpRfc(beneficiario2.getRfc(),2,session);
+					if (idPersonaCurp!=null || idPersonaRfc!=null ) {
+						if (idPersonaCurp!=null) {
+							beneficiario2.setIdPersona(idPersonaCurp);
+							beneficiario2.setIdUsuario(usuario.getIdUsuario());
+							planSFPAMapper.updatePersona(beneficiario2);
+						} else {
+							beneficiario2.setIdPersona(idPersonaRfc);
+							beneficiario2.setIdUsuario(usuario.getIdUsuario());
+							planSFPAMapper.updatePersona(beneficiario2);
+						}
+						planSFPAMapper.agregarDomicilio(beneficiario2);
+						planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
+						plan.setIdBeneficiario2(beneficiario2.getIdTitularBeneficiario());
+					}else {
+						planSFPAMapper.agregarPersona(beneficiario2);
+						planSFPAMapper.agregarDomicilio(beneficiario2);
+						planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
+						plan.setIdBeneficiario2(beneficiario2.getIdTitularBeneficiario());
+					}
 
 				} else {
 					planSFPAMapper.updatePersona(beneficiario2);
 					planSFPAMapper.agregarDomicilio(beneficiario2);
 					planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
-					plan.setIdBeneficiario1(beneficiario2.getIdTitularBeneficiario());
+					plan.setIdBeneficiario2(beneficiario2.getIdTitularBeneficiario());
 				}
 			}
 
@@ -384,6 +458,35 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					authentication);
 			return new Response<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "52");
 		}
+	}
+	
+	private Integer buscarCurpRfc(String datos, Integer busqueda,SqlSession session) throws JsonProcessingException {
+		ObjectMapper mappe = new ObjectMapper();
+		Object personaAsociada=null;
+	    String json;
+	    JsonNode jsonNode;
+	    PlanSFPAMapper planSFPAMappr=session.getMapper(PlanSFPAMapper.class);
+	    switch (busqueda) {
+		case 1:
+			personaAsociada = planSFPAMappr.buscaCurp(datos);
+		      
+			break;
+		case 2:
+			personaAsociada = planSFPAMappr.buscaRFC(datos);
+			break;
+		 default:
+		  return null;
+		}
+	   
+	    if (personaAsociada==null) {
+			return null;
+		} 
+	    json = new ObjectMapper().writeValueAsString(personaAsociada);
+		jsonNode = mappe.readTree(json);
+		
+		return jsonNode.get("idPersona").asInt();
+      
+        
 	}
 
 }
