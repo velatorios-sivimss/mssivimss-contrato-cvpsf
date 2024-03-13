@@ -349,7 +349,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					this.getClass().getPackage().toString(),
 					AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_CONSULTAR, AppConstantes.CONSULTA,
 					authentication);
-			return new Response<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "52");
+			return new Response<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "5");
 		}
 	}
 
@@ -430,14 +430,23 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 	}
 
 	@Override
-	public Response<Object> actualizarPlanSFPA(DatosRequest planSFPA, Authentication authentication)
+	public Response<Object> actualizarPlanSFPA(DatosRequest datos, Authentication authentication)
 			throws IOException {
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
-
+		String datosJson = datos.getDatos().get(AppConstantes.DATOS).toString();
+		PlanRequest planSFPA = gson.fromJson(datosJson, PlanRequest.class);
 		try (SqlSession session = sqlSessionFactory.openSession()) {
-			
+			PlanSFPA plan = planSFPA.getPlan();
+			PlanSFPA contratante = planSFPA.getContratante();
+			PlanSFPA titularSubstituto = planSFPA.getTitularSubstituto();
+			PlanSFPA beneficiario1 = planSFPA.getBeneficiario1();
+			PlanSFPA beneficiario2 = planSFPA.getBeneficiario2();
 			// actualizar contratante
 			// actualizar tablas contratante, domicilio
+			// sino existe insertar en persona y despues en domicilio y contratante
+			if (contratante.getIdTitular() == null || contratante.getIdPersona() == null || contratante.getIdContratante() == null) {
+				return new Response<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "5");
+			}
 			
 			// subsituto
 			//IND_TITULAR_SUBSTITUTO=0 validar
