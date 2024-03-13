@@ -498,6 +498,15 @@ public interface PlanSFPAMapper {
 	public int actulizaPersonaContratante(@Param("in") PlanSFPA persona);
 
 	@Update(value = ""
+			+ "UPDATE SVC_CONTRATANTE  "
+			+ "SET  "
+			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
+			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
+			" CVE_MATRICULA = #{in.matricula}  " +
+			" WHERE ID_CONTRATANTE = #{in.idContratante} ")
+	public int actulizaMatriculaContratante(@Param("in") PlanSFPA persona);
+
+	@Update(value = ""
 			+ "UPDATE SVT_PLAN_SFPA  "
 			+ "SET  "
 			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
@@ -531,7 +540,7 @@ public interface PlanSFPAMapper {
 	public Map<String, Object> buscaCurp(@Param("curp") String curp);
 
 	@Select(value = "SELECT ID_PERSONA AS idPersona FROM  SVC_PERSONA " +
-			" WHERE CVE_RFC = #{rfc} LIMIT 1 " )
+			" WHERE CVE_RFC = #{rfc} LIMIT 1 ")
 	public Map<String, Object> buscaRFC(@Param("rfc") String rfc);
 
 }
