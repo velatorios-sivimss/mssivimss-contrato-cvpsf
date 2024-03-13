@@ -68,5 +68,7 @@ public class PlanSFPA {
     private String nacionalidad;
     private Integer pago;
     private Integer cambioParcialidad;
+    private String contrasenia;
+    private String usuario;
 
 }
