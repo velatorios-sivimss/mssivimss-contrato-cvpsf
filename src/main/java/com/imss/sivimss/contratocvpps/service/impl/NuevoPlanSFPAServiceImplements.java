@@ -826,7 +826,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			PlanSFPAMapper planSFPAMappr = session.getMapper(PlanSFPAMapper.class);	// validar usuario no existe
 			user=null;
 			PlanSFPA planSFPA= planSFPAMappr.buscarUsuario(contratanteRequest);
-			if (true ) {
+			if (planSFPA==null ) {
 				log.info("enviarCuenta registrar el usuario {}");
 				// insertar el usuario
 			    contrasenia= generaCredencialesUtil.generarContrasenia(contratanteRequest.getNomPersona(),
@@ -844,7 +844,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 				planSFPA.setContrasenia(hash);
 				planSFPA.setUsuario(userCorreo);
 				planSFPAMappr.agregarUsuario(planSFPA);
-				//session.commit();
+				session.commit();
 
 				generaCredencialesUtil.enviarCorreo(userCorreo, 
 						 contratanteRequest.getCorreo(), 
