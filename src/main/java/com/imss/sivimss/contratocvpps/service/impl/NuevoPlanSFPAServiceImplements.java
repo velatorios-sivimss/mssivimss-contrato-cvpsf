@@ -3,10 +3,13 @@ package com.imss.sivimss.contratocvpps.service.impl;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import org.apache.ibatis.session.SqlSession;
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -39,6 +43,7 @@ import com.imss.sivimss.contratocvpps.service.NuevoPlanSFPAService;
 import com.imss.sivimss.contratocvpps.service.ReportePagoAnticipadoService;
 import com.imss.sivimss.contratocvpps.util.AppConstantes;
 import com.imss.sivimss.contratocvpps.util.DatosRequest;
+import com.imss.sivimss.contratocvpps.util.GeneraCredencialesUtil;
 import com.imss.sivimss.contratocvpps.util.LogUtil;
 import com.imss.sivimss.contratocvpps.util.PaginadoUtil;
 import com.imss.sivimss.contratocvpps.util.Paginator;
@@ -89,7 +94,17 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 
 	@Autowired
 	private PlanSFPARepository planSFPARepository;
+	
+	private String user;
 
+	private String contrasenia;
+	
+	@Autowired
+	private GeneraCredencialesUtil generaCredencialesUtil;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	@Override
 	public Response<Object> detallePlanSFPA(Integer idPlanSFPA, Authentication authentication) throws IOException {
 		List<Map<String, Object>> resultDatosPersona = new ArrayList<>();
@@ -356,6 +371,9 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 				mapperQuery.agregarParcialidades(datosPagoSFPA);
 			}
 			session.commit();
+			
+			enviarCuenta(contratante);
+			
 			return new Response<>(false, HttpStatus.OK.value(), "Exito", plan);
 
 		} catch (Exception e) {
@@ -801,5 +819,42 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 
 		}
 	}
+	
+	private void enviarCuenta(PlanSFPA contratanteRequest) throws SQLException, IOException {
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+			PlanSFPAMapper planSFPAMappr = session.getMapper(PlanSFPAMapper.class);	// validar usuario no existe
+			user=null;
+			PlanSFPA planSFPA= planSFPAMappr.buscarUsuario(contratanteRequest);
+			if (true ) {
+				log.info("enviarCuenta registrar el usuario {}");
+				// insertar el usuario
+			    contrasenia= generaCredencialesUtil.generarContrasenia(contratanteRequest.getNomPersona(),
+						contratanteRequest.getPrimerApellido());
+			    String hash = passwordEncoder.encode(contrasenia);
+				String[] obtieneNombre = contratanteRequest.getNomPersona().split(" ");
+		        String nombre = obtieneNombre[0];
+		        char[] apellido= contratanteRequest.getPrimerApellido().toCharArray();
+		        char apM = apellido[0];
+		        String inicialApellido = String.valueOf(apM);
+		        String formatearCeros = String.format("%03d", contratanteRequest.getIdPersona());
+				String userCorreo = nombre+inicialApellido+formatearCeros;
+				planSFPA=new PlanSFPA();
+				planSFPA.setIdPersona(contratanteRequest.getIdPersona());
+				planSFPA.setContrasenia(hash);
+				planSFPA.setUsuario(userCorreo);
+				planSFPAMappr.agregarUsuario(planSFPA);
+				//session.commit();
+
+				generaCredencialesUtil.enviarCorreo(userCorreo, 
+						 contratanteRequest.getCorreo(), 
+						 contratanteRequest.getNomPersona(), 
+						 contratanteRequest.getPrimerApellido(), 
+						 contratanteRequest.getSegundoApellido(), contrasenia);
+			}
+		}
+	}
+		
+	
 
 }

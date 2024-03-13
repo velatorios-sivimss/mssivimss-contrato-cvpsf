@@ -593,7 +593,7 @@ public interface PlanSFPAMapper {
 			" #{in.usuario} ," +
 			" CURRENT_DATE()," +
 			" 1)")
-	@Options(useGeneratedKeys = true, keyProperty = "datos.idUsuario", keyColumn = "ID_USUARIO")
+	@Options(useGeneratedKeys = true, keyProperty = "in.idUsuario", keyColumn = "ID_USUARIO")
 	public int agregarUsuario(@Param("in") PlanSFPA datos);
 
 }
