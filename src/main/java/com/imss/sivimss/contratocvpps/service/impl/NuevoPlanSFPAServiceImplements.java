@@ -174,12 +174,9 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			PlanSFPA beneficiario2 = planSFPA.getBeneficiario2();
 			// insertar en contratante
 			contratante.setIdUsuario(usuario.getIdUsuario());
-			titularSubstituto.setIdUsuario(usuario.getIdUsuario());
-			titularSubstituto.setPersona("titular substituto");
-			beneficiario1.setIdUsuario(usuario.getIdUsuario());
-			beneficiario2.setIdUsuario(usuario.getIdUsuario());
-			beneficiario1.setPersona("beneficiario 1");
-			beneficiario2.setPersona("beneficiario 2");
+			
+		
+			
 			Integer idPersonaCurp=null;
 			Integer idPersonaRfc=null;
 			
@@ -213,6 +210,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 				planSFPAMapper.updatePersona(contratante);
 				planSFPAMapper.updateDomicilio(contratante);
 				planSFPAMapper.updateContratante(contratante);
+				plan.setIdTitular(contratante.getIdContratante());
 			}
 			// si existe actualizar persona contratante y domicilio
 
@@ -225,7 +223,8 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			// con la referencia de persona como titular substituto y su domiclio
 
 			if (plan.getIndTitularSubstituto() == 0) {
-				
+				titularSubstituto.setIdUsuario(usuario.getIdUsuario());
+				titularSubstituto.setPersona("titular substituto");
 				if ((titularSubstituto.getIdPersona() == null || titularSubstituto.getIdPersona() <= 0)) {
 					idPersonaCurp=this.buscarCurpRfc(titularSubstituto.getCurp(),1);
 					idPersonaRfc=this.buscarCurpRfc(titularSubstituto.getRfc(),2);
@@ -263,6 +262,8 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			// beneficiario1 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la
 			// referencia de beneficiario 1 y su domicilio
 			if (beneficiario1 != null) {
+				beneficiario1.setIdUsuario(usuario.getIdUsuario());
+				beneficiario1.setPersona("beneficiario 1");
 				if (beneficiario1.getIdPersona() == null || beneficiario1.getIdPersona() <= 0) {
 					idPersonaCurp=this.buscarCurpRfc(beneficiario1.getCurp(),1);
 					idPersonaRfc=this.buscarCurpRfc(beneficiario1.getRfc(),2);
@@ -299,6 +300,8 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			// beneficiario2 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la
 			// referencia de beneficiario 2 y su domicilio
 			if (beneficiario2 != null) {
+				beneficiario2.setIdUsuario(usuario.getIdUsuario());
+				beneficiario2.setPersona("beneficiario 2");
 				if (beneficiario2.getIdPersona() == null || beneficiario2.getIdPersona() <= 0) {
 					idPersonaCurp=this.buscarCurpRfc(beneficiario2.getCurp(),1);
 					idPersonaRfc=this.buscarCurpRfc(beneficiario2.getRfc(),2);
@@ -458,17 +461,15 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			planSFPAMapper = session.getMapper(PlanSFPAMapper.class);
 			Integer idPersonaCurp;
 			Integer idPersonaRfc;
+			plan.setIdUsuario(usuario.getIdUsuario());
 			if (contratante.getIdTitular() == null || contratante.getIdPersona() == null || contratante.getIdContratante() == null) {
 				return new Response<>(false, HttpStatus.INTERNAL_SERVER_ERROR.value(), "5");
 			}
 		
 			contratante.setIdUsuario(usuario.getIdUsuario());
-			titularSubstituto.setIdUsuario(usuario.getIdUsuario());
-			titularSubstituto.setPersona("titular substituto");
-			beneficiario1.setIdUsuario(usuario.getIdUsuario());
-			beneficiario2.setIdUsuario(usuario.getIdUsuario());
-			beneficiario1.setPersona("beneficiario 1");
-			beneficiario2.setPersona("beneficiario 2");
+			
+			
+			
 			// actualizar contratante contratante, domicilio
 			planSFPAMapper.actulizaPersonaContratante(contratante);
 			planSFPAMapper.actulizaMatriculaContratante(contratante);
@@ -479,6 +480,11 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			// subsituto
 			//IND_TITULAR_SUBSTITUTO=0 no existe titular
 			if (plan.getIndModificarTitularSubstituto() == 0 && titularSubstituto.getIdTitularBeneficiario()==null) {
+				titularSubstituto.setIdUsuario(usuario.getIdUsuario());
+				titularSubstituto.setPersona("titular substituto");
+				titularSubstituto.setIdPlanSfpa(plan.getIdPlanSfpa());
+				titularSubstituto.setIndTitularSubstituto(plan.getIndModificarTitularSubstituto());
+
 				if ((titularSubstituto.getIdPersona() == null || titularSubstituto.getIdPersona() <= 0)) {
 					idPersonaCurp=this.buscarCurpRfc(titularSubstituto.getCurp(),1);
 					idPersonaRfc=this.buscarCurpRfc(titularSubstituto.getRfc(),2);
@@ -497,25 +503,64 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 							planSFPAMapper.agregarDomicilio(titularSubstituto);
 							planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
 							plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
+							planSFPAMapper.actulizaTitularSustitutoPlan(titularSubstituto);
+
 					}else {
 						planSFPAMapper.agregarPersona(titularSubstituto);
 						planSFPAMapper.agregarDomicilio(titularSubstituto);
 						planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
 						plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
+						planSFPAMapper.actulizaTitularSustitutoPlan(titularSubstituto);
+
 					}
 				}else {
 					planSFPAMapper.updatePersona(titularSubstituto);
 					planSFPAMapper.agregarDomicilio(titularSubstituto);
 					planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
 					plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
+					planSFPAMapper.actulizaTitularSustitutoPlan(titularSubstituto);
+
 				}
 				
 			}else if(titularSubstituto.getIdTitularBeneficiario()!=null) {
+				titularSubstituto.setIdPlanSfpa(plan.getIdPlanSfpa());
+				titularSubstituto.setIndTitularSubstituto(plan.getIndModificarTitularSubstituto());
+				if ((titularSubstituto.getIdPersona() == null || titularSubstituto.getIdPersona() <= 0)) {
+					idPersonaCurp=this.buscarCurpRfc(titularSubstituto.getCurp(),1);
+					idPersonaRfc=this.buscarCurpRfc(titularSubstituto.getRfc(),2);
+					if (idPersonaCurp!=null || idPersonaRfc!=null ) {
+						if (idPersonaCurp!=null) {
+							titularSubstituto.setIdPersona(idPersonaCurp);
+							titularSubstituto.setIdUsuario(usuario.getIdUsuario());
+							planSFPAMapper.updatePersona(titularSubstituto);
+						} else if(idPersonaRfc!=null){
+							titularSubstituto.setIdPersona(idPersonaRfc);
+							titularSubstituto.setIdUsuario(usuario.getIdUsuario());
+							planSFPAMapper.updatePersona(titularSubstituto);
+						}else {
+							planSFPAMapper.agregarPersona(titularSubstituto);
+						}
+							planSFPAMapper.agregarDomicilio(titularSubstituto);
+							planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
+							plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
+							planSFPAMapper.actulizaTitularSustitutoPlan(titularSubstituto);
+
+					}else {
+						planSFPAMapper.agregarPersona(titularSubstituto);
+						planSFPAMapper.agregarDomicilio(titularSubstituto);
+						planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
+						plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
+						planSFPAMapper.actulizaTitularSustitutoPlan(titularSubstituto);
+
+					}
+				}else {
+				titularSubstituto.setIdUsuario(usuario.getIdUsuario());
+				titularSubstituto.setPersona("titular substituto");
 				planSFPAMapper.updatePersona(titularSubstituto);
 				planSFPAMapper.updateDomicilio(titularSubstituto);
 				planSFPAMapper.actulizaMatricula(titularSubstituto);
 				plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
-
+			}
 			}
 
 			// si el id persona es null y el ID_TITULAR_SUBSTITUTO = null insertar en las tablas de 
@@ -527,10 +572,38 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			// beneficiario1 se inserta en la tabla persona SVT_TITULAR_BENEFICIARIOS con la
 						// referencia de beneficiario 1 y su domicilio
 			if (beneficiario1 != null) {
+				beneficiario1.setIdUsuario(usuario.getIdUsuario());
+				beneficiario1.setPersona("beneficiario 1");
+				beneficiario1.setIdPlanSfpa(plan.getIdPlanSfpa());
+
 				if (beneficiario1.getIdTitularBeneficiario() != null) {
 					if ((beneficiario1.getIdPersona() == null || beneficiario1.getIdPersona() <= 0)) {
+						idPersonaCurp = this.buscarCurpRfc(beneficiario1.getCurp(), 1);
+						idPersonaRfc = this.buscarCurpRfc(beneficiario1.getRfc(), 2);
+						if (idPersonaCurp != null || idPersonaRfc != null) {
+							if (idPersonaCurp != null) {
+								beneficiario1.setIdPersona(idPersonaCurp);
+								beneficiario1.setIdUsuario(usuario.getIdUsuario());
+								planSFPAMapper.updatePersona(beneficiario1);
+							} else if (idPersonaRfc != null) {
+								beneficiario1.setIdPersona(idPersonaRfc);
+								beneficiario1.setIdUsuario(usuario.getIdUsuario());
+								planSFPAMapper.updatePersona(beneficiario1);
+							} else {
+								planSFPAMapper.agregarPersona(beneficiario1);
+							}
+						
+							planSFPAMapper.agregarDomicilio(beneficiario1);
+							planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
+							plan.setIdBeneficiario1(beneficiario1.getIdTitularBeneficiario());
+							planSFPAMapper.actulizaBeneficiario1Plan(beneficiario1);
+
+						}else {
 						planSFPAMapper.agregarPersona(beneficiario1);
 						planSFPAMapper.agregarDomicilio(beneficiario1);
+						planSFPAMapper.actulizaBeneficiario1Plan(beneficiario1);
+
+					}
 					}else {
 						planSFPAMapper.updatePersona(beneficiario1);
 						planSFPAMapper.updateDomicilio(beneficiario1);
@@ -539,8 +612,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
 					planSFPAMapper.actulizaBeneficiario1Plan(beneficiario1);
 
-				} else if ((beneficiario1.getIdPersona() == null || beneficiario1.getIdPersona() <= 0)
-						&& beneficiario1.getIdTitularBeneficiario() == null) {
+				} else if ((beneficiario1.getIdPersona() == null || beneficiario1.getIdPersona() <= 0)) {
 					idPersonaCurp = this.buscarCurpRfc(beneficiario1.getCurp(), 1);
 					idPersonaRfc = this.buscarCurpRfc(beneficiario1.getRfc(), 2);
 					if (idPersonaCurp != null || idPersonaRfc != null) {
@@ -557,8 +629,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 						}
 					
 						planSFPAMapper.agregarDomicilio(beneficiario1);
-						planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
-						plan.setIdBeneficiario1(beneficiario1.getIdTitularBeneficiario());
+						
 						
 					} else {
 						planSFPAMapper.agregarPersona(beneficiario1);
@@ -568,10 +639,12 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					
 					
 					planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
+					plan.setIdBeneficiario1(beneficiario1.getIdTitularBeneficiario());
+
 					planSFPAMapper.actulizaBeneficiario1Plan(beneficiario1);
 					
 				} else {
-					planSFPAMapper.agregarPersona(beneficiario1);
+					planSFPAMapper.updatePersona(beneficiario1);
 					planSFPAMapper.agregarDomicilio(beneficiario1);
 					
 					planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
@@ -582,10 +655,38 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			}
 		
 			if (beneficiario2 != null) {
+				beneficiario2.setIdUsuario(usuario.getIdUsuario());
+				beneficiario2.setPersona("beneficiario 1");
+				beneficiario2.setIdPlanSfpa(plan.getIdPlanSfpa());
+
 				if (beneficiario2.getIdTitularBeneficiario() != null) {
 					if ((beneficiario2.getIdPersona() == null || beneficiario2.getIdPersona() <= 0)) {
+						idPersonaCurp = this.buscarCurpRfc(beneficiario2.getCurp(), 1);
+						idPersonaRfc = this.buscarCurpRfc(beneficiario2.getRfc(), 2);
+						if (idPersonaCurp != null || idPersonaRfc != null) {
+							if (idPersonaCurp != null) {
+								beneficiario2.setIdPersona(idPersonaCurp);
+								beneficiario2.setIdUsuario(usuario.getIdUsuario());
+								planSFPAMapper.updatePersona(beneficiario2);
+							} else if (idPersonaRfc != null) {
+								beneficiario2.setIdPersona(idPersonaRfc);
+								beneficiario2.setIdUsuario(usuario.getIdUsuario());
+								planSFPAMapper.updatePersona(beneficiario2);
+							} else {
+								planSFPAMapper.agregarPersona(beneficiario2);
+							}
+						
+							planSFPAMapper.agregarDomicilio(beneficiario2);
+							planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
+							plan.setIdBeneficiario2(beneficiario2.getIdTitularBeneficiario());
+							planSFPAMapper.actulizaBeneficiario2Plan(beneficiario2);
+
+						}else {
 						planSFPAMapper.agregarPersona(beneficiario2);
 						planSFPAMapper.agregarDomicilio(beneficiario2);
+						planSFPAMapper.actulizaBeneficiario2Plan(beneficiario2);
+
+					}
 					}else {
 						planSFPAMapper.updatePersona(beneficiario2);
 						planSFPAMapper.updateDomicilio(beneficiario2);
@@ -594,8 +695,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
 					planSFPAMapper.actulizaBeneficiario2Plan(beneficiario2);
 
-				} else if ((beneficiario2.getIdPersona() == null || beneficiario2.getIdPersona() <= 0)
-						&& beneficiario2.getIdTitularBeneficiario() == null) {
+				} else if ((beneficiario2.getIdPersona() == null || beneficiario2.getIdPersona() <= 0)) {
 					idPersonaCurp = this.buscarCurpRfc(beneficiario2.getCurp(), 1);
 					idPersonaRfc = this.buscarCurpRfc(beneficiario2.getRfc(), 2);
 					if (idPersonaCurp != null || idPersonaRfc != null) {
@@ -612,8 +712,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 						}
 					
 						planSFPAMapper.agregarDomicilio(beneficiario2);
-						planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
-						plan.setIdBeneficiario2(beneficiario2.getIdTitularBeneficiario());
+						
 						
 					} else {
 						planSFPAMapper.agregarPersona(beneficiario2);
@@ -623,19 +722,23 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					
 					
 					planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
+					plan.setIdBeneficiario2(beneficiario2.getIdTitularBeneficiario());
+
 					planSFPAMapper.actulizaBeneficiario2Plan(beneficiario2);
 					
 				} else {
-					planSFPAMapper.agregarPersona(beneficiario1);
-					planSFPAMapper.agregarDomicilio(beneficiario1);
+					planSFPAMapper.updatePersona(beneficiario2);
+					planSFPAMapper.agregarDomicilio(beneficiario2);
+					
 					planSFPAMapper.agregarTitulaBeneficiario(beneficiario2);
-					plan.setIdBeneficiario2(beneficiario1.getIdTitularBeneficiario());
+					plan.setIdBeneficiario2(beneficiario2.getIdTitularBeneficiario());
 					planSFPAMapper.actulizaBeneficiario2Plan(beneficiario2);
 				}
 
 			}
 			
 			if (plan.getCambioParcialidad()==1) {
+				plan.setIdUsuario(usuario.getIdUsuario());
 				planSFPAMapper.cancelaPagos(plan);
 				// parcialidades
 

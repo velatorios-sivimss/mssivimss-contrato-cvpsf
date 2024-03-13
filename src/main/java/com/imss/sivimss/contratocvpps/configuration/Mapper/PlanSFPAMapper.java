@@ -445,8 +445,8 @@ public interface PlanSFPAMapper {
 			" SET" +
 			" IND_ACTIVO = 0," +
 			" FEC_ACTUALIZACION = CURRENT_TIMESTAMP()," +
-			" ID_USUARIO_MODIFICA = #{in.idUsuario}" +
-			"WHERE ID_PLAN_SFPA = #{in.idPlanSfpa}")
+			" ID_USUARIO_MODIFICA = #{in.idUsuario} " +
+			"WHERE ID_PLAN_SFPA = #{in.idPlanSfpa} ")
 	public int cancelaPagos(@Param("in") PlanSFPA persona);
 
 	@Update(value = "UPDATE" +
@@ -477,7 +477,7 @@ public interface PlanSFPAMapper {
 			+ "SET  "
 			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
 			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
-			" REF_CALLE = #{in.calle} , " +
+			" REF_CALLE = #{in.desCalle} , " +
 			" NUM_EXTERIOR= #{in.numExterior} , " +
 			" NUM_INTERIOR = #{in.numInterior} , " +
 			" REF_COLONIA = #{in.desColonia} , " +
@@ -511,8 +511,8 @@ public interface PlanSFPAMapper {
 			+ "SET  "
 			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
 			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
-			" ID_TITULAR_SUBSTITUTO  = #{in.idTitularSubstituto} , " +
-			" IND_TITULAR_SUBSTITUTO = #{in.idTitularBeneficiario} ,  " +
+			" ID_TITULAR_SUBSTITUTO  = #{in.idTitularBeneficiario} , " +
+			" IND_TITULAR_SUBSTITUTO = #{in.indTitularSubstituto}   " +
 			" WHERE ID_PLAN_SFPA = #{in.idPlanSfpa} ")
 	public int actulizaTitularSustitutoPlan(@Param("in") PlanSFPA persona);
 
@@ -521,7 +521,7 @@ public interface PlanSFPAMapper {
 			+ "SET  "
 			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
 			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
-			" ID_BENEFICIARIO_1  = #{in.idTitularSubstituto} " +
+			" ID_BENEFICIARIO_1  = #{in.idTitularBeneficiario} " +
 			" WHERE ID_PLAN_SFPA = #{in.idPlanSfpa} ")
 	public int actulizaBeneficiario1Plan(@Param("in") PlanSFPA persona);
 
@@ -530,7 +530,7 @@ public interface PlanSFPAMapper {
 			+ "SET  "
 			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
 			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
-			" ID_BENEFICIARIO_2  = #{in.idTitularSubstituto}  " +
+			" ID_BENEFICIARIO_2  = #{in.idTitularBeneficiario}  " +
 			" WHERE ID_PLAN_SFPA = #{in.idPlanSfpa} ")
 	public int actulizaBeneficiario2Plan(@Param("in") PlanSFPA persona);
 

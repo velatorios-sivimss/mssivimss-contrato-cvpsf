@@ -138,7 +138,9 @@ public class PlanSFPAController {
 	@Retry(name = "msflujo", fallbackMethod = "fallbackGenerico")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> actualizaPlanSFPA(@RequestBody DatosRequest request,Authentication authentication) throws IOException, SQLException {
-		Response<Object> response =   planSFPAService.actualizarPlanSFPA(request, authentication);
+	//	Response<Object> response =   planSFPAService.actualizarPlanSFPA(request, authentication);
+		Response<Object> response =  planesSfpaService.actualizarPlanSFPA(request,authentication);
+
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
 	
