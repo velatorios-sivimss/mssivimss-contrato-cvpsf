@@ -74,6 +74,7 @@ public interface PlanSFPAMapper {
 			"( " +
 			"CVE_RFC," +
 			"CVE_CURP, " +
+			"CVE_NSS, " +
 			"NOM_PERSONA," +
 			"NOM_PRIMER_APELLIDO," +
 			"NOM_SEGUNDO_APELLIDO," +
@@ -90,6 +91,7 @@ public interface PlanSFPAMapper {
 			"( " +
 			"#{datos.rfc}," +
 			"#{datos.curp}, " +
+			"#{datos.nss}, " +
 			"#{datos.nomPersona}, " +
 			"#{datos.primerApellido}, " +
 			"#{datos.segundoApellido}, " +
@@ -199,7 +201,7 @@ public interface PlanSFPAMapper {
 			+ "SET  "
 			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
 			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
-			" REF_CALLE = #{in.calle} , " +
+			" REF_CALLE = #{in.desCalle} , " +
 			" NUM_EXTERIOR= #{in.numExterior} , " +
 			" NUM_INTERIOR = #{in.numInterior} , " +
 			" REF_CP = #{in.codigoPostal} ,  " +

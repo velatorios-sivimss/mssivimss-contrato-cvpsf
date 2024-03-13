@@ -179,8 +179,8 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			
 			// sino existe insertar en persona y despues en domicilio y contratante
 			if (contratante.getIdPersona() == null || contratante.getIdPersona() <= 0) {
-				idPersonaCurp=this.buscarCurpRfc(titularSubstituto.getCurp(),1,session);
-				idPersonaRfc=this.buscarCurpRfc(titularSubstituto.getRfc(),2,session);
+				idPersonaCurp=this.buscarCurpRfc(titularSubstituto.getCurp(),1);
+				idPersonaRfc=this.buscarCurpRfc(titularSubstituto.getRfc(),2);
 				if (idPersonaCurp!=null || idPersonaRfc!=null ) {
 					if (idPersonaCurp!=null) {
 						contratante.setIdPersona(idPersonaCurp);
@@ -192,7 +192,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 						planSFPAMapper.updatePersona(contratante);
 					}
 					planSFPAMapper.agregarDomicilio(contratante);
-					planSFPAMapper.updateContratante(contratante);
+					planSFPAMapper.agregarContratante(contratante);
 					plan.setIdTitular(contratante.getIdContratante());
 				}
 				else {
@@ -221,8 +221,8 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			if (plan.getIndTitularSubstituto() == 0) {
 				
 				if ((titularSubstituto.getIdPersona() == null || titularSubstituto.getIdPersona() <= 0)) {
-					idPersonaCurp=this.buscarCurpRfc(titularSubstituto.getCurp(),1,session);
-					idPersonaRfc=this.buscarCurpRfc(titularSubstituto.getRfc(),2,session);
+					idPersonaCurp=this.buscarCurpRfc(titularSubstituto.getCurp(),1);
+					idPersonaRfc=this.buscarCurpRfc(titularSubstituto.getRfc(),2);
 					if (idPersonaCurp!=null || idPersonaRfc!=null ) {
 						if (idPersonaCurp!=null) {
 							titularSubstituto.setIdPersona(idPersonaCurp);
@@ -256,8 +256,8 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			// referencia de beneficiario 1 y su domicilio
 			if (beneficiario1 != null) {
 				if (beneficiario1.getIdPersona() == null || beneficiario1.getIdPersona() <= 0) {
-					idPersonaCurp=this.buscarCurpRfc(beneficiario1.getCurp(),1,session);
-					idPersonaRfc=this.buscarCurpRfc(beneficiario1.getRfc(),2,session);
+					idPersonaCurp=this.buscarCurpRfc(beneficiario1.getCurp(),1);
+					idPersonaRfc=this.buscarCurpRfc(beneficiario1.getRfc(),2);
 					if (idPersonaCurp!=null || idPersonaRfc!=null ) {
 						if (idPersonaCurp!=null) {
 							beneficiario1.setIdPersona(idPersonaCurp);
@@ -289,8 +289,8 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			// referencia de beneficiario 2 y su domicilio
 			if (beneficiario2 != null) {
 				if (beneficiario2.getIdPersona() == null || beneficiario2.getIdPersona() <= 0) {
-					idPersonaCurp=this.buscarCurpRfc(beneficiario2.getCurp(),1,session);
-					idPersonaRfc=this.buscarCurpRfc(beneficiario2.getRfc(),2,session);
+					idPersonaCurp=this.buscarCurpRfc(beneficiario2.getCurp(),1);
+					idPersonaRfc=this.buscarCurpRfc(beneficiario2.getRfc(),2);
 					if (idPersonaCurp!=null || idPersonaRfc!=null ) {
 						if (idPersonaCurp!=null) {
 							beneficiario2.setIdPersona(idPersonaCurp);
@@ -460,33 +460,35 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 		}
 	}
 	
-	private Integer buscarCurpRfc(String datos, Integer busqueda,SqlSession session) throws JsonProcessingException {
+	private Integer buscarCurpRfc(String datos, Integer busqueda) throws JsonProcessingException {
 		ObjectMapper mappe = new ObjectMapper();
-		Object personaAsociada=null;
-	    String json;
-	    JsonNode jsonNode;
-	    PlanSFPAMapper planSFPAMappr=session.getMapper(PlanSFPAMapper.class);
-	    switch (busqueda) {
-		case 1:
-			personaAsociada = planSFPAMappr.buscaCurp(datos);
-		      
-			break;
-		case 2:
-			personaAsociada = planSFPAMappr.buscaRFC(datos);
-			break;
-		 default:
-		  return null;
+		Object personaAsociada = null;
+		String json;
+		JsonNode jsonNode;
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+			PlanSFPAMapper planSFPAMappr = session.getMapper(PlanSFPAMapper.class);
+			switch (busqueda) {
+			case 1:
+				personaAsociada = planSFPAMappr.buscaCurp(datos);
+
+				break;
+			case 2:
+				personaAsociada = planSFPAMappr.buscaRFC(datos);
+				break;
+			default:
+				return null;
+			}
+
+			if (personaAsociada == null) {
+				return null;
+			}
+			json = new ObjectMapper().writeValueAsString(personaAsociada);
+			jsonNode = mappe.readTree(json);
+
+			return jsonNode.get("idPersona").asInt();
+
 		}
-	   
-	    if (personaAsociada==null) {
-			return null;
-		} 
-	    json = new ObjectMapper().writeValueAsString(personaAsociada);
-		jsonNode = mappe.readTree(json);
-		
-		return jsonNode.get("idPersona").asInt();
-      
-        
 	}
 
 }
