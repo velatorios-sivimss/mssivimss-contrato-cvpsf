@@ -258,6 +258,7 @@ public interface PlanSFPAMapper {
 			" IFNULL(SPC.NOM_SEGUNDO_APELLIDO, '') AS segundoApellido, " +
 			" IFNULL(SPC.NUM_SEXO, 0) AS idSexo, " +
 			" IFNULL(SPC.REF_OTRO_SEXO, '') AS otroSexo, " +
+
 			" CASE WHEN SPC.NUM_SEXO = 1 THEN 'MUJER' WHEN SPC.NUM_SEXO = 2 THEN 'HOMBRE' ELSE IFNULL(SPC.REF_OTRO_SEXO, '') END AS sexo, "
 			+
 			" SPC.FEC_NAC AS fechaNac, " +
@@ -276,6 +277,8 @@ public interface PlanSFPAMapper {
 			" IFNULL(SVD.REF_MUNICIPIO, '') AS desMunicipio, " +
 			" IFNULL(SVD.REF_ESTADO, '') AS desEstado, " +
 			" IFNULL(SPC.REF_CORREO, '') AS correo, " +
+			" IFNULL(REF_TELEFONO,'') as telefono," +
+			" ifnull(REF_TELEFONO_FIJO,'') as telefonoFijo," +
 			" CONCAT_WS( " +
 			"  ' ', SPC.NOM_PERSONA, SPC.NOM_PRIMER_APELLIDO, " +
 			"  SPC.NOM_SEGUNDO_APELLIDO " +
@@ -313,6 +316,8 @@ public interface PlanSFPAMapper {
 			" IFNULL(SPC.ID_PAIS, 119) AS idPais, " +
 			" IFNULL(SPC.ID_ESTADO,0) AS idEstado, " +
 			" IFNULL(TB.ID_DOMICILIO, 0) AS idDomicilio, " +
+			" IFNULL(REF_TELEFONO,'') as telefono," +
+			" ifnull(REF_TELEFONO_FIJO,'') as telefonoFijo," +
 			" IFNULL(SVD.REF_CALLE, '') AS desCalle, " +
 			" IFNULL(SVD.NUM_EXTERIOR, '') AS numExterior, " +
 			" IFNULL(SVD.NUM_INTERIOR, '') AS numInterior, " +
@@ -350,6 +355,8 @@ public interface PlanSFPAMapper {
 			+
 			" SPC.FEC_NAC AS fechaNac, " +
 			" IFNULL(SPC.REF_CORREO, '') AS correo, " +
+			" IFNULL(REF_TELEFONO,'') as telefono," +
+			" ifnull(REF_TELEFONO_FIJO,'') as telefonoFijo," +
 			" CASE WHEN SPC.ID_PAIS = NULL " +
 			" OR SPC.ID_PAIS = 119 THEN 1 ELSE 2 END AS idNacionalidad, " +
 			" CASE WHEN SPC.ID_PAIS = NULL " +
@@ -397,6 +404,8 @@ public interface PlanSFPAMapper {
 			" CASE WHEN SPC.ID_PAIS = NULL " +
 			" OR SPC.ID_PAIS = 119 THEN 'MEXICANA' ELSE 'EXTRANJERA' END AS nacionalidad, " +
 			" IFNULL(SPC.ID_PAIS, 119) AS idPais, " +
+			" IFNULL(REF_TELEFONO,'') as telefono," +
+			" ifnull(REF_TELEFONO_FIJO,'') as telefonoFijo," +
 			" IFNULL(SPC.ID_ESTADO,'') AS idEstado, " +
 			" IFNULL(TB.ID_DOMICILIO, '') AS idDomicilio, " +
 			" IFNULL(SVD.REF_CALLE, '') AS desCalle, " +
@@ -425,7 +434,7 @@ public interface PlanSFPAMapper {
 			" CASE WHEN COUNT(SPS.ID_PAGO_SFPA) = 0 " +
 			" THEN 0 " +
 			" ELSE 1 END AS pago, " +
-			" SPSA.IND_PROMOTOR	AS indPromotor, " +
+			" SPSA.IND_PROMOTOR	AS indPromotor," +
 			" IFNULL(SPSA.ID_PROMOTOR,0) AS idPromotor, " +
 			" SP.REF_PAQUETE_NOMBRE AS nombrePaquete, " +
 			" SPSA.IMP_PRECIO AS costoPaquete, " +
