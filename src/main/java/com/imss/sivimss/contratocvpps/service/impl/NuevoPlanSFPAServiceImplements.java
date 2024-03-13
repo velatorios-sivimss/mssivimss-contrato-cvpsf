@@ -204,10 +204,13 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 						contratante.setIdPersona(idPersonaCurp);
 						contratante.setIdUsuario(usuario.getIdUsuario());
 						planSFPAMapper.updatePersona(contratante);
-					} else {
+					} else if(idPersonaRfc!=null) {
 						contratante.setIdPersona(idPersonaRfc);
 						contratante.setIdUsuario(usuario.getIdUsuario());
 						planSFPAMapper.updatePersona(contratante);
+					}else {
+						planSFPAMapper.agregarPersona(contratante);
+						contratante.setIdUsuario(usuario.getIdUsuario());
 					}
 					planSFPAMapper.agregarDomicilio(contratante);
 					planSFPAMapper.agregarContratante(contratante);
