@@ -494,7 +494,7 @@ public interface PlanSFPAMapper {
 			" REF_TELEFONO = #{in.telefono} , " +
 			" REF_TELEFONO_FIJO = #{in.telefonoFijo} ,  " +
 			" REF_CORREO = #{in.correo}   " +
-			" WHERE ID_DOMICILIO = #{in.idDomicilio} ")
+			" WHERE ID_PERSONA = #{in.idPersona} ")
 	public int actulizaPersonaContratante(@Param("in") PlanSFPA persona);
 
 	@Update(value = ""
@@ -511,9 +511,9 @@ public interface PlanSFPAMapper {
 			+ "SET  "
 			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
 			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
-			" ID_TITULAR_SUBSTITUTO  = #{in.telefono} , " +
-			" IND_TITULAR_SUBSTITUTO = #{in.telefonoFijo} ,  " +
-			" WHERE ID_PLAN_SFPA = #{in.indTitularSubstituto} ")
+			" ID_TITULAR_SUBSTITUTO  = #{in.idTitularSubstituto} , " +
+			" IND_TITULAR_SUBSTITUTO = #{in.idTitularBeneficiario} ,  " +
+			" WHERE ID_PLAN_SFPA = #{in.idPlanSfpa} ")
 	public int actulizaTitularSustitutoPlan(@Param("in") PlanSFPA persona);
 
 	@Update(value = ""
@@ -521,9 +521,8 @@ public interface PlanSFPAMapper {
 			+ "SET  "
 			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
 			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
-			" ID_TITULAR_SUBSTITUTO  = #{in.telefono} , " +
-			" IND_TITULAR_SUBSTITUTO = #{in.telefonoFijo} ,  " +
-			" WHERE ID_PLAN_SFPA = #{in.idTitularBeneficiario} ")
+			" ID_BENEFICIARIO_1  = #{in.idTitularSubstituto} " +
+			" WHERE ID_PLAN_SFPA = #{in.idPlanSfpa} ")
 	public int actulizaBeneficiario1Plan(@Param("in") PlanSFPA persona);
 
 	@Update(value = ""
@@ -531,8 +530,8 @@ public interface PlanSFPAMapper {
 			+ "SET  "
 			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
 			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
-			" ID_BENEFICIARIO_2  = #{in.telefono}  " +
-			" WHERE ID_PLAN_SFPA = #{in.idTitularBeneficiario} ")
+			" ID_BENEFICIARIO_2  = #{in.idTitularSubstituto}  " +
+			" WHERE ID_PLAN_SFPA = #{in.idPlanSfpa} ")
 	public int actulizaBeneficiario2Plan(@Param("in") PlanSFPA persona);
 
 	@Select(value = "SELECT ID_PERSONA AS idPersona FROM  SVC_PERSONA " +
