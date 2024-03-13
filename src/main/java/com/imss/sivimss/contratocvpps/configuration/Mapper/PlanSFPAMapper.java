@@ -542,4 +542,13 @@ public interface PlanSFPAMapper {
 			" WHERE CVE_RFC = #{rfc} LIMIT 1 ")
 	public Map<String, Object> buscaRFC(@Param("rfc") String rfc);
 
+	@Update(value = ""
+			+ "UPDATE SVT_TITULAR_BENEFICIARIOS  "
+			+ "SET  "
+			+ "FEC_ACTUALIZACION = CURRENT_TIMESTAMP(), "
+			+ "ID_USUARIO_MODIFICA = #{in.idUsuario} ," +
+			" CVE_MATRICULA = #{in.matricula} " +
+			" WHERE ID_TITULAR_BENEFICIARIOS = #{in.idTitularBeneficiario} ")
+	public int actulizaMatricula(@Param("in") PlanSFPA persona);
+
 }
