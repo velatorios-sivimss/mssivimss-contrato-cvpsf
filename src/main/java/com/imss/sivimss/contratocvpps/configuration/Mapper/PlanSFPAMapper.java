@@ -440,7 +440,7 @@ public interface PlanSFPAMapper {
 			" SPSA.IMP_PRECIO AS costoPaquete, " +
 			" V.DES_VELATORIO as velatorio," +
 			" pg.DES_TIPO_PAGO_MENSUAL as noPagos," +
-			" pg.FEC_INGRESO as fechaIngreso," +
+            " pg.FEC_INGRESO as fechaIngreso," +
 			" IFNULL(CONCAT(SP2.NOM_PROMOTOR,' ',SP2.NOM_PAPELLIDO,'',SP2.NOM_SAPELLIDO),'') AS nombrePromotor " +
 			" FROM " +
 			" SVT_PLAN_SFPA SPSA " +
