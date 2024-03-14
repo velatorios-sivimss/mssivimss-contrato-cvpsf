@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -197,17 +198,20 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			
 			// sino existe insertar en persona y despues en domicilio y contratante
 			if (contratante.getIdPersona() == null || contratante.getIdPersona() <= 0) {
-				idPersonaCurp=this.buscarCurpRfc(titularSubstituto.getCurp(),1);
-				idPersonaRfc=this.buscarCurpRfc(titularSubstituto.getRfc(),2);
+				idPersonaCurp=this.buscarCurpRfc(contratante.getCurp(),1);
+				idPersonaRfc=this.buscarCurpRfc(contratante.getRfc(),2);
 				if (idPersonaCurp!=null || idPersonaRfc!=null ) {
 					if (idPersonaCurp!=null) {
 						contratante.setIdPersona(idPersonaCurp);
 						contratante.setIdUsuario(usuario.getIdUsuario());
 						planSFPAMapper.updatePersona(contratante);
-					} else {
+					} else if(idPersonaRfc!=null) {
 						contratante.setIdPersona(idPersonaRfc);
 						contratante.setIdUsuario(usuario.getIdUsuario());
 						planSFPAMapper.updatePersona(contratante);
+					}else {
+						planSFPAMapper.agregarPersona(contratante);
+						contratante.setIdUsuario(usuario.getIdUsuario());
 					}
 					planSFPAMapper.agregarDomicilio(contratante);
 					planSFPAMapper.agregarContratante(contratante);
@@ -372,9 +376,21 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			}
 			session.commit();
 			
+			if(plan.getIdPlanSfpa() != null) { 
+				Map<String, Object> map = new HashMap<>(); 
+				Map<String, Object> parametros = new HashMap<>();
+				map.put(ID_PLAN_SFPA, plan.getIdPlanSfpa()); 
+				DatosRequest datosRequest = new DatosRequest(); 
+				parametros.put(AppConstantes.DATOS, map);
+				datosRequest.setDatos(parametros); 
+				response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication); 
+				
+			}
+			response.setMensaje("30"); 
+
 			enviarCuenta(contratante);
 			
-			return new Response<>(false, HttpStatus.OK.value(), "Exito", plan);
+			return response;
 
 		} catch (Exception e) {
 			log.info(ERROR, e.getCause().getMessage());
@@ -774,10 +790,27 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					datosPagoSFPA.setIdEstatusPago(i == 0 ? 8 : 7);
 					mapperQuery.agregarParcialidades(datosPagoSFPA);
 				}
+				
 			}
+			
 			planSFPAMapper.actualizaDatosPlan(plan);
+			
 			session.commit();
-			return new Response<>(false, HttpStatus.OK.value(), "Exito",plan);
+			if (plan.getCambioParcialidad()==1) {
+				if(plan.getIdPlanSfpa() != null) { 
+					Map<String, Object> map = new HashMap<>(); 
+					Map<String, Object> parametros = new HashMap<>();
+					map.put(ID_PLAN_SFPA, plan.getIdPlanSfpa()); 
+					DatosRequest datosRequest = new DatosRequest(); 
+					parametros.put(AppConstantes.DATOS, map);
+					datosRequest.setDatos(parametros); 
+					response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication); 
+					
+				}
+				response.setMensaje("30"); 
+				return response;
+			}
+			return new Response<>(false, HttpStatus.OK.value(), "30");
 		} catch (Exception e) {
 			log.info(ERROR, e.getCause().getMessage());
 
