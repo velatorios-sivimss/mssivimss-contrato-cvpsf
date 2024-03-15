@@ -120,6 +120,7 @@ public class ReportePagoAnticipadoServiceImpl implements ReportePagoAnticipadoSe
 		Map<String, Object> envioDatos = new HashMap<>();
 		envioDatos.put("numFolioPlanSFPA", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNumFolioPlanSFPA()));
 		envioDatos.put("nombreTitular", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNombreTitular()));
+		envioDatos.put("numFolioPlanSFPA", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNumFolioPlanSFPA()));
 		envioDatos.put("nacionalidadTitular", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getNacionalidadTitular()));
 		envioDatos.put("rfcTitular", validarSiEsNull(contratoServicioInmediatoResponse.get(0).getRfcTitular()));
 		

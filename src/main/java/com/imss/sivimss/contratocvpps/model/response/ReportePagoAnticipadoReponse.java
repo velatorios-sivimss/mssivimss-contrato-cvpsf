@@ -54,4 +54,5 @@ private String firmDir;
 private String imgCheck;
 private String nomFibeso;
 private Boolean indTitularSubs;
+
 }
