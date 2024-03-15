@@ -430,6 +430,7 @@ public interface PlanSFPAMapper {
 
 	@Select(value = "SELECT " +
 			" SPSA.ID_PAQUETE AS idPaquete, " +
+			" ifnull(SPSA.NUM_FOLIO_PLAN_SFPA,'') as folioPlan," +
 			" SPSA.IND_TITULAR_SUBSTITUTO AS indTitularSubstituto, " +
 			" CASE WHEN COUNT(SPS.ID_PAGO_SFPA) = 0 " +
 			" THEN 0 " +
