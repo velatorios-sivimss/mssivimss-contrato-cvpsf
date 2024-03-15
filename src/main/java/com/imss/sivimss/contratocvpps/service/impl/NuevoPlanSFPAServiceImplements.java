@@ -181,6 +181,8 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 		String datosJson = datos.getDatos().get(AppConstantes.DATOS).toString();
 		PlanRequest planSFPA = gson.fromJson(datosJson, PlanRequest.class);
+		Integer idPlan=null;
+		String numPlan=null;
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			planSFPAMapper = session.getMapper(PlanSFPAMapper.class);
 			PlanSFPA plan = planSFPA.getPlan();
@@ -375,7 +377,10 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 				mapperQuery.agregarParcialidades(datosPagoSFPA);
 			}
 			session.commit();
+			idPlan=plan.getIdPlanSfpa();
+			numPlan=plan.getNumFolio();
 			enviarCuenta(contratante);
+			
 			if(plan.getIdPlanSfpa() != null) { 
 				Map<String, Object> map = new HashMap<>(); 
 				Map<String, Object> parametros = new HashMap<>();
@@ -390,15 +395,15 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 				
 				
 			}
-			response.setMensaje("30"); 
+			response.setMensaje(numPlan); 
 
 			
 			
 			return response;
 
 		} catch (Exception e) {
-			if (response==null) {
-				return new Response<>(false, HttpStatus.OK.value(), "30");
+			if (idPlan!=null || numPlan!=null) {
+				return new Response<>(false, HttpStatus.OK.value(), numPlan);
 			}
 			log.info(ERROR, e.getCause().getMessage());
 
