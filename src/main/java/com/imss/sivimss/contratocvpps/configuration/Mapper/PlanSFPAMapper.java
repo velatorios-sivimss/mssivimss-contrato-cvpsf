@@ -264,9 +264,9 @@ public interface PlanSFPAMapper {
 			" CASE WHEN SPC.NUM_SEXO = 1 THEN 'MUJER' WHEN SPC.NUM_SEXO = 2 THEN 'HOMBRE' ELSE IFNULL(SPC.REF_OTRO_SEXO, '') END AS sexo, "
 			+
 			" SPC.FEC_NAC AS fechaNac, " +
-			" CASE WHEN SPC.ID_PAIS = NULL " +
+			" CASE WHEN SPC.ID_PAIS is  NULL " +
 			" OR SPC.ID_PAIS = 119 THEN 1 ELSE 2 END AS idNacionalidad, " +
-			" CASE WHEN SPC.ID_PAIS = NULL " +
+			" CASE WHEN SPC.ID_PAIS is NULL " +
 			" OR SPC.ID_PAIS = 119 THEN 'MEXICANA' ELSE 'EXTRANJERA' END AS nacionalidad, " +
 			" IFNULL(SPC.ID_PAIS, 119) AS idPais, " +
 			" IFNULL(SPC.ID_ESTADO,0) AS idEstado, " +
@@ -311,9 +311,9 @@ public interface PlanSFPAMapper {
 			" CASE WHEN SPC.NUM_SEXO = 1 THEN 'MUJER' WHEN SPC.NUM_SEXO = 2 THEN 'HOMBRE' ELSE IFNULL(SPC.REF_OTRO_SEXO, '') END AS sexo, "
 			+
 			" SPC.FEC_NAC AS fechaNac, " +
-			" CASE WHEN SPC.ID_PAIS = NULL " +
+			" CASE WHEN SPC.ID_PAIS is NULL " +
 			" OR SPC.ID_PAIS = 119 THEN 1 ELSE 2 END AS idNacionalidad, " +
-			" CASE WHEN SPC.ID_PAIS = NULL " +
+			" CASE WHEN SPC.ID_PAIS is NULL " +
 			" OR SPC.ID_PAIS = 119 THEN 'MEXICANA' ELSE 'EXTRANJERA' END AS nacionalidad, " +
 			" IFNULL(SPC.ID_PAIS, 119) AS idPais, " +
 			" IFNULL(SPC.ID_ESTADO,0) AS idEstado, " +
@@ -359,9 +359,9 @@ public interface PlanSFPAMapper {
 			" IFNULL(SPC.REF_CORREO, '') AS correo, " +
 			" IFNULL(REF_TELEFONO,'') as telefono," +
 			" ifnull(REF_TELEFONO_FIJO,'') as telefonoFijo," +
-			" CASE WHEN SPC.ID_PAIS = NULL " +
+			" CASE WHEN SPC.ID_PAIS is NULL " +
 			" OR SPC.ID_PAIS = 119 THEN 1 ELSE 2 END AS idNacionalidad, " +
-			" CASE WHEN SPC.ID_PAIS = NULL " +
+			" CASE WHEN SPC.ID_PAIS is  NULL " +
 			" OR SPC.ID_PAIS = 119 THEN 'MEXICANA' ELSE 'EXTRANJERA' END AS nacionalidad, " +
 			" IFNULL(SPC.ID_PAIS, 119) AS idPais, " +
 			" IFNULL(SPC.ID_ESTADO,0) AS idEstado, " +
@@ -401,9 +401,9 @@ public interface PlanSFPAMapper {
 			" CASE WHEN SPC.NUM_SEXO = 1 THEN 'MUJER' WHEN SPC.NUM_SEXO = 2 THEN 'HOMBRE' ELSE IFNULL(SPC.REF_OTRO_SEXO, '') END AS sexo, "
 			+
 			" SPC.FEC_NAC AS fechaNac, " +
-			" CASE WHEN SPC.ID_PAIS = NULL " +
+			" CASE WHEN SPC.ID_PAIS is NULL " +
 			" OR SPC.ID_PAIS = 119 THEN 1 ELSE 2 END AS idNacionalidad, " +
-			" CASE WHEN SPC.ID_PAIS = NULL " +
+			" CASE WHEN SPC.ID_PAIS is NULL " +
 			" OR SPC.ID_PAIS = 119 THEN 'MEXICANA' ELSE 'EXTRANJERA' END AS nacionalidad, " +
 			" IFNULL(SPC.ID_PAIS, 119) AS idPais, " +
 			" IFNULL(REF_TELEFONO,'') as telefono," +
