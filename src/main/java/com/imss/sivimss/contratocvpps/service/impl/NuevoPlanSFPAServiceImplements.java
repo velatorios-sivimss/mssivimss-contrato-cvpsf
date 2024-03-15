@@ -375,7 +375,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 				mapperQuery.agregarParcialidades(datosPagoSFPA);
 			}
 			session.commit();
-			
+			enviarCuenta(contratante);
 			if(plan.getIdPlanSfpa() != null) { 
 				Map<String, Object> map = new HashMap<>(); 
 				Map<String, Object> parametros = new HashMap<>();
@@ -383,16 +383,23 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 				DatosRequest datosRequest = new DatosRequest(); 
 				parametros.put(AppConstantes.DATOS, map);
 				datosRequest.setDatos(parametros); 
+				
 				response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication); 
+					
+				
+				
 				
 			}
 			response.setMensaje("30"); 
 
-			enviarCuenta(contratante);
+			
 			
 			return response;
 
 		} catch (Exception e) {
+			if (response==null) {
+				return new Response<>(false, HttpStatus.OK.value(), "30");
+			}
 			log.info(ERROR, e.getCause().getMessage());
 
 			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
