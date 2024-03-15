@@ -74,6 +74,7 @@ public class ReportePagoAnticipado {
 		.append(" JOIN SVT_DOMICILIO DOV ON DOV.ID_DOMICILIO = VO.ID_DOMICILIO")
 		.append(" WHERE PSFPA.ID_PLAN_SFPA = ")
 		.append(reporteDto.getIdPlanSFPA());		
+
 		return query.toString();
 	}
 	
