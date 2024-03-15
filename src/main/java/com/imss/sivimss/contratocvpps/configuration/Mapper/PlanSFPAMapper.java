@@ -86,6 +86,7 @@ public interface PlanSFPAMapper {
 			"ID_USUARIO_ALTA," +
 			" NUM_SEXO , " +
 			" REF_OTRO_SEXO,  " +
+			" ID_ESTADO," +
 			"FEC_ALTA) " +
 			" VALUES " +
 			"( " +
@@ -103,6 +104,7 @@ public interface PlanSFPAMapper {
 			"#{datos.idUsuario}, " +
 			"#{datos.idSexo} , " +
 			"#{datos.otroSexo} ," +
+			"#{datos.idEstado} ," +
 			" CURRENT_TIMESTAMP())")
 	@Options(useGeneratedKeys = true, keyProperty = "datos.idPersona", keyColumn = "ID_PERSONA")
 	public int agregarPersona(@Param("datos") PlanSFPA persona);
