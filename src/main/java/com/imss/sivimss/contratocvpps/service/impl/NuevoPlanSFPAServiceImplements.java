@@ -378,6 +378,8 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			}
 			session.commit();
 			idPlan=plan.getIdPlanSfpa();
+			plan= planSFPAMapper.buscarFolioPlan(plan);
+			
 			numPlan=plan.getNumFolio();
 			enviarCuenta(contratante);
 			

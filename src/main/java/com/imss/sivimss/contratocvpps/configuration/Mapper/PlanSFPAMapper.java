@@ -604,4 +604,8 @@ public interface PlanSFPAMapper {
 	@Options(useGeneratedKeys = true, keyProperty = "in.idUsuario", keyColumn = "ID_USUARIO")
 	public int agregarUsuario(@Param("in") PlanSFPA datos);
 
+	@Select(value = "SELECT NUM_FOLIO_PLAN_SFPA  as numFolio" +
+			" from SVT_PLAN_SFPA where ID_PLAN_SFPA = #{in.idPlanSfpa} ")
+	public PlanSFPA buscarFolioPlan(@Param("in") PlanSFPA datos);
+
 }
