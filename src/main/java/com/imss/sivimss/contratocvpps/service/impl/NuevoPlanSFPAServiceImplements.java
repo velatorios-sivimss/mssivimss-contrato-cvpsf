@@ -377,12 +377,14 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 				mapperQuery.agregarParcialidades(datosPagoSFPA);
 			}
 			session.commit();
+			Integer correo=enviarCuenta(plan);
 			idPlan=plan.getIdPlanSfpa();
 			plan= planSFPAMapper.buscarFolioPlan(plan);
 			
 			numPlan=plan.getNumFolio();
-			enviarCuenta(contratante);
 			
+			
+			plan.setIdPlanSfpa(idPlan);
 			if(plan.getIdPlanSfpa() != null) { 
 				Map<String, Object> map = new HashMap<>(); 
 				Map<String, Object> parametros = new HashMap<>();
@@ -392,8 +394,6 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 				datosRequest.setDatos(parametros); 
 				
 				response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication); 
-					
-				
 				
 				
 			}
@@ -405,6 +405,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 
 		} catch (Exception e) {
 			if (idPlan!=null || numPlan!=null) {
+				
 				return new Response<>(false, HttpStatus.OK.value(), numPlan);
 			}
 			log.info(ERROR, e.getCause().getMessage());
@@ -875,7 +876,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 		}
 	}
 	
-	private void enviarCuenta(PlanSFPA contratanteRequest) throws SQLException, IOException {
+	private Integer enviarCuenta(PlanSFPA contratanteRequest) throws SQLException, IOException {
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			PlanSFPAMapper planSFPAMappr = session.getMapper(PlanSFPAMapper.class);	// validar usuario no existe
@@ -907,6 +908,9 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 						 contratanteRequest.getPrimerApellido(), 
 						 contratanteRequest.getSegundoApellido(), contrasenia);
 			}
+			return 1;
+		}catch (Exception e) {
+			return null;
 		}
 	}
 		
