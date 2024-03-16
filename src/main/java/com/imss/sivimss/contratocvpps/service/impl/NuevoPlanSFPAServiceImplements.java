@@ -812,7 +812,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			planSFPAMapper.actualizaDatosPlan(plan);
 			
 			session.commit();
-			plan= planSFPAMapper.buscarFolioPlan(plan);
+			
 			if (plan.getCambioParcialidad()==1) {
 				if(plan.getIdPlanSfpa() != null) { 
 					Map<String, Object> map = new HashMap<>(); 
@@ -824,9 +824,14 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					response = reportePagoAnticipadoService.generaReporteConvenioPagoAnticipado(datosRequest, authentication); 
 					
 				}
+				
+				plan= planSFPAMapper.buscarFolioPlan(plan);
 				response.setMensaje(plan.getNumFolio()); 
 				return response;
 			}
+			
+			plan= planSFPAMapper.buscarFolioPlan(plan);
+			
 			return new Response<>(false, HttpStatus.OK.value(), plan.getNumFolio());
 		} catch (Exception e) {
 			log.info(ERROR, e.getCause().getMessage());
