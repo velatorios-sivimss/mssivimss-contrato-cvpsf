@@ -608,4 +608,35 @@ public interface PlanSFPAMapper {
 			" from SVT_PLAN_SFPA where ID_PLAN_SFPA = #{in.idPlanSfpa} ")
 	public PlanSFPA buscarFolioPlan(@Param("in") PlanSFPA datos);
 
+	@Select(value = "SELECT * from " +
+			"   SVC_PERSONA where ID_PERSONA = #{idPersona} ")
+	public Map<String, Object> buscarPersona(@Param("idPersona") Integer idPersona);
+
+	@Insert(value = " INSERT INTO SVH_BITACORA (ID_TIPO_TRANSACCION,DES_TABLA, DES_DATO_AFECTADO, DES_DATO_ACTUAL, ID_USUARIO) values ("
+			+
+			" #{tipoTransaccion} ," +
+			" #{nombreTabla} ," +
+			" #{valorAnterior} ," +
+			" #{valorActual} ," +
+			" #{IdUsuario} " +
+			" )")
+
+	public int bitacora(@Param("tipoTransaccion") Integer tipoTransaccion, @Param("nombreTabla") String nombreTabla,
+			@Param("valorAnterior") String valorAnterior,
+			@Param("valorActual") String valorActual, @Param("IdUsuario") Integer IdUsuario);
+
+	@Select(value = "SELECT * from " +
+			"   SVT_DOMICILIO where ID_DOMICILIO = #{idDomicilio} ")
+	public Map<String, Object> buscarDomicilio(@Param("idDomicilio") Integer idDomicilio);
+
+	@Select(value = "SELECT * from " +
+			"   SVC_CONTRATANTE where ID_CONTRATANTE = #{idContratante} ")
+	public Map<String, Object> buscarContratante(@Param("idContratante") Integer idContratante);
+
+	
+
+	@Select(value = "SELECT * from " +
+			"   SVT_TITULAR_BENEFICIARIOS where ID_TITULAR_BENEFICIARIOS = #{idTitularBeneficiario} ")
+	public Map<String, Object> buscarTitulaBeneficiario(@Param("idTitularBeneficiario") Integer idTitularBeneficiario);
+
 }

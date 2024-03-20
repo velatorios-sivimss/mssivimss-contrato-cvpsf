@@ -198,10 +198,9 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 
 			Integer idPersonaCurp = null;
 			Integer idPersonaRfc = null;
-			// String consultaAnterior = consultaDatos(" SVT_PAGO_SFPA ", "ID_PAGO_SFPA=" +
-			// 1,
-			// session);
-			// System.out.println(consultaAnterior);
+			String consultaAnterior;
+			String consultaNueva;
+			Map<String, Object> consulta;
 			// sino existe insertar en persona y despues en domicilio y contratante
 			if (contratante.getIdPersona() == null || contratante.getIdPersona() <= 0) {
 				idPersonaCurp = this.buscarCurpRfc(contratante.getCurp(), 1);
@@ -210,30 +209,142 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 					if (idPersonaCurp != null) {
 						contratante.setIdPersona(idPersonaCurp);
 						contratante.setIdUsuario(usuario.getIdUsuario());
+						// consulta dato anterior persona
+						consulta = planSFPAMapper.buscarPersona(contratante.getIdPersona());
+						consultaAnterior = consulta == null ? null
+								: consulta.toString();
+						// actualiza persona
 						planSFPAMapper.updatePersona(contratante);
+						// consulta actualizacion persona
+						consulta = planSFPAMapper.buscarPersona(contratante.getIdPersona());
+						consultaNueva = consulta == null ? null
+								: consulta.toString();
+						// inserta bitacora
+						planSFPAMapper.bitacora(2, "SVC_PERSONA", consultaAnterior, consultaNueva,
+								usuario.getIdUsuario());
 					} else if (idPersonaRfc != null) {
 						contratante.setIdPersona(idPersonaRfc);
 						contratante.setIdUsuario(usuario.getIdUsuario());
+						// consulta dato anterio persona
+						consulta = planSFPAMapper.buscarPersona(contratante.getIdPersona());
+						consultaAnterior = consulta == null ? null
+								: consulta.toString();
+						// actualiza persona
 						planSFPAMapper.updatePersona(contratante);
+						// consulta actualizacion persona
+						consulta = planSFPAMapper.buscarPersona(contratante.getIdPersona());
+						consultaNueva = consulta == null ? null
+								: consulta.toString();
+						// agrega bitacora
+						planSFPAMapper.bitacora(2, "SVC_PERSONA", consultaAnterior, consultaNueva,
+								usuario.getIdUsuario());
 					} else {
+						// agrega persona
 						planSFPAMapper.agregarPersona(contratante);
+						// consulta dato persona
+						consulta = planSFPAMapper.buscarPersona(contratante.getIdPersona());
+						consultaNueva = consulta == null ? null
+								: consulta.toString();
+						// inserta bitacora
+						planSFPAMapper.bitacora(1, "SVC_PERSONA", null, consultaNueva, usuario.getIdUsuario());
 						contratante.setIdUsuario(usuario.getIdUsuario());
 					}
+
+					// agregar domicilio
 					planSFPAMapper.agregarDomicilio(contratante);
+
+					// consulta domicilio
+					consulta = planSFPAMapper.buscarDomicilio(contratante.getIdDomicilio());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+					// inserta bitacora
+					planSFPAMapper.bitacora(2, "SVT_DOMICILIO", null, consultaNueva, usuario.getIdUsuario());
+
+					// agregar contratante
 					planSFPAMapper.agregarContratante(contratante);
+					// consulta contratante
+					consulta = planSFPAMapper.buscarContratante(contratante.getIdContratante());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+					// inserta bitacora
+					planSFPAMapper.bitacora(2, "SVC_CONTRATANTE", null, consultaNueva, usuario.getIdUsuario());
 					plan.setIdTitular(contratante.getIdContratante());
 				} else {
-
+					// agrega persona
 					planSFPAMapper.agregarPersona(contratante);
+					// consulta dato persona
+					consulta = planSFPAMapper.buscarPersona(contratante.getIdPersona());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+					// inserta bitacora
+					planSFPAMapper.bitacora(1, "SVC_PERSONA", null, consultaNueva, usuario.getIdUsuario());
+
+					// consulta domicilio
+					consulta = planSFPAMapper.buscarDomicilio(contratante.getIdDomicilio());
+					consultaAnterior = consulta == null ? null
+							: consulta.toString();
+					// inserta domicilio
 					planSFPAMapper.agregarDomicilio(contratante);
+					// consulta domiclio actualizacion
+					consulta = planSFPAMapper.buscarDomicilio(contratante.getIdDomicilio());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+					// inserta bitacora
+					planSFPAMapper.bitacora(1, "SVT_DOMICILIO", consultaAnterior, consultaNueva,
+							usuario.getIdUsuario());
+					// inserta contratante
 					planSFPAMapper.agregarContratante(contratante);
+					// consulta contratante
+					consulta = planSFPAMapper.buscarContratante(contratante.getIdContratante());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+					// inserta bitacora
+					planSFPAMapper.bitacora(1, "SVC_CONTRATANTE", null, consultaNueva, usuario.getIdUsuario());
+
 					plan.setIdTitular(contratante.getIdContratante());
 				}
 
 			} else {
+
+				// consulta persona
+				consulta = planSFPAMapper.buscarPersona(contratante.getIdPersona());
+				consultaAnterior = consulta == null ? null
+						: consulta.toString();
+				// actualiza persona
 				planSFPAMapper.updatePersona(contratante);
+				// consulta persona actualizada
+				consulta = planSFPAMapper.buscarPersona(contratante.getIdPersona());
+				consultaNueva = consulta == null ? null
+						: consulta.toString();
+				// inserta bitacora
+				planSFPAMapper.bitacora(2, "SVC_PERSONA", consultaAnterior, consultaNueva, usuario.getIdUsuario());
+
+				// consulta domicilio
+				consulta = planSFPAMapper.buscarDomicilio(contratante.getIdDomicilio());
+				consultaAnterior = consulta == null ? null
+						: consulta.toString();
+				// actualiza domicilio
 				planSFPAMapper.updateDomicilio(contratante);
+				// consulta domicilio actualizado
+				consulta = planSFPAMapper.buscarDomicilio(contratante.getIdDomicilio());
+				consultaNueva = consulta == null ? null
+						: consulta.toString();
+				// inserta bitacora
+				planSFPAMapper.bitacora(2, "SVT_DOMICILIO", consultaAnterior, consultaNueva, usuario.getIdUsuario());
+
+				// consulta contratante
+				consulta = planSFPAMapper.buscarContratante(contratante.getIdContratante());
+				consultaAnterior = consulta == null ? null
+						: consulta.toString();
+				// actualiza contratante
 				planSFPAMapper.updateContratante(contratante);
+				// consulta contratante actualizado
+				consulta = planSFPAMapper.buscarContratante(contratante.getIdContratante());
+				consultaNueva = consulta == null ? null
+						: consulta.toString();
+				// inserta bitacora
+				planSFPAMapper.bitacora(2, "SVC_CONTRATANTE", consultaAnterior, consultaNueva, usuario.getIdUsuario());
+
 				plan.setIdTitular(contratante.getIdContratante());
 			}
 			// si existe actualizar persona contratante y domicilio
@@ -256,27 +367,142 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 						if (idPersonaCurp != null) {
 							titularSubstituto.setIdPersona(idPersonaCurp);
 							titularSubstituto.setIdUsuario(usuario.getIdUsuario());
+							// consulta persona
+							consulta = planSFPAMapper.buscarPersona(titularSubstituto.getIdPersona());
+							consultaAnterior = consulta == null ? null
+									: consulta.toString();
+							// actualiza persona
 							planSFPAMapper.updatePersona(titularSubstituto);
+							// consulta persona actualizada
+							consulta = planSFPAMapper.buscarPersona(titularSubstituto.getIdPersona());
+							consultaNueva = consulta == null ? null
+									: consulta.toString();
+							// inserta bitacora
+							planSFPAMapper.bitacora(2, "SVC_PERSONA", consultaAnterior, consultaNueva,
+									usuario.getIdUsuario());
+
 						} else if (idPersonaRfc != null) {
 							titularSubstituto.setIdPersona(idPersonaRfc);
 							titularSubstituto.setIdUsuario(usuario.getIdUsuario());
+
+							// consulta persona
+							consulta = planSFPAMapper.buscarPersona(titularSubstituto.getIdPersona());
+							consultaAnterior = consulta == null ? null
+									: consulta.toString();
+							// actualiza persona
 							planSFPAMapper.updatePersona(titularSubstituto);
+							// consulta persona actualizada
+							consulta = planSFPAMapper.buscarPersona(titularSubstituto.getIdPersona());
+							consultaNueva = consulta == null ? null
+									: consulta.toString();
+							// inserta bitacora
+							planSFPAMapper.bitacora(2, "SVC_PERSONA", consultaAnterior, consultaNueva,
+									usuario.getIdUsuario());
 						} else {
+							// agrega persona
 							planSFPAMapper.agregarPersona(titularSubstituto);
+							// consulta persona actualizada
+							consulta = planSFPAMapper.buscarPersona(titularSubstituto.getIdPersona());
+							consultaNueva = consulta == null ? null
+									: consulta.toString();
+							// inserta bitacora
+							planSFPAMapper.bitacora(1, "SVC_PERSONA", null, consultaNueva,
+									usuario.getIdUsuario());
 						}
+
+						// consulta domicilio
+						consulta = planSFPAMapper.buscarDomicilio(titularSubstituto.getIdDomicilio());
+						consultaAnterior = consulta == null ? null
+								: consulta.toString();
+						// actualiza domicilio
 						planSFPAMapper.agregarDomicilio(titularSubstituto);
+						// consulta domicilio actualizado
+						consulta = planSFPAMapper.buscarDomicilio(titularSubstituto.getIdDomicilio());
+						consultaNueva = consulta == null ? null
+								: consulta.toString();
+						// inserta bitacora
+						planSFPAMapper.bitacora(2, "SVT_DOMICILIO", consultaAnterior, consultaNueva,
+								usuario.getIdUsuario());
+						// insertatr titula beneficiario
 						planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
+						// consulta titular beneficiario
+						consulta = planSFPAMapper
+								.buscarTitulaBeneficiario(titularSubstituto.getIdTitularBeneficiario());
+						consultaNueva = consulta == null ? null
+								: consulta.toString();
+						// inserta bitacora
+						planSFPAMapper.bitacora(1, "SVT_TITULAR_BENEFICIARIOS", null, consultaNueva,
+								usuario.getIdUsuario());
 						plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
 					} else {
+						// agregar persona
 						planSFPAMapper.agregarPersona(titularSubstituto);
+						consulta = planSFPAMapper.buscarPersona(titularSubstituto.getIdPersona());
+						consultaNueva = consulta == null ? null
+								: consulta.toString();
+						// inserta bitacora
+						planSFPAMapper.bitacora(1, "SVC_PERSONA", null, consultaNueva,
+								usuario.getIdUsuario());
+						// consulta persona actualizada
+						consulta = planSFPAMapper.buscarPersona(titularSubstituto.getIdPersona());
+						consultaNueva = consulta == null ? null
+								: consulta.toString();
+						// inserta bitacora
+						planSFPAMapper.bitacora(1, "SVC_PERSONA", null, consultaNueva,
+								usuario.getIdUsuario());
+						// agrega domicilio
 						planSFPAMapper.agregarDomicilio(titularSubstituto);
+						// consulta domicilio actualizado
+						consulta = planSFPAMapper.buscarDomicilio(titularSubstituto.getIdDomicilio());
+						consultaNueva = consulta == null ? null
+								: consulta.toString();
+						// inserta bitacora
+						planSFPAMapper.bitacora(1, "SVT_DOMICILIO", null, consultaNueva,
+								usuario.getIdUsuario());
+						// agregar titular beneficiario
 						planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
+						// consulta titular beneficiario
+						consulta = planSFPAMapper
+								.buscarTitulaBeneficiario(titularSubstituto.getIdTitularBeneficiario());
+						consultaNueva = consulta == null ? null
+								: consulta.toString();
+						// inserta bitacora
+						planSFPAMapper.bitacora(1, "SVT_TITULAR_BENEFICIARIOS", null, consultaNueva,
+								usuario.getIdUsuario());
 						plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
 					}
 				} else {
+					// consulta persona
+					consulta = planSFPAMapper.buscarPersona(titularSubstituto.getIdPersona());
+					consultaAnterior = consulta == null ? null
+							: consulta.toString();
+					// actualizar persona
 					planSFPAMapper.updatePersona(titularSubstituto);
+					consulta = planSFPAMapper.buscarPersona(titularSubstituto.getIdPersona());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+					// inserta bitacora
+					planSFPAMapper.bitacora(1, "SVC_PERSONA", null, consultaNueva,
+							usuario.getIdUsuario());
+					// agregar domicilio
 					planSFPAMapper.agregarDomicilio(titularSubstituto);
+					// consulta domicilio actualizado
+					consulta = planSFPAMapper.buscarDomicilio(titularSubstituto.getIdDomicilio());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+					// inserta bitacora
+					planSFPAMapper.bitacora(1, "SVT_DOMICILIO", null, consultaNueva,
+							usuario.getIdUsuario());
+					// agregar titula beneficiario
 					planSFPAMapper.agregarTitulaBeneficiario(titularSubstituto);
+					// consulta titular beneficiario
+					consulta = planSFPAMapper
+							.buscarTitulaBeneficiario(titularSubstituto.getIdTitularBeneficiario());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+					// inserta bitacora
+					planSFPAMapper.bitacora(1, "SVT_TITULAR_BENEFICIARIOS", null, consultaNueva,
+							usuario.getIdUsuario());
 					plan.setIdTitularSubstituto(titularSubstituto.getIdTitularBeneficiario());
 
 				}
@@ -295,29 +521,132 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 						if (idPersonaCurp != null) {
 							beneficiario1.setIdPersona(idPersonaCurp);
 							beneficiario1.setIdUsuario(usuario.getIdUsuario());
+							// consulta persona
+							consulta = planSFPAMapper.buscarPersona(beneficiario1.getIdPersona());
+							consultaAnterior = consulta == null ? null
+									: consulta.toString();
+							// actualiza persona
 							planSFPAMapper.updatePersona(beneficiario1);
+							// consulta persona actualizada
+							consulta = planSFPAMapper.buscarPersona(beneficiario1.getIdPersona());
+							consultaNueva = consulta == null ? null
+									: consulta.toString();
+							// inserta bitacora
+							planSFPAMapper.bitacora(2, "SVC_PERSONA", consultaAnterior, consultaNueva,
+									usuario.getIdUsuario());
+
 						} else if (idPersonaRfc != null) {
 							beneficiario1.setIdPersona(idPersonaRfc);
 							beneficiario1.setIdUsuario(usuario.getIdUsuario());
+							// consulta persona
+							consulta = planSFPAMapper.buscarPersona(beneficiario1.getIdPersona());
+							consultaAnterior = consulta == null ? null
+									: consulta.toString();
+							// actualiza persona
 							planSFPAMapper.updatePersona(beneficiario1);
+							// consulta persona actualizada
+							consulta = planSFPAMapper.buscarPersona(beneficiario1.getIdPersona());
+							consultaNueva = consulta == null ? null
+									: consulta.toString();
+							// inserta bitacora
+							planSFPAMapper.bitacora(2, "SVC_PERSONA", consultaAnterior, consultaNueva,
+									usuario.getIdUsuario());
 						} else {
 							planSFPAMapper.agregarPersona(beneficiario1);
+							// consulta persona actualizada
+							consulta = planSFPAMapper.buscarPersona(beneficiario1.getIdPersona());
+							consultaNueva = consulta == null ? null
+									: consulta.toString();
+							// inserta bitacora
+							planSFPAMapper.bitacora(1, "SVC_PERSONA", null, consultaNueva,
+									usuario.getIdUsuario());
 
 						}
+
+						// agregar domicilio
 						planSFPAMapper.agregarDomicilio(beneficiario1);
+						// consulta domicilio actualizado
+						consulta = planSFPAMapper.buscarDomicilio(beneficiario1.getIdDomicilio());
+						consultaNueva = consulta == null ? null
+								: consulta.toString();
+						// inserta bitacora
+						planSFPAMapper.bitacora(1, "SVT_DOMICILIO", null, consultaNueva,
+								usuario.getIdUsuario());
+
+						// agregar titula beneficiario
 						planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
+						// consulta titular beneficiario
+						consulta = planSFPAMapper
+								.buscarTitulaBeneficiario(beneficiario1.getIdTitularBeneficiario());
+						consultaNueva = consulta == null ? null
+								: consulta.toString();
+						// inserta bitacora
+						planSFPAMapper.bitacora(1, "SVT_TITULAR_BENEFICIARIOS", null, consultaNueva,
+								usuario.getIdUsuario());
+
 						plan.setIdBeneficiario1(beneficiario1.getIdTitularBeneficiario());
 					} else {
+						// agregar persona
 						planSFPAMapper.agregarPersona(beneficiario1);
+						// consulta persona actualizada
+						consulta = planSFPAMapper.buscarPersona(beneficiario1.getIdPersona());
+						consultaNueva = consulta == null ? null
+								: consulta.toString();
+						// inserta bitacora
+						planSFPAMapper.bitacora(1, "SVC_PERSONA", null, consultaNueva,
+								usuario.getIdUsuario());
+						// agregar domicilio
 						planSFPAMapper.agregarDomicilio(beneficiario1);
+						// consulta domicilio actualizado
+						consulta = planSFPAMapper.buscarDomicilio(beneficiario1.getIdDomicilio());
+						consultaNueva = consulta == null ? null
+								: consulta.toString();
+						// inserta bitacora
+						planSFPAMapper.bitacora(1, "SVT_DOMICILIO", null, consultaNueva,
+								usuario.getIdUsuario());
+						// agregar titula beneficiario
 						planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
+
+						// consulta titular beneficiario
+						consulta = planSFPAMapper
+								.buscarTitulaBeneficiario(beneficiario1.getIdTitularBeneficiario());
+						consultaNueva = consulta == null ? null
+								: consulta.toString();
+						// inserta bitacora
+						planSFPAMapper.bitacora(1, "SVT_TITULAR_BENEFICIARIOS", null, consultaNueva,
+								usuario.getIdUsuario());
 						plan.setIdBeneficiario1(beneficiario1.getIdTitularBeneficiario());
 					}
 
 				} else {
+					// actualizar persona
 					planSFPAMapper.updatePersona(beneficiario1);
+					// consulta persona actualizada
+					consulta = planSFPAMapper.buscarPersona(beneficiario1.getIdPersona());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+					// inserta bitacora
+					planSFPAMapper.bitacora(1, "SVC_PERSONA", null, consultaNueva,
+							usuario.getIdUsuario());
+					// agregar domicilio
 					planSFPAMapper.agregarDomicilio(beneficiario1);
+					// consulta domicilio actualizado
+					consulta = planSFPAMapper.buscarDomicilio(beneficiario1.getIdDomicilio());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+					// inserta bitacora
+					planSFPAMapper.bitacora(1, "SVT_DOMICILIO", null, consultaNueva,
+							usuario.getIdUsuario());
+					// agregar titula beneficiario
 					planSFPAMapper.agregarTitulaBeneficiario(beneficiario1);
+					// consulta titular beneficiario
+					consulta = planSFPAMapper
+							.buscarTitulaBeneficiario(beneficiario1.getIdTitularBeneficiario());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+					// inserta bitacora
+					planSFPAMapper.bitacora(1, "SVT_TITULAR_BENEFICIARIOS", null, consultaNueva,
+							usuario.getIdUsuario());
 					plan.setIdBeneficiario1(beneficiario1.getIdTitularBeneficiario());
 				}
 			}
@@ -379,7 +708,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 				datosPagoSFPA.setIdEstatusPago(i == 0 ? 8 : 7);
 				mapperQuery.agregarParcialidades(datosPagoSFPA);
 			}
-			session.commit();
+			// session.commit();
 			Integer correo = enviarCuenta(plan);
 			idPlan = plan.getIdPlanSfpa();
 			plan = planSFPAMapper.buscarFolioPlan(plan);
@@ -904,27 +1233,6 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	private String consultaDatos(String nombreTabla, String restriccion, SqlSession session) throws SQLException {
-
-		List<Map<String, Object>> resultDatosGenerales = new ArrayList<>();
-		String salida = "";
-		try {
-			String consulta = "SELECT * FROM " + nombreTabla + " WHERE " + restriccion;
-			log.info("consulta:" + consulta);
-
-			Consultas consultas = session.getMapper(Consultas.class);
-			resultDatosGenerales = consultas.selectNativeQuery(consulta);
-			salida = resultDatosGenerales.get(0).toString();
-			System.out.println(salida);
-
-		} catch (Exception e) {
-			log.info(e.getMessage());
-			return "";
-
-		}
-		return salida;
 	}
 
 }
