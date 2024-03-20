@@ -38,7 +38,7 @@ public interface PlanSFPAMapper {
 			" (SELECT CONCAT_WS('-', " +
 			"  (SELECT SUBSTRING(UPPER(SV.DES_VELATORIO), 1, 3)" +
 			"   FROM SVC_VELATORIO SV" +
-			"   WHERE SV.ID_VELATORIO = 1 )," +
+			"   WHERE SV.ID_VELATORIO = ${datos.idVelatorio} )," +
 			"  (SELECT SUBSTRING(UPPER(SP.REF_PAQUETE_NOMBRE), 1, 3)" +
 			"   FROM SVT_PAQUETE SP" +
 			"   WHERE SP.ID_PAQUETE = 1 )," +
