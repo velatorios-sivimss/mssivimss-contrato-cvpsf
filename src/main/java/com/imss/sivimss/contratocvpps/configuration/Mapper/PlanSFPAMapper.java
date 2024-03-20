@@ -38,7 +38,7 @@ public interface PlanSFPAMapper {
 			" (SELECT CONCAT_WS('-', " +
 			"  (SELECT SUBSTRING(UPPER(SV.DES_VELATORIO), 1, 3)" +
 			"   FROM SVC_VELATORIO SV" +
-			"   WHERE SV.ID_VELATORIO = ${datos.idVelatorio} )," +
+			"   WHERE SV.ID_VELATORIO = #{datos.idVelatorio} )," +
 			"  (SELECT SUBSTRING(UPPER(SP.REF_PAQUETE_NOMBRE), 1, 3)" +
 			"   FROM SVT_PAQUETE SP" +
 			"   WHERE SP.ID_PAQUETE = 1 )," +
@@ -633,10 +633,12 @@ public interface PlanSFPAMapper {
 			"   SVC_CONTRATANTE where ID_CONTRATANTE = #{idContratante} ")
 	public Map<String, Object> buscarContratante(@Param("idContratante") Integer idContratante);
 
-	
-
 	@Select(value = "SELECT * from " +
 			"   SVT_TITULAR_BENEFICIARIOS where ID_TITULAR_BENEFICIARIOS = #{idTitularBeneficiario} ")
 	public Map<String, Object> buscarTitulaBeneficiario(@Param("idTitularBeneficiario") Integer idTitularBeneficiario);
+
+	@Select(value = "SELECT * from " +
+			"   SVT_PLAN_SFPA where ID_PLAN_SFPA = #{idPlan} ")
+	public Map<String, Object> buscarPlan(@Param("idPlan") Integer idPlan);
 
 }
