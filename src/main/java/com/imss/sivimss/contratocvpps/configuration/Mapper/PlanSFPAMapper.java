@@ -38,7 +38,7 @@ public interface PlanSFPAMapper {
 			" (SELECT CONCAT_WS('-', " +
 			"  (SELECT SUBSTRING(UPPER(SV.DES_VELATORIO), 1, 3)" +
 			"   FROM SVC_VELATORIO SV" +
-			"   WHERE SV.ID_VELATORIO = ${datos.idVelatorio} )," +
+			"   WHERE SV.ID_VELATORIO = #{datos.idVelatorio} )," +
 			"  (SELECT SUBSTRING(UPPER(SP.REF_PAQUETE_NOMBRE), 1, 3)" +
 			"   FROM SVT_PAQUETE SP" +
 			"   WHERE SP.ID_PAQUETE = 1 )," +
@@ -607,5 +607,38 @@ public interface PlanSFPAMapper {
 	@Select(value = "SELECT NUM_FOLIO_PLAN_SFPA  as numFolio" +
 			" from SVT_PLAN_SFPA where ID_PLAN_SFPA = #{in.idPlanSfpa} ")
 	public PlanSFPA buscarFolioPlan(@Param("in") PlanSFPA datos);
+
+	@Select(value = "SELECT * from " +
+			"   SVC_PERSONA where ID_PERSONA = #{idPersona} ")
+	public Map<String, Object> buscarPersona(@Param("idPersona") Integer idPersona);
+
+	@Insert(value = " INSERT INTO SVH_BITACORA (ID_TIPO_TRANSACCION,DES_TABLA, DES_DATO_AFECTADO, DES_DATO_ACTUAL, ID_USUARIO) values ("
+			+
+			" #{tipoTransaccion} ," +
+			" #{nombreTabla} ," +
+			" #{valorAnterior} ," +
+			" #{valorActual} ," +
+			" #{IdUsuario} " +
+			" )")
+
+	public int bitacora(@Param("tipoTransaccion") Integer tipoTransaccion, @Param("nombreTabla") String nombreTabla,
+			@Param("valorAnterior") String valorAnterior,
+			@Param("valorActual") String valorActual, @Param("IdUsuario") Integer IdUsuario);
+
+	@Select(value = "SELECT * from " +
+			"   SVT_DOMICILIO where ID_DOMICILIO = #{idDomicilio} ")
+	public Map<String, Object> buscarDomicilio(@Param("idDomicilio") Integer idDomicilio);
+
+	@Select(value = "SELECT * from " +
+			"   SVC_CONTRATANTE where ID_CONTRATANTE = #{idContratante} ")
+	public Map<String, Object> buscarContratante(@Param("idContratante") Integer idContratante);
+
+	@Select(value = "SELECT * from " +
+			"   SVT_TITULAR_BENEFICIARIOS where ID_TITULAR_BENEFICIARIOS = #{idTitularBeneficiario} ")
+	public Map<String, Object> buscarTitulaBeneficiario(@Param("idTitularBeneficiario") Integer idTitularBeneficiario);
+
+	@Select(value = "SELECT * from " +
+			"   SVT_PLAN_SFPA where ID_PLAN_SFPA = #{idPlan} ")
+	public Map<String, Object> buscarPlan(@Param("idPlan") Integer idPlan);
 
 }
