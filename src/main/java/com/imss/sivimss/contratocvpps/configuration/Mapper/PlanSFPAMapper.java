@@ -41,10 +41,10 @@ public interface PlanSFPAMapper {
 			"   WHERE SV.ID_VELATORIO = #{datos.idVelatorio} )," +
 			"  (SELECT SUBSTRING(UPPER(SP.REF_PAQUETE_NOMBRE), 1, 3)" +
 			"   FROM SVT_PAQUETE SP" +
-			"   WHERE SP.ID_PAQUETE = 1 )," +
+			"   WHERE SP.ID_PAQUETE =  #{datos.idPaquete} )," +
 			"  (SELECT STPM.DES_TIPO_PAGO_MENSUAL" +
 			"   FROM SVC_TIPO_PAGO_MENSUAL STPM" +
-			"   WHERE STPM.ID_TIPO_PAGO_MENSUAL = 2 )," +
+			"   WHERE STPM.ID_TIPO_PAGO_MENSUAL =  #{datos.idTipoPagoMensual} )," +
 			"  (SELECT IFNULL(MAX(SPSFPA.ID_PLAN_SFPA), 0) + 1" +
 			"   FROM SVT_PLAN_SFPA SPSFPA))" +
 			"  FROM DUAL)," +
