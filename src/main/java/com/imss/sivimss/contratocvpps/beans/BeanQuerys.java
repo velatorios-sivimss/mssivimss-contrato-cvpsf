@@ -19,7 +19,7 @@ public class BeanQuerys {
 				" SEPLSFPA.DES_ESTATUS_PLAN_SFPA AS estatusPlan ," +
 				" case when SEPLSFPA.ID_ESTATUS_PLAN_SFPA = 4 then 'PAGADO'" +
 				" when SEPLSFPA.ID_ESTATUS_PLAN_SFPA = 6 then 'CANCELADO'" +
-				" when pg.ID_ESTATUS_PAGO = 1 then 'VIGENTE'" +
+				" when pg.ID_ESTATUS_PAGO = 5 then 'VIGENTE'" +
 				" ELSE  upper(dp.DES_ESTATUS_PAGO_ANTICIPADO) " +
 				" END  AS estatusPago " +
 				" FROM SVT_PLAN_SFPA SPLSFPA " +
