@@ -999,10 +999,10 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 			// subsituto
 			// IND_TITULAR_SUBSTITUTO=0 no existe titular
 			if (titularSubstituto != null) {
+				titularSubstituto.setIdUsuario(usuario.getIdUsuario());
+				titularSubstituto.setPersona("titular substituto");
 				if (plan.getIndModificarTitularSubstituto() == 0
 						&& titularSubstituto.getIdTitularBeneficiario() == null) {
-					titularSubstituto.setIdUsuario(usuario.getIdUsuario());
-					titularSubstituto.setPersona("titular substituto");
 					titularSubstituto.setIdPlanSfpa(plan.getIdPlanSfpa());
 					titularSubstituto.setIndTitularSubstituto(plan.getIndModificarTitularSubstituto());
 
@@ -1597,7 +1597,7 @@ public class NuevoPlanSFPAServiceImplements implements NuevoPlanSFPAService {
 
 			if (beneficiario2 != null) {
 				beneficiario2.setIdUsuario(usuario.getIdUsuario());
-				beneficiario2.setPersona("beneficiario 1");
+				beneficiario2.setPersona("beneficiario 2");
 				beneficiario2.setIdPlanSfpa(plan.getIdPlanSfpa());
 
 				if (beneficiario2.getIdTitularBeneficiario() != null) {
